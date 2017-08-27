@@ -25,7 +25,7 @@
     	background: none;
     }
     .personal-ula .none-right-arrow .personal-some {
-	    padding-right: 0.44rem;
+	    padding-right: 0.44rem;height:100%;
 }
 .help-center {
     background: #fff;
@@ -59,7 +59,7 @@
         <section class="add-subs ovw">
             <ul class="help-center personal-ula ovw btzl">
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">报价</label><span class="personal-some ovw">填写价格</span></li>
+                    <label class="help-name ovw">报价</label><input id="price" placeholder="请填写价格" class="personal-some ovw"></li>
                 <li>
                     <label class="help-name ovw">类型</label><span class="personal-some ovw">请选择</span></li>
                 <li>
@@ -73,6 +73,36 @@
             <a class="over-order ovw topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
+    <script type="text/javascript">
+        $('#fabu').click(function(){
+            var cmd  = 'mechanicalPublish';
+            var ts = parseInt(new Date().getTime() / 1000); 
+            var jsonp = 1;
+            var brand = '';
+
+            var price = $('#price').val();
+            var params = {
+                'userid':'444',
+                pulishID:'',
+                verify:'',
+                price:price,
+            }
+             $.ajax({
+                    url : apiURL,//接口地址
+                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                dataType : 'jsonp',
+                success: function(data){
+                    console.info(data);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    layer.msg('网络请求延迟！');
+                    console.info(XMLHttpRequest.status);
+                    console.info(XMLHttpRequest.readyState);
+                    console.info(textStatus);
+                },
+            });
+        })
+    </script>
 </body>
 
 </html>
