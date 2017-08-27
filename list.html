@@ -1,0 +1,561 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="email=no" name="format-detection">
+                <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+                <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+		<title></title>
+		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="css/demo.css">
+		<link rel="stylesheet" type="text/css" href="css/my.css" />
+		<link rel="stylesheet" type="text/css" href="css/swiper.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/flexible.js"></script>
+		<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style>
+     .none-more-content{
+                color: #868686;
+                font-size: 14px;
+                height: 200px;
+                line-height: 200px;
+                text-align: center;
+            }
+</style>
+	</head>
+
+	<body id="listCon">
+
+		<section class="body-bj ovw" id="loop">
+                    <section class="header ovw posin" style="position:fixed;z-index:100;background: #f64d44; border-bottom:none;"><a href="javascript:;" class="header-back ovw" style="height:0.82rem;"><img src="images/back.png"/></a>
+	    </section>
+                    <div id="headTop" style="z-index: 5;">
+
+				<header>
+					<dl>
+						<dt><img class="poster" src=""></dt>
+						<dd class="font_28 col_f username"></dd>
+					</dl>
+				</header>
+				<div id="body-c">
+					<div class="swiper-container">
+						<div class="swiper-wrapper subscription-ula">
+                                <div class="swiper-slide">
+                                    <a class="choosed" index="0">全部类型</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="1">农机</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="2">农活</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="3">零活</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="4">商品</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="5">零工</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="6">二手</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="7">约车</a>
+                                </div>
+
+                            </div>
+						<span class="slideL"><img src="images/slide_shandow.png"></span>
+						<span class="slideR"><img src="images/slide_shandow.png"></span>
+					</div>
+					<div class="righta">
+						<!--<span class="slideR"><img src="images/slide_shandow.png"></span>-->
+						<img src="images/down.png">
+					</div>
+				</div>
+			</div>
+			<section class="release-near-content ovw add-subs">
+
+			</section>
+			<ul class="tagul">
+                <li>
+                    <a index="0">全部</a>
+                </li>
+                <li>
+                    <a index="1">农机</a>
+                </li>
+                <li>
+                    <a index="2">农活</a>
+                </li>
+                <li class="two">
+                    <a index="3">零活</a>
+                </li>
+                <li>
+                    <a index="4">商品</a>
+                </li>
+                <li>
+                    <a index="5">零工</a>
+                </li>
+                <li>
+                    <a index="6">二手</a>
+                </li>
+                <li class="two">
+                    <a index="7">约车</a>
+                </li>
+            </ul>
+		</section>
+		<script>
+			$(function() {
+                            var userid = GetQueryParam("userid");
+                            var poster = isNull(GetQueryParam("poster"))?GetQueryParam("poster"):'images/head.png';
+                            var username = GetQueryParam("username");
+                            $('.poster').attr('src',poster);
+                            $('.username').text(username);
+                            $('.header-back').on('click',function(){
+                                window.history.go(-1);
+                            })
+
+				//				轮播滑动添加样式
+
+				var mySwiper = new Swiper('.swiper-container', {
+					slidesPerView: 'auto',
+					spaceBetween: 20,
+//					onSlideChangeStart: function() {
+//						$('#loop .swiper-slide a').removeClass();
+//						$('#loop .swiper-slide a').eq(mySwiper.activeIndex).addClass('choosed');
+//						//						判断是否滑动到最后一个slide
+//						//						if(mySwiper.isEnd) {
+//						//							$('#loop .slideR').hide();
+//						//							$('#loop .slideL').show();
+//						//						}
+//						//						判断是否滑动到第一个slide
+//						//						if(mySwiper.activeIndex == 0) {
+//						//
+//						//							$('#loop .slideL').hide();
+//						//							$('#loop .slideR').show();
+//						//						}
+//
+//					}
+				});
+
+				$('.righta').click(function() {
+					$(this).toggleClass('rotate');
+					$('#listCon .tagul').slideToggle('slow');
+
+				});
+				var ulh = $('#headTop').height();
+//				$('#listCon .tagul').height($(window).height() + $(document).scrollTop() - ulh)
+//				$(window).scroll(function() {
+//					$('#listCon .tagul').height($(window).height() + $(document).scrollTop() - ulh);
+//
+//				});
+				$('#listCon .release-near-content').css('margin-top', $('#headTop').outerHeight());
+                                var count = 0;
+	function get_myComment(params){//获取我的评论列表
+        var cmd = 'myComment1';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	var crtime = getLocalTime(val['topicTime'],1);
+                    	var score = parseInt(val['score']);
+                        var comment_star = showStar(score);
+                    	var commentType = parseInt(val['commentType']);
+                    	switch(commentType){            			
+            			case 1:
+            				var type_name = '农机';
+            			       break;
+            			case 2:
+            				var type_name = '农活';
+            			       break;
+            			case 3:
+            				var type_name = '零活';
+            			       break;
+            			case 4:
+            				var type_name = '商品';
+            			       break;
+              			case 5:
+            				var type_name = '零工';
+            			       break;
+              			case 6:
+            				var type_name = '二手';
+            			       break;
+                                case 7:
+            				var type_name = '约车';
+            			       break;
+            		}
+                        search_html += '<article class="release-near-art ovw">'+
+					'<dl class="release-near-dl ovw">'+
+						'<dt><img src="'+val['userAvatar']+'"/></dt>'+
+						'<dd>'+
+							'<div class="rele-near-dete ovw">'+
+								'<span class="near-name-work ovw fl font_24">'+val['username']+'</span>'+
+								'<div class="near-discuse ovw fr">'+
+									'<p class="star-eval ovw fr">'+comment_star+'</p>'+
+								'</div>'+
+							'</div>'+
+							'<p class="near-pa ovw font_24 col_3">'+val['content']+'</p>'+
+							'<div class="ovw mar_20">'+
+								'<span class=" fl font_24 col_f tag far_w">'+type_name+'</span>'+
+								'<div class="fr">'+
+									'<samp class="fl font_24 col_9">'+val['commentTime']+'</samp>'+
+								'</div>'+
+							'</div>'+
+						'</dd>'+
+					'</dl>'+
+				'</article>';
+        		    		count++;
+                   });
+                   //$('.add-subs').append(search_html);
+                }else{
+                	/* search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.add-subs').append(search_html); */
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+/* 	            		search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.add-subs').html(search_html);
+						return false; */
+	            		html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                        $('.dropload-down').siblings().remove();
+						$('.dropload-down').before(html);
+                        dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+                        return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.add-subs').html(search_html);	
+                         }else{
+                         	$('.add-subs').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                       //dropload.noData(false);
+                        $('.dropload-down').hide();
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	//*********************************我的话题列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义
+		dropload = $('.add-subs').dropload({
+		    scrollArea : window,
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+                    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+                    },
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_myComment(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_myComment(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	var params = {	//我的评论列表接口提供参数
+    			'userid':userid,
+    			'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+			'type' : 0,//类型：农机类型，false
+			'page' :PAGE,
+			'num' : PAGE_NUM,
+		};
+	dropload_machineList(params);
+	},100);  
+        
+         var type = '';//1农机，2农活，3零活，4商品，5零工，6二手,7约车
+    /*********************状态排序*************************/
+    $('.subscription-ula div a').on('click', function(e){
+                    $('#listCon .tagul').hide('slow');
+                    $(this).parent('.swiper-slide').siblings().find('a').removeClass('choosed');
+                    $('.none-more-content').remove();
+                    $(this).addClass('choosed');
+                    var index = $(this).attr('index');
+                    $('.tagul').find('li').find('a').css({'color':'#444444',});
+                    $.each('.tagul li a',function(i){
+                        if($($('.tagul li a')[i]).attr('index')==index){
+                            $($('.tagul li a')[i]).css({'color':'red',});
+                        }
+                    })
+                    switchTab(index)
+                    e.preventDefault();
+            });
+           $(document).on('click', '.tagul li a', function(){
+                    var index = $(this).attr('index');
+                    $('.tagul').find('li').find('a').css({'color':'#444444',});
+                    $(this).css({'color':'red',});
+                    $('.subscription-ula div a').parent('.swiper-slide').siblings().find('a').removeClass('choosed');
+                    $.each('.subscription-ula div a',function(i){
+                        if($($('.subscription-ula div a')[i]).attr('index')==index){
+                            $($('.subscription-ula div a')[i]).addClass('choosed');
+                        }
+                    })
+                    switchTab(index)
+            })
+//            $(".righta").bind("click", function() {
+//        //		$(this).toggleClass('rotate');
+//                        $('#listCon .tagul').slideToggle('slow');
+//                    });
+                    $(".tagul").bind("click", function() {
+        //		$(this).toggleClass('rotate');
+                        $('#listCon .tagul').slideToggle('slow');
+                    });
+    function switchTab(index){
+                            switch (parseInt(index)){
+                                case 0://全部
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                    'type' : 0,//类型：农机类型，false
+                                    'page' :PAGE,
+                                    'num' : PAGE_NUM,
+                                    };
+                                    //	$('.ms-works-art').remove();
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                            case 1://农机    
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                    'type' : 1,//类型：农机类型，false
+                                    'page' :PAGE,
+                                    'num' : PAGE_NUM,
+                                    };
+                                    //	$('.ms-works-art').remove();
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 2://农活
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'type':2,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 2);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 3:
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'type':3,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 4:
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'type':4,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 5:
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'type':5,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 6:
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                    'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'type':6,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 7://约车
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':7,
+                                            'direction' : 2,//排序类型：排序：1我发布的评论，2对我的评论,true
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    count = 0;
+                                    dropload_machineList(params);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                            }
+                            }
+
+			})
+		</script>
+	</body>
+
+</html>

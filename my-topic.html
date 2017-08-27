@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>我的发布-话题</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .layer-time {
+    padding-bottom: 0;
+}
+.topic-ula li.topic-lib{
+    width: 0.773rem;
+    margin-right: 0;
+}
+.img_dv{
+    width: 100%;
+    height: 180px;
+    z-index: 1;
+    background: #fff;
+    overflow: hidden;
+    }
+</style>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+    
+//  隐藏
+    $('.layer-rele-s').on('touchstart click',function(){
+    	$('.rele-bj').hide()
+    	$('.layer-rele-cont').hide()
+    })
+    //
+    $('.layer-map-bj').on('touchstart click',function(){
+    	$('.layer-map-bj').hide()
+    	$('.layer-sorting').hide()
+    	$('.layer-type').hide()
+    	$('.layer-time').hide()
+    });
+    //
+    $('.pick-work-ula li').on('touchstart click',function(){
+    	var index = $(this).index();
+    		switch(index){
+    			case 0:
+  			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+			       $('.layer-time').show()
+    			       break;
+    			case 1:
+ 			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+			       $('.layer-sorting').show()
+    			       
+    			break;
+    		}
+    		$(this).addClass('hover');
+    		$(this).siblings().removeClass('hover');
+    });
+
+    })
+
+</script>
+<script>
+	$(function(){
+		$('.topic-lid').on('touchend',function(){
+			if($(this).hasClass('topic-lie')){
+				$(this).removeClass('topic-lie')
+			}else{
+				$(this).addClass('topic-lie')
+			}
+		})
+	})
+</script>
+<script type="text/javascript">
+$(function(){
+//	var userid = isLogin();
+// userid = 35;
+	var from = GetQueryString('from');
+	//var sort = 1;//时间排序;
+	/**********分享*************/
+	var host_url = window.location.host;
+/* 	var shareImage = '';
+	var shareText = '';
+	var shareTitle = '';
+	var shareURL = ''; */
+		    var sort = '';
+	    var type = '1';
+	var count = 0;
+	function get_myToppicList(params){//获取我的话题
+        var cmd = 'myToppicList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                'sort':sort,
+                'type' : type,
+    			'page' :PAGE,
+    			'num' : PAGE_NUM,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    $.each(data['body']['list'],function(i,val){
+    	            	shareImage = val['poster'];
+    					shareText = val['content'];
+    					shareTitle = val['topicTitle'];
+    					
+                    	if(parseInt(val['isFav'])==1){//已收藏
+							status = 'topic-lie';                    		
+                    		}else{
+                    			status = '';                    		
+                    		}
+                    	if(val['poster']!=''){//有图片
+							imgHtml = '<div class="img_dv"><img src="'+val['poster']+'" class="topic-imga"/></div>';  
+                                                        content_style = "style='border-top:none'";
+                    		}else{
+                    			imgHtml = '<div class="img_dv" style="display:none;"><img src="'+val['poster']+'" class="topic-imga" /></div>';  
+                                        content_style = "style='border-top:1px solid #e3e3e3'";
+                    		}//my-topic - 2.html?topicID='+val['topicID']+'&from=h5
+                        search_html += '<section class="my-topic-cont ovw"><a href="javascript:;" class="my-topic" topicID="'+val['topicID']+'">'+
+                	    	'<cite class="topic-title ovw"><span class="fl">'+val['topicTitle']+'</span><font class="fr"><i>人参与</i><samp>'+val['members']+'</samp></font></cite>'+
+                    	    //	'<img src="'+val['poster']+'" class="topic-imga"/>'+
+                    	    ''+imgHtml+''+
+                	    	'<p class="topic-pa ovw" '+content_style+'>'+val['content']+'</p></a>'+
+                	    	'<ul class="topic-ula ovw">'+
+                	    		'<li class="topic-lia">'+val['topicTime']+'</li>'+
+                	    		'<li class="topic-lib share" shareImage="'+val['poster']+'" shareText="'+val['content']+'" shareTitle="'+val['topicTitle']+'"  shareURL="'+host_url+'/my-topic-2.html?topicID='+val['topicID']+'"></li>'+
+                	    		'<li class="topic-lic topic-lif" topicID='+val['topicID']+'>'+val['comments']+'</li>'+
+                	    		'<li class="topic-lid topic-lif '+status+'" topicID='+val['topicID']+'>'+val['favor']+'</li>'+
+                	    	'</ul></section>';
+                	    	count++
+                   });
+                   //$('.htlb').append(search_html);
+                }else{
+              /*   	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.htlb').append(search_html); */
+
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+	            		/* search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.htlb').html(search_html);
+						return false; */
+	            		html = '<div class="none-more-content">暂无内容</div>';
+                        $('.dropload-down').siblings().remove();
+						$('.dropload-down').before(html);
+                        dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+                        return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.htlb').html(search_html);	
+                         }else{
+                         	$('.htlb').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                       // dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').parent().before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+
+    $(document).on('click','.my-topic',function(){
+                var topicID = $(this).attr('topicID');
+                var detail_url = 'http://'+window.location.host+'/my-topic-2.html?from=h5&topicID='+topicID;
+                openH5(detail_url);
+            })
+	//*********************************我的话题列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义
+		dropload = $('.htlb').dropload({
+		    scrollArea : window,
+		    /* domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_myToppicList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_myToppicList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	var params = {
+            'userid':userid,
+			'sort':sort,
+			'type' : type,
+           // 'machineType' : 1,
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };console.info(params);
+	dropload_machineList(params);//获取我的话题
+	},100);  
+
+	    
+	    /*********************时间排序*************************/
+	    $('.mac-list-time-auto li').on('click',function(){
+	    	$('.mac-list-time-auto li').removeClass('hover');
+	    	$(this).addClass('hover');
+	    	var li_name = $(this).text();
+	    	sort = $(this).attr('mac-list-auto');
+	    	type = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+	    	var params = {	//我的农机列表接口提供参数
+	                'userid':userid,
+	    			'sort' : sort,//排序类型：排序：1时间倒序，2时间升序,true
+				'type' : type,//类型：农机类型，false
+				'page' :PAGE,
+				'num' : PAGE_NUM,
+			};
+	    	$('.pick-work-ula').find('.hover').text(li_name);
+			$('.mac-list-time-auto').toggle();
+			$('.layer-map-bj').toggle();
+	//		$('.htlb').html('');
+		//	$('.my-topic-cont').remove(); 
+			count = 0;
+			dropload.lock();
+	        dropload.resetload();
+	delete dropload.opts.domUp;
+//	$('.htlb').html('');
+	$('.dropload-down').siblings().remove();
+$('.dropload-down').show();
+	$('.my-topic-cont').remove(); 
+			 dropload_machineList(params);
+			//get_myToppicList(params);
+			 console.info(params);
+	$.each($('.dropload-down'),function(i){
+	            if(i!=0) $($('.dropload-down')[i]).remove();
+	       })
+	    })
+	    
+	    /*********************类型排序*************************/
+	    $(document).on('touchend','.mac-list-sort-auto li',function(){	    
+	    //$('.mac-list-sort-auto li').on('click',function(){
+	    	$('.mac-list-sort-auto li').removeClass('hover');
+	    	$(this).addClass('hover');
+	    	var li_name = $(this).text();
+	    	$('.mac-list-sort-auto_nav a').text(li_name);
+	    	sort = $('.mac-list-time-auto .hover').attr('mac-list-auto');
+	    	type =$(this).attr('mac-list-auto');
+	    	var params = {	//我的话题列表接口提供参数
+	                'userid':userid,
+	    			'sort' : sort,//排序类型：排序：1时间倒序，2时间升序,true
+				'type' : type,//类型：农机类型，false
+				'page' :PAGE,
+				'num' : PAGE_NUM,
+			};
+	    	$('.pick-work-ula').find('.hover').text(li_name);
+			$('.mac-list-sort-auto').toggle();
+			$('.layer-map-bj').toggle();
+			$('.layer-time').hide();
+/* 			$('.htlb').html('');
+						$('.my-topic-cont').remove();  */
+			count = 0;
+			dropload.lock();
+	        dropload.resetload();
+	delete dropload.opts.domUp;
+//	$('.htlb').html('');
+	$('.dropload-down').siblings().remove();
+$('.dropload-down').show();
+	$('.my-topic-cont').remove(); 
+			 dropload_machineList(params);
+			//get_myToppicList(params);
+			 console.info(params);
+		$.each($('.dropload-down'),function(i){
+         if(i!=0) $($('.dropload-down')[i]).remove();
+	  })
+		        e.preventDefault();
+	    })
+	    
+	    
+	    /************************话题收藏***********************************/
+		function toppicMark(params){//话题收藏
+	        var cmd = 'Mark';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	/*         var params = {
+	                'sort':sort,
+	                'type' : type,
+	    			'page' :PAGE,
+	    			'num' : PAGE_NUM,
+	                }; */
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	                if(data['resultCode']==1){
+	                    layer.msg('已收藏!');
+	                    // window.location.href = "";
+	                }else{
+	                    layer.msg('收藏失败，系统出错!');
+	                }
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+	    
+	    /************************话题取消收藏***********************************/
+		function toppicUnMark(params){//话题收藏
+	        var cmd = 'UnMark';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	/*         var params = {
+	                'sort':sort,
+	                'type' : type,
+	    			'page' :PAGE,
+	    			'num' : PAGE_NUM,
+	                }; */
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	                if(data['resultCode']==1){
+	                    layer.msg('已取消收藏!');
+	                    // window.location.href = "";
+	                }else{
+	                    layer.msg('取消收藏失败，系统出错!');
+	                }
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+	    
+	    $(document).on('touchend','.topic-lid',function(){//点击收藏按钮，收藏话题	
+			topicID =$(this).attr('topicID');
+			var num = $(this).text();
+		    	var params = {	//我的话题列表接口提供参数
+		                'userid':userid,
+		    			'id' : topicID,
+		    			'type':5,
+				};
+	    	
+			if($(this).hasClass('topic-lie')){;//取消收藏
+				$(this).removeClass('topic-lie');
+			var ysc_num = parseInt(num)-1;
+			$(this).text(ysc_num);
+				toppicUnMark(params);
+			}else{//收藏
+				$(this).addClass('topic-lie');
+				var qx_num = parseInt(num)+1;
+				$(this).text(qx_num);
+				toppicMark(params);
+			}
+				 //
+		    })
+		    
+		    	//**********************************话题分享***************************
+ 	$(document).on('touchend','.topic-lib',function(){
+ 		var shareImage = $(this).attr('shareImage');
+ 		var shareText = $(this).attr('shareText');
+ 		var shareTitle = $(this).attr('shareTitle');
+ 		var shareURL = $(this).attr('shareURL'); 
+/*  		console.info(shareImage);
+ 		console.info(shareText);
+ 		console.info(shareTitle);
+ 		console.info(shareURL);  */
+ 		if(userid==0){
+			gotoLogin();
+		}else{
+			share(shareImage, shareText, shareTitle, shareURL);
+		}
+	});
+		    
+		    /*********************点击进入评论************************/
+/* 		    	    $(document).on('touchend','.topic-lic',function(){//点击评论按钮，进入评论页面	
+			topicID =$(this).attr('topicID');
+	    	if(userid==0){//未登录状态
+	    		gotoLogin();
+	    	}else{//登录状态
+	    		window. location.href ='topic-comments.html?topicID='+topicID+'&from=h5';
+	    	}
+		    }) */
+		    
+		    /*********************返回路径配置************************/
+		    $(document).on('click','.header-back',function(){
+		    if(from=='h5'){//从h5页面进入的
+		    	window.location.href="my-release.html";
+		    }else{//从原生页面进入的
+				backtoNative();	
+		    }
+		    })
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+			<section class="header-fixed-cont ovw">
+			<section class="header-fixed ovw">
+	    <section class="header ovw posin">我的话题<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <ul class="eval-all-ula ms-work-ula pick-work-ula ovw">
+	    	<li><a href="javascript:;">时间倒序</a></li>
+	    	<li><a href="javascript:;">我发布的</a></li>
+	    </ul>
+	    	    </section>   
+	    	     </section>
+	    <section class="layer-bj layer-map-bj" style="display: none;"></section>
+	    <ul class="layer-sorting layer-up-some ovw mac-list-time-auto layer-time" style="display: none;">
+<li class="hover" mac-list-auto="1">时间倒序</li>
+<li class="" mac-list-auto="2">时间正序</li>
+</ul>
+<ul class="layer-sorting layer-up-some ovw mac-list-sort-auto" style="display: none;">
+<li class="hover" mac-list-auto="1">我发布的</li>
+<li class="" mac-list-auto="2">我参与的</li>
+</ul>
+<section class='ms-contents htlb'></section>
+	    <!-- <section class="my-topic-cont ovw">
+	    	<cite class="topic-title ovw"><span class="fl"><a href="#">冬天的早晨不想起床怎么办？</a></span><font class="fr"><i>人参与</i><samp>23</samp></font></cite>
+	    	<img src="images/topic_1.jpg" class="topic-imga" />
+	    		<p class="topic-pa ovw">起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）。</p>
+	    	<ul class="topic-ula ovw">
+	    		<li class="topic-lia">1小时前</li>
+	    		<li class="topic-lib"></li>
+	    		<li class="topic-lic topic-lif">20</li>
+	    		<!--topic-lie-->
+	    <!-- 		<li class="topic-lid topic-lif">20</li>
+	    	</ul>
+	    </section>
+	    <section class="my-topic-cont ovw">
+	    	<cite class="topic-title ovw"><span class="fl"><a href="#">冬天的早晨不想起床怎么办？</a></span><font class="fr"><i>人参与</i><samp>23</samp></font></cite>
+	    	<p class="topic-pa ovw">起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）。</p>
+	    	<ul class="topic-ula ovw">
+	    		<li class="topic-lia">1小时前</li>
+	    		<li class="topic-lib"></li>
+	    		<li class="topic-lic topic-lif">20</li>
+	    		<!--topic-lie-->
+	    	<!--  	<li class="topic-lid topic-lie topic-lif">20</li>
+	    	</ul>
+	    </section> -->
+	</section>
+</body>
+</html>

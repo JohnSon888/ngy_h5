@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+    
+//  隐藏
+    $('.layer-rele-s').on('touchstart',function(){
+    	$('.rele-bj').hide()
+    	$('.layer-rele-cont').hide()
+    })
+    //
+    $('.layer-map-bj').on('touchstart',function(){
+    	$('.layer-map-bj').hide()
+    	$('.layer-sorting').hide()
+    	$('.layer-type').hide()
+    	$('.layer-time').hide()
+    });
+    //
+    $('.pick-work-ula li').on('touchstart',function(){
+    	var index = $(this).index();
+    		switch(index){
+    			case 0:
+    			       $('.layer-up-some').hide()
+    			       $('.layer-map-bj').hide()
+    			       break;
+    			case 1:
+    			       $('.layer-map-bj').show()
+    			       $('.layer-up-some').hide()
+    			       $('.layer-type').show()
+    			       
+    			break;
+    			case 2:
+    			       $('.layer-map-bj').show()
+    			       $('.layer-up-some').hide()
+    			       $('.layer-sorting').show()
+    			       
+    			break;
+    		}
+    });
+
+    })
+
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+		<section class="header-fixed-cont ovw">
+			<section class="header-fixed ovw">
+		    <section class="header ovw posin">
+		    	<div class="search-visa ovw posin"><aside class="serch-t"><img src="images/search.png" class="search-icon">搜索农活</aside><input type="text" class="visa-in"></div>
+		    	<a href="#" class="header-back ovw"><img src="images/back.png"/></a><a href="#" class="header-reg header-rele">发布</a>
+		    </section>
+		    <ul class="eval-all-ula three-ula pick-work-ula ovw">
+		    	<li class="drop-down-a hover"><a href="#">附近 5km</a></li>
+		    	<li class="drop-down-b"><a href="#">类型</a></li>
+		    	<li class="drop-down-d"><a href="#">智能排序</a></li>
+		    </ul>
+	    </section>
+	     </section>
+	    <section class="release-near-content ovw">
+	    	<article class="release-near-art ovw">
+	    		<dl class="release-near-dl ovw">
+	    			<dt><img src="images/goods_1.png"/><span class="rele-near-name fl ovw">张三三</span></dt>
+	    			<dd>
+	    				<div class="rele-near-dete ovw">
+	    					<span class="near-name-work ovw fl">小麦收割</span>
+	    					<div class="near-discuse ovw fr">
+	    						<p class="star-eval ovw fr">
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a "></span>
+					    		</p>
+					    		<cite class="fr">评价:</cite>
+	    					</div>
+	    				</div>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">作业时间：</label>
+	    					<samp class="fl">2017-01-20 ~ 2017-01-30</samp>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">零工类型：</label>
+	    					<span class="fl">小麦收割、水稻施肥</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">作业地点：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">详细说明：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村村口需要收割，有兴趣的联系我...</span>
+	    				</p>
+	    			</dd>
+	    		</dl>
+	    	</article>
+	    	<article class="release-near-art ovw">
+	    		<dl class="release-near-dl ovw">
+	    			<dt><img src="images/goods_1.png"/><span class="rele-near-name fl ovw">张三</span></dt>
+	    			<dd>
+	    				<div class="rele-near-dete ovw">
+	    					<span class="near-name-work ovw fl">小麦收割</span>
+	    					<div class="near-discuse ovw fr">
+	    						<p class="star-eval ovw fr">
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a "></span>
+					    		</p>
+					    		<cite class="fr">评价:</cite>
+	    					</div>
+	    				</div>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">作业时间：</label>
+	    					<samp class="fl">2017-01-20 ~ 2017-01-30</samp>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">零工类型：</label>
+	    					<span class="fl">小麦收割、水稻施肥</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">作业地点：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">详细说明：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村村口需要收割，有兴趣的联系我...</span>
+	    				</p>
+	    			</dd>
+	    		</dl>
+	    	</article>
+	    </section>
+	    <section class="base-sele ovw">
+	    		<ul class="eval-all-ula base-sele-main ovw">
+	    			<li>全国</li>
+	    			<li class="hover"><a href="#"><img src="images/rele_1.jpg" class="imga"/><img src="images/rele_3.jpg" class="imgb"/>附近</a></li>
+	    			<li ><a href="#"><img src="images/rele_2.jpg" class="imga"/><img src="images/rele_4.jpg" class="imgb"/>地图 </a></li>
+	    		</ul>
+	    	</section>
+	</section>
+	<!---->
+	<section class="layer-bj rele-bj" style="display: none;"></section>
+	<section class="layer-rele-cont ovw" style="display: none;">
+		<img src="images/cer_8.jpg"  class="layer-icon-a"/>
+		<p class="layer-rele-p ovw">是否立即认证个人信息</p>
+		<p class="layer-rele-c ovw">只能<font>认证个人/商户</font>才能发布需求/商铺</p>
+		<a href="#"class="layer-rele-a ovw">立即认证</a>
+		<span class="layer-rele-s ovw">跳过此步骤</span>
+	</section>
+	<!---->
+	<section class="layer-bj layer-map-bj"></section>
+	<ul class="layer-sorting layer-up-some ovw">
+		<li class="hover">智能排序</li>
+		<li>离我最近</li>
+		<li>评分由高到低</li>
+	</ul>
+	<ul class="layer-type layer-up-some ovw">
+		<li>全部</li>
+		<li>全部</li>
+		<li class="hover">水稻</li>
+		<li>小麦打捆</li>
+		<li>小麦</li>
+		<li>小麦秸秆粉碎还田</li>
+		<li>玉米</li>
+		<li>小麦烘干</li>
+		<li>棉花</li>
+		<li>小麦秸秆回收</li>
+		<li>土豆</li>
+		<li>小麦收获</li>
+	</ul>
+	<section class="layer-time layer-up-some ovw">
+		<cite class="layer-time-name ovw">起始时间</cite>
+		<ul class="layer-time-content ovw">
+			<li>
+				<span></span>
+				<span>2014</span>
+				<span>2015</span>
+				<span>2016</span>
+				<span>2017</span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span>1月</span>
+				<span>2月</span>
+				<span>3月</span>
+				<span>4月</span>
+				<span>5月</span>
+				<span>6月</span>
+				<span>7月</span>
+				<span>8月</span>
+				<span>9月</span>
+				<span>10月</span>
+				<span>11月</span>
+				<span>12月</span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span>1日</span>
+				<span>2日</span>
+				<span>3日</span>
+				<span>4日</span>
+				<span>5日</span>
+				<span>6日</span>
+				<span>7日</span>
+				<span>8日</span>
+				<span></span>
+			</li>
+		</ul>
+		<cite class="layer-time-name ovw">截止时间</cite>
+		<ul class="layer-time-content ovw">
+			<li>
+				<span></span>
+				<span>2014</span>
+				<span>2015</span>
+				<span>2016</span>
+				<span>2017</span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span>1月</span>
+				<span>2月</span>
+				<span>3月</span>
+				<span>4月</span>
+				<span>5月</span>
+				<span>6月</span>
+				<span>7月</span>
+				<span>8月</span>
+				<span>9月</span>
+				<span>10月</span>
+				<span>11月</span>
+				<span>12月</span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span>1日</span>
+				<span>2日</span>
+				<span>3日</span>
+				<span>4日</span>
+				<span>5日</span>
+				<span>6日</span>
+				<span>7日</span>
+				<span>8日</span>
+				<span></span>
+			</li>
+		</ul>
+	</section>
+</body>
+</html>

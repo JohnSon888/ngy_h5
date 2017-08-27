@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>订阅商品</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+        .add-plant-ad {
+    height: 1.24rem;
+    }
+            .add-plant-as {
+    height: 1.24rem;
+    }
+    .add-plant-as label {
+    line-height: 1.24rem;
+}
+.subs-pc {
+    width: 50px; 
+    padding-left: 0.25rem;
+    line-height: 0.85rem;
+}
+.ld-lia {height: 1.24rem;}
+.ld-lia-la {line-height: 1.24rem;}
+.ld-lia-in {top: 0.08rem;}
+</style>
+<script type="text/javascript">
+$(function(){
+	//var userid = isLogin();
+	function goodsTypeList(params){//获取农活类型接口
+        var cmd = 'goodsTypeList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            	var search_html = '';
+                $.each(data['body']['list'],function(i,val){
+                	search_html+='<option value='+val['typeID']+'>'+val['typeName']+'</option>';
+               });
+                $('.splx').append(search_html);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var params={};
+	goodsTypeList(params);
+	
+	
+	function getArea(params,type){//获取省市区接口
+        var cmd = 'getArea';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            	var search_html = '';
+                $.each(data['body']['list'],function(i,val){
+                	search_html+='<option value='+val['areaID']+'>'+val['areaName']+'</option>';
+               });
+                if(type==1){//加载省
+                $('.province').append(search_html);
+                }
+                if(type==2){//加载市
+                    $('.city').append(search_html);
+                    }
+                if(type==3){//加载区县
+                    $('.area').append(search_html);
+                    }
+                if(type==4){//加载乡镇
+                    $('.town').append(search_html);
+                    }
+                if(type==5){//加载村
+                    $('.village').append(search_html);
+                    }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var params={
+			'areaID':0,//获取省级列表
+	};
+	getArea(params,1);
+	
+	$('.province').on('change',function(){//获取省级下属的市级列表
+		var areaID = $(this).val();
+		$('.city').html('<option  value="-1">请选择</option>');
+		$('.area').html('<option value="-1">请选择</option>');
+		$('.town').html('<option value="-1">请选择</option>');
+		$('.village').html('<option value="-1">请选择</option>');
+		
+		var params={
+				'areaID':areaID,
+		};
+		if(areaID==0){
+			$('.city').html('<option  value="-1">请选择</option>');
+		}else{
+			getArea(params,2);
+		}
+	});
+
+	$('.city').on('change',function(){//获取市级下属的区县列表
+		var areaID = $(this).val();
+		//$('.city').html('');
+		$('.area').html('<option value="-1">请选择</option>');
+		$('.town').html('<option value="-1">请选择</option>');
+		$('.village').html('<option value="-1">请选择</option>');
+		
+		var params={
+				'areaID':areaID,
+		};
+		getArea(params,3);
+	});
+	$('.area').on('change',function(){//获取区县级下属的乡镇列表
+		var areaID = $(this).val();
+		//$('.city').html('');
+		$('.town').html('<option value="-1">请选择</option>');
+		$('.village').html('<option value="-1">请选择</option>');
+		
+		var params={
+				'areaID':areaID,
+		};
+		getArea(params,4);
+	});
+	$('.town').on('change',function(){//获取乡镇级下属的村庄列表
+		var areaID = $(this).val();
+		//$('.city').html('');
+		$('.village').html('<option value="-1">请选择</option>');
+		
+		var params={
+				'areaID':areaID,
+		};
+		getArea(params,5);
+	});
+	
+	
+	function addGoodsSub(params){//添加商品订阅
+        var cmd = 'addGoodsSub';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	if(data['resultCode']==1){
+                    layer.msg('添加商品订阅成功！');
+					setTimeout(function(){
+						window.location.href="subscribe-1.html";
+					},1000);
+            	}else{
+            		layer.msg('添加商品订阅失败！');
+            	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	$('.over-order').on('click',function(){   //将数值传递给接口
+		var type = $('.splx').val();
+		var goodsName = $('#goodsName').val();
+		var province = $('.province').val();
+		var city = $('.city').val()==-1?0:$('.city').val();
+		var area = $('.area').val()==-1?0:$('.area').val();
+		var town = $('.town').val()==-1?0:$('.town').val();
+		var village = $('.village').val()==-1?0:$('.village').val();
+		var keyword = $.trim($('#keyword').val());
+		var grade = parseInt($('.grade .star').index())+1;
+		if(type==0){
+			layer.msg("请选择商品类型！");
+			return false;
+		}
+		if(goodsName==0){
+			layer.msg("请填写商品名称！");
+			return false;
+		}
+	if(province==-1){
+		layer.msg("请选择省份！");
+		return false;
+	} 
+/* 	if(city==0||city==''){
+		layer.msg("请选择城市！");
+		return false;
+	} */
+/* 	if(area==0||area==''){
+		layer.msg("请选择区县！");
+		return false;
+	} */
+/* 	if(keyword==''){
+		layer.msg("请输入关键词！");
+		return false;
+	} */
+	if(grade==''){
+		layer.msg("请选择评分！");
+		return false;
+	}
+		var params = {
+				'userid':userid,
+				'type':type,
+				'goodsName':goodsName,
+				'province':province,
+				'city':city,
+				'area':area,
+				'town':town,
+				'village':village,
+				'keyword':keyword,
+				'grade':grade,
+		};
+		//console.info(params);
+		addGoodsSub(params);
+	});
+	
+});
+</script>
+<script>
+	
+	$(function(){
+		$('.star-a').on('touchstart click',function(){
+			$(this).addClass('star');
+			$(this).prevAll('span').addClass('star');
+			$(this).nextAll('span').removeClass('star');
+		})
+	})
+
+</script>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position: fixed;  z-index: 500;">订阅<a href="subscribe-1.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <section class="subs-ula ovw" style="margin-top: 1.2333rem;">
+		    	<ul class="ld-card-ula subs-ulb subs-ulc ovw ">
+		    		<li class="mers-lia-c mers-lia-d subs-ulc-a">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">商品类型:</label>
+			    			<select class="add-state splx"><option></option></select>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d subs-ulc-a subs-ulb-lic">
+			    		<aside class="add-plant-as ovw">
+			    			<label class="fl ovw">商品名称:</label>
+			    			<input id='goodsName' class="ld-lia-in ld-lia-c" type="text" style="    width: 6.3rem;">
+			    		</aside>
+			    	</li>
+			    	<li class="subs-ulb-lia">
+			    		<label class="ld-lia-la ovw">作业区域：</label>
+			    	</li>
+		    	<li class="mers-lia-c">
+			    		<aside class="add-plant-as add-plant-ad ovw fl">
+			    			<label class="fl ovw">省份:</label>
+			    			<select class="add-state province"><option  value="-1">请选择</option></select>
+			    		</aside>
+			    		<aside class="add-plant-as add-plant-ad ovw fr">
+			    			<label class="fl ovw">城市:</label>
+			    			<select class="add-state city"><option  value="-1">请选择</option></select>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c">
+			    		<aside class="add-plant-as add-plant-ad ovw fl">
+			    			<label class="fl ovw">区县:</label>
+			    			<select class="add-state area"><option  value="-1">请选择</option></select>
+			    		</aside>
+			    		<aside class="add-plant-as  add-plant-ad  ovw fr">
+			    			<label class="fl ovw">乡镇:</label>
+			    			<select class="add-state town"><option  value="-1">请选择</option></select>
+			    			<!-- <input id='town' class="ld-lia-in ld-lia-c " type="text" style="width: 2.8rem;"> -->
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad  ovw">
+			    			<label class="fl ovw">村:</label>
+			    			<select class="add-state village"><option   value="-1">请选择</option></select>
+			    			<!-- <input id='village' class="ld-lia-in ld-lia-c" type="text" > -->
+			    		</aside>
+			    	</li>
+			    	<li class="subs-ulb-lid comments-lib">
+			    		<p class="fl subs-pc">评价：</p>
+		    			<p class="star-eval fl grade ovw">
+			    			<span class="fl star-a star"></span>
+			    			<span class="fl star-a star"></span>
+			    			<span class="fl star-a star"></span>
+			    			<span class="fl star-a"></span>
+			    			<span class="fl star-a"></span>
+			    		</p>
+		    		</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">关键字：</label>
+			    		<input id='keyword' class="ld-lia-in ld-lia-c" type="text">
+			    	</li>
+			    </ul>
+		    </section>
+		    <a class="over-order ovw" href="javascript:;">生成订阅</a>
+	    </section>
+</body>
+</html>

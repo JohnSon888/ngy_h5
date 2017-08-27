@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script>
+	$(function(){
+		$('.import-a').on('focus',function(){
+			$(this).parent().next().css('background','#dd1616')
+		})
+		$('.import-a').on('blur',function(){
+			$(this).parent().next().css('background','#bbb')
+		})
+	})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">农活详情<a href="#" class="header-back ovw"><img src="images/back.png"/></a><a href="#" class="header-reg">关注</a></section>
+	    <article class="my-order-content-a ovw" style="margin-top: 0.133rem;">
+	    	<dl class="my-order-content-dla ovw">
+	    		<dt>
+	    			<img src="images/ing_1.png" class="order-tx" />
+	    			<div class="fl">
+	    				<p class="my-order-name ovw"><font class="fl ovw">sunnyue</font><img src="images/ing_2.png" class="fl"/></p>
+	    			    <span class="my-order-name ovw">180****7889</span>
+	    			</div>
+	    		</dt>
+	    		<dd><a href=""><img src="images/ing_3.png"/></a></dd>
+	    	</dl>
+	    	<!---->
+	    	<ul class="my-order-dete ovw">
+	    		<li><label class="my-order-dete-time ovw fl">认证信息:</label><span class="fl ovw">
+	    			<img src="images/cer-icon-2.png" class="cer-icon-a" />
+	    			<img src="images/cer-icon-3.png" class="cer-icon-b" />
+	    			<img src="images/cer-icon-4.png" class="cer-icon-c" />
+	    			<img src="images/cer-icon-5.png" class="cer-icon-d" />
+	    			<img src="images/cer-icon-1.png" class="cer-icon-e" />
+	    			<img src="images/cer-icon-7.png" class="cer-icon-f" />
+	    			<img src="images/cer-icon-6.png" class="cer-icon-g" />
+	    		</span></li>
+	    		<li><label class="my-order-dete-time ovw fl">作业时间:</label><p class="my-order-dete-pb ovw fl">2016-12-30</p></li>
+	    		<li><label class="my-order-dete-time ovw fl">作业地点:</label><p class="my-order-dete-pb my-order-dete-pc ovw fl">上海市闵行区 泰虹路268号万科时一区</p></li>
+	    		<li><label class="my-order-dete-time ovw fl">作业面积:</label><p class="my-order-dete-pb ovw fl">200亩</p></li>
+	    		<li><label class="my-order-dete-time ovw fl">作业内容:</label><p class="my-order-dete-pb ovw fl">收割</p></li>
+	    		<li><label class="my-order-dete-time ovw fl">理想报价:</label><p class="my-order-dete-pb ovw fl">¥2000/亩</p></li>
+	    		<li><label class="my-order-dete-time ovw fl">详细说明:</label><p class="my-order-dete-pb ovw fl">小麦、玉米</p></li>
+	    	</ul>
+	    </article>
+	    <article class="my-order-content-b ovw">
+	    	<dl class="my-order-content-dla ovw">
+	    		<dt>
+	    			<img src="images/ing_1.png" class="order-tx" />
+	    			<div class="fl">
+	    				<p class="my-order-name ovw"><font class="fl ovw">sunnyue</font><img src="images/ing_5.png" class="fl"/></p>
+	    			    <span class="my-order-name ovw">180****7889</span>
+	    			</div>
+	    		</dt>
+	    		<!--<dd><a href=""><img src="images/ing_3.png"/></a></dd>-->
+	    	</dl>
+	    	<!---->
+	    	<p class="my-order-content-pc ovw">您已接单请等待农户选择</p>
+	    </article>
+	    <a class="over-order ovw" href="">取消订单</a>
+	    <ul class="my-order-select ovw">
+	    	<li class="fl"><a href="#">发送短信</a></li>
+	    	<li class="fr"><a href="#">拨打电话</a></li>
+	    </ul>
+	    <section class="my-import ovw">
+	    	<ul class="my-import-ula ovw">
+	    		<li><input placeholder="输入评论内容..." class="import-a"/></li>
+	    		<li>提交</li>
+	    	</ul>
+	    </section>
+	</section>
+</body>
+</html>

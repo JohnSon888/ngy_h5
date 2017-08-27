@@ -1,0 +1,304 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>圈子通知</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+<script type="text/javascript">
+$(function(){
+//	 userid = 35;
+	var typeID = 1;
+	var count = 0;
+	
+	//***********************************获取消息类型*********************
+	function messageType(params){
+        var cmd = 'messageType';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+/*                 if(isNull(data['body']['list'])){
+                    var machineTypeListHtml = '';
+                    $.each(data['body']['list'],function(i,val){
+                        machineTypeListHtml += '<li typeID="'+val['typeID']+'">'+val['typeName']+'</li>';
+                    });
+                    $('.mac-list-sort-type').append(machineTypeListHtml);
+                }else{
+                    html = '<div class="none-more-content">暂无内容</div>';
+                    $('.mac-list-sort-type').html(html);
+                } */
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){		
+    var params = {
+            'userid':userid,
+    }
+    messageType(params);
+	},100);  
+	
+	function get_circleMessageList(params){//获取圈子通知列表
+        var cmd = 'circleMessageList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid':userid,
+                'typeID':typeID,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);               
+            	if(isNull(data['body']['list'])){	
+                    var machineListHtml = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	if(val['isRead']=='0'){
+                    		machineListHtml += '<article class="release-near-art ovw">'+
+                	    		'<dl class="release-near-dl cir-notice-dl ovw"  messageID='+val['messageID']+' topicID='+val['topicID']+' >'+
+        	    			'<dt><img src="'+val['userAvatar']+'"></dt><dd>'+
+        	    			'<samp class="sys-no ovw"></samp>'+
+        	    				'<div class="rele-near-dete ovw">'+
+        	    					'<span class="near-name-work ovw">'+val['username']+'</span></div>'+
+        	    				'<p class="near-pa cir-notice-p ovw"><label class="fl">话题：</label>'+
+        	    					'<a href="my-topic-2.html?topicID='+val['topicID']+'&from=notice&messageID='+val['messageID']+'"><span class="fl">'+val['topicTitle']+'</span></p>'+
+        	    				'<p class="near-pa ovw"><label class="fl">评论：</label>'+
+        	    					'<span class="fl">'+val['comment']+'</span></p></a>'+
+        	    					'</dd></dl></article>';
+                    	}else{
+                    		machineListHtml += '<article class="release-near-art ovw">'+
+                	    		'<dl class="release-near-dl cir-notice-dl ovw" messageID='+val['messageID']+' topicID='+val['topicID']+' >'+
+        	    			'<dt><img src="'+val['userAvatar']+'"></dt><dd>'+
+        	    				'<div class="rele-near-dete ovw">'+
+        	    					'<span class="near-name-work ovw">'+val['username']+'</span></div>'+
+        	    				'<p class="near-pa cir-notice-p ovw"><label class="fl">话题：</label>'+
+        	    					'<a href="my-topic-2.html?topicID='+val['topicID']+'&from=notice&messageID='+val['messageID']+'"><span class="fl">'+val['topicTitle']+'</span></p>'+
+        	    				'<p class="near-pa ovw"><label class="fl">评论：</label>'+
+        	    					'<span class="fl">'+val['comment']+'</span></p></a>'+
+        	    					'</dd></dl></article>';
+                    	}
+                    	count++;
+
+                   });
+                   //$('.qztz').append(search_html);
+                }else{
+/*                 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.qztz').append(search_html); */
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+	            	}else{
+	            		machineListHtml = '<div class="none-more-content">暂无内容</div>';
+						$('.qztz').html(machineListHtml);
+						return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                            machineListHtml += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.qztz').html(machineListHtml);	
+                         }else{
+                         	$('.qztz').html(machineListHtml);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{console.info(count);
+					console.info((params.page)*params.num);
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                        }
+                    	$('.dropload-down').before(machineListHtml);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	//*********************************系统消息列表上拉加载*****************
+	function dropload_machineList(params){
+		dropload = $('.qztz').dropload({
+		    scrollArea : window,
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    },
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_circleMessageList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_circleMessageList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){	
+	var params = {
+            'userid':userid,
+           // 'machineType' : 1,
+           'typeID':1,//圈子消息为1
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };
+	dropload_machineList(params);//获取圈子通知消息
+	},100);  
+	/*********************忽略未读消息************************/
+    $('.header-reg').on('touchend',function(){
+    	var params1 = {
+    			'userid':userid,
+    	           'typeID':1,//圈子通知
+    	};
+    	ignoreMessage(params1);
+    });
+	/********************点击跳转详情页*************************/
+/*     $(document).on('touchstart','.notice_con',function(){
+    	var messageID = $(this).attr('messageID');
+    	var topicID = $(this).attr('topicID');
+    	var params2 = {
+    			'userid':userid,
+    	           'messageID':messageID,//圈子通知
+    	};
+    	console.info(params2);
+    	console.info(topicID);
+ //   	window.location.href='my-topic - 2.html?topicID='+topicID+'&from=notice';
+    	readMessage(params2);
+    }); */
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+	
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;">圈子通知<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg">忽略未读</a></section>
+	   <section class="release-near-content ovw qztz" style="margin-top: 1.333rem;">
+	    	<!-- <article class="release-near-art ovw">
+	    		<dl class="release-near-dl cir-notice-dl ovw">
+	    			<dt><img src="images/goods_1.png"></dt>
+	    			<dd>
+	    				<samp class="sys-no ovw"></samp>
+	    				<div class="rele-near-dete ovw">
+	    					<span class="near-name-work ovw">Sunny</span>
+	    				</div>
+	    				<p class="near-pa cir-notice-p ovw">
+	    					<label class="fl">话题：</label>
+	    					<span class="fl">冬天的早晨不想起床怎么办？</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">评论：</label>
+	    					<span class="fl">如果你无法简洁的表达你的想法，那只能说明你还不够了解它...</span>
+	    				</p>
+	    			</dd>
+	    		</dl>
+	    	</article>
+	    	<article class="release-near-art ovw">
+	    		<dl class="release-near-dl cir-notice-dl ovw">
+	    			<dt><img src="images/goods_1.png"></dt>
+	    			<dd>
+	    				<samp class="sys-no ovw"></samp>
+	    				<div class="rele-near-dete ovw">
+	    					<span class="near-name-work ovw">Sunny</span>
+	    				</div>
+	    				<p class="near-pa cir-notice-p ovw">
+	    					<label class="fl">话题：</label>
+	    					<span class="fl">冬天的早晨不想起床怎么办？</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">评论：</label>
+	    					<span class="fl">如果你无法简洁的表达你的想法，那只能说明你还不够了解它...</span>
+	    				</p>
+	    			</dd>
+	    		</dl>
+	    	</article> -->
+	    </section>
+	</section>
+</body>
+</html>

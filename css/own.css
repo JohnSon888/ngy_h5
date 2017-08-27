@@ -1,0 +1,348 @@
+.mers-lia-d .selfull {
+	width: 97%;
+}
+
+.comli {
+	height: auto !important;
+}
+
+.comlab {
+	width: 2rem;
+	/*background: pink;*/
+	float: left
+}
+
+.comtext {
+	float: right;
+	width: 6.93rem;
+	display: block;
+	position: static;
+	height: 1.65rem !important;
+	margin-top: 0.25rem;
+}
+
+.cominput {
+	float: right;
+	width: 6.93rem !important;
+	position: static;
+	height: auto;
+}
+
+.comspan {
+	display: block;
+	height: 2.53rem;
+	width: 2rem;
+	/*margin-left: 0.4rem;*/
+}
+
+.comspan img {
+	height: auto;
+	width: 100%;
+	/*margin-left: 0.4rem;*/
+}
+
+section.all-main {
+	background: #fff;
+}
+
+.comp {
+	display: block;
+	height: 0.9066rem;
+	line-height: 0.9066rem;
+	font-size: 14px;
+	color: #666;
+	width: 100%;
+	margin: 0 auto;
+}
+
+#productDetail .header-gz ,#inproduct .header-gz{
+	right: 1.38rem;
+}
+
+#loop {
+	width: 100%;
+	overflow: hidden;
+	margin-top: 1.2rem;
+}
+
+#loop .swiper-wrapper {
+	height: 6.26rem !important;
+	overflow: hidden;
+}
+
+#loop .swiper-wrapper .swiper-slide {
+	height: 100% !important;
+	position: relative;
+}
+
+#loop .swiper-wrapper .swiper-slide img {
+	width: 100%;
+	height: auto;
+}
+
+#loop .swiper-wrapper .swiper-slide .bottom {
+	width: 100%;
+	height: 0.8rem;
+	line-height: 0.8rem;
+	position: absolute;
+	bottom: 0;
+	font-size: 14px;
+	color: #fff;
+	padding-left: 0.4rem;
+	z-index: 9999;
+	background: rgba(0, 0, 0, .3);
+	/*background: pink;*/
+}
+
+#loop span.swiper-pagination-switch {
+	background: #d9d9d9;
+	border-radius: 50%;
+	width: 0.21rem;
+	height: 0.21rem;
+}
+
+#loop span.swiper-active-switch {
+	background: rgba(221, 22, 22, 1);
+	border-radius: 50%;
+}
+
+#loop .swiper-pagination {
+	bottom: 7px;
+}
+
+#productDetail .p_info ,#inproduct .p_info{
+	width: 100%;
+	overflow: hidden;
+	background: #fff;
+}
+
+#productDetail .p_info .my-order-dete-time ,#inproduct .p_info .my-order-dete-time{
+	font-size: 0.37rem;
+	width: 1.9rem;
+}
+
+#productDetail .p_info .my-order-dete-pb,#inproduct .p_info .my-order-dete-pb {
+	font-size: 0.32rem;
+	width: 7.1rem;
+}
+
+#productDetail .p_info .price ,#inproduct .p_info .price{
+	color: #dd1616;
+}
+
+#productDetail .p_info .star-b ,#inproduct .p_info .star-b{
+	background: url(../images/starb.png) no-repeat center;
+	background-size: 0.3066rem auto;
+	margin-top: 4px;
+}
+
+#productDetail .p_info .star-a, #inproduct .p_info .star-a{
+	margin-top: 4px;
+}
+
+#productDetail .p_info .star-eval,
+#inproduct .p_info .star-eval {
+	padding-top: 0;
+}
+
+#productDetail .p_info .num ,#inproduct .p_info .num {
+	color: #ffae00;
+	margin-left: 10px;
+}
+
+#productDetail .my-order-dete-num,#inproduct .my-order-dete-num {
+	width: auto !important;
+	/* line-height: 0.373rem; */
+	/* padding: 0.1335rem 0; */
+	padding-right: 0.56rem;
+	background: url(../images/pnum.png) no-repeat right center;
+	background-size: auto 0.373rem;
+}
+#productDetail .p_tab,#inproduct .p_tab{
+	margin-bottom: 1.33rem;
+}
+#productDetail .p_tab ul,#inproduct .p_tab ul {
+	background: #fff;
+	width: 100%;
+	overflow: hidden;
+	height: 1.13rem;
+	line-height: 1.13rem;
+	margin-top: 0.13rem;
+	border-bottom: 1px solid #ececec;
+}
+
+#productDetail .p_tab ul li,
+#inproduct .p_tab ul li {
+	width: 50%;
+	float: left;
+	text-align: center;
+}
+
+#productDetail .p_tab ul li a ,#inproduct .p_tab ul li a{
+	width: auto;
+	margin: 0 auto;
+	font-size: 0.37rem;
+	color: #333;
+	height: 1.09rem;
+	display: block;
+	width: 2rem;
+	border-bottom: 0.04rem solid #fff;
+}
+
+#productDetail .p_tab ul li a.touch,#inproduct .p_tab ul li a.touch {
+	color: #DD1616;
+	border-bottom: 0.04rem solid #DD1616;
+}
+
+#productDetail .p_tab .release-near-content,
+#inproduct .p_tab .release-near-content {
+	margin-top: 0;
+}
+#productDetail .my-import,#inproduct .my-import{
+	text-align: center;
+	font-size: 0.37rem;
+	color: #FFFFFF;
+	background:#DD1616 ;
+	line-height: 1.06rem;
+	position: fixed;
+    bottom: 0;
+}
+#productDetail .p_tab .release-near-content,#inproduct .p_tab .release-near-content{
+	display: none;
+
+}
+#productDetail .p_tab .p_info_show,#inproduct .p_tab .p_info_show{
+	display: block;
+
+}
+#productDetail .p_tab .release-near-art,#inproduct .p_tab .release-near-art{
+	/*margin-bottom: 0.1rem;*/
+    padding-bottom: 0;
+}
+#inproduct .p_info .disCount{
+	margin-left: 0.4rem;
+	border-top: 1px solid #ececec;
+	margin-top: 0.26rem;
+}
+
+#inproduct .p_info .disCount img{
+
+	width: 6.66rem;
+	display: block;
+	padding: 0.4rem 0 0.2rem 0;
+}
+#inproduct .shop_list{
+	/*height:3.05rem;*/
+	background: #fff;
+	margin-top:0.13rem;
+	overflow:hidden;
+}
+#inproduct .shop_list .list_content{
+	width:100%;
+	padding-top:0.4rem;
+	margin-left:0.4rem;
+	border-bottom:1px solid #ececec;
+	/*height:3.05rem;*/
+	overflow:hidden;
+	padding-bottom:0.18rem;
+}
+#inproduct .shop_list .list_content .fl_picture {
+	width:2.56rem;
+	height:1.76rem;
+	float:left;
+	position:relative;
+}
+#inproduct .fl_picture  .pic{
+	width:0.53rem;
+	height:0.53rem;
+	position:absolute;
+	top:0rem;
+	left:0rem;
+}
+#inproduct .fl_picture img{
+	width:100%;
+}
+#inproduct .list_content .fr_shop_name{
+	float:left;
+	margin-left:0.26rem;
+	width:6.8rem;
+	overflow:hidden;
+}
+#inproduct .fr_shop_name .name_con{
+	width:100%;
+	
+}
+#inproduct .fr_shop_name .name_con .name{
+	font:0.37rem "微软雅黑";
+	color:#333333;
+	float:left;
+} 
+#inproduct .fr_shop_name .name_con .name img{
+	vertical-align: top;
+	margin-top:0.1rem;
+	width:0.32rem;
+	height:0.34rem;
+}
+#inproduct .fr_shop_name .name_con .serve{
+	float:right;
+	font-size:0.26rem;
+	color:#999999;
+	border:1px solid #999999;
+	margin-right:0.26rem;
+	border-radius:3px;
+	padding:0.05rem;
+}
+#inproduct .fr_shop_name .shop_site{
+	font-size:0.32rem;
+	color:#666666;
+	margin-top:0.10rem;
+}
+#inproduct .fr_shop_name .shop_comment{
+	font-size:0.32rem;
+	color:#666666;
+	margin-top:0.20rem;
+	vertical-align:middle;
+}
+#inproduct .fr_shop_name .shop_comment img{
+	width:0.3rem;
+	height:0.3rem;
+	vertical-align:middle;
+}
+#inproduct .fr_shop_name .shop_comment .telephone{
+	float:right;
+	margin-right:0.26rem;
+}
+#inproduct .fr_shop_name .shop_comment .telephone img{
+	width:0.58rem;
+	height:0.58rem;
+}
+#inproduct .fr_shop_name  .special{
+	font-size:0.32rem;
+	color:#dd1616;
+	margin-top:0.3rem;
+	overflow:hidden;
+}
+#inproduct .fr_shop_name  .special p{
+	float:left;
+}
+#inproduct .fr_shop_name  .special .bor_col{
+	border:1px solid #dd1616;
+	margin-right:0.13rem;
+	width:0.4rem;
+	height:0.4rem;
+	text-align:center;
+	line-height:0.4rem;
+	border-radius:4px;
+}
+
+#inproduct .shop_nearby{
+	display:none;
+}
+#search-visa{
+	width:8.58rem;
+	margin-left:1.06rem;
+}
+#inproduct .mar-top{
+	margin-top:0px;
+}
+

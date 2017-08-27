@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>热点资讯</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .rdzx{
+    background: #ececec none repeat scroll 0 0;
+    }
+/*     .dropload-down{
+    background: #ffffff none repeat scroll 0 0;
+    } */
+</style>
+<script type="text/javascript">
+$(function(){
+//	userid = 121;
+	//当前域名配置
+	var host = window.location.host;
+	var default_image = 'http://'+host+'/images/goods_2.jpg';
+	var type_id = 0;
+	var count = 0;
+	function get_hotNewsList(params){//获取热点资讯列表
+        var cmd = 'hotnewslist';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid':userid,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	if(!isNull(val['poster'])){
+                    		var image_src = default_image;
+                    	}else{
+                    		var image_src = val['poster'];
+                    	}
+                      	if(val['isRead']=='0'){
+                        search_html += '<samp class="hot-time ovw">'+val['newsTime']+'</samp>'+
+    	    	//		'<samp class="sys-no ovw"></samp>'+
+                        '<ul class="hot-infor-ula ovw">'+
+            	    	'<li class="hot-infor-a"><span style="width:10px;height:10px;border-radius:50%;background:#e61d1d;display: inline-block;margin-right:10px;"></span><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">'+val['newsTitle']+'</a></li>'+
+            	    	'<li class="hot-infor-b"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'"><img src="'+image_src+'"/></a></li>'+
+            	    	'<li class="hot-infor-a hot-infor-c"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">'+val['content']+'</a></li>'+
+            	    	'<li class="hot-infor-a hot-infor-c hot-infor-d"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">阅读全文</a></li></ul>';
+    		    		count++;
+                   //$('.rdzx').append(search_html);
+                }else{
+                    search_html += '<samp class="hot-time ovw">'+val['newsTime']+'</samp><ul class="hot-infor-ula ovw">'+
+        	    	'<li class="hot-infor-a"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">'+val['newsTitle']+'</a></li>'+
+        	    	'<li class="hot-infor-b"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'"><img src="'+image_src+'"/></a></li>'+
+        	    	'<li class="hot-infor-a hot-infor-c"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">'+val['content']+'</a></li>'+
+        	    	'<li class="hot-infor-a hot-infor-c hot-infor-d"><a href="infor-list-2.html?id='+val['newsID']+'&from=h5&messageID='+val['messageID']+'">阅读全文</a></li></ul>';
+		    		count++;
+                }
+                    });
+                }
+                	else{
+/*                 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.rdzx').append(search_html); */
+
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+	            	}else{
+	            		search_html = '<div class="none-more-content" style="background:#fff;">暂无内容</div>';
+						$('.rdzx').html(search_html);
+						return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){;//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">已加载全部数据</div></div>'; 
+                            $('.rdzx').html(search_html);	
+                         }else{
+                         	$('.rdzx').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        $('.dropload-down').hide();
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+
+	//*********************************我的热点资讯列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义		
+		dropload = $('.rdzx').dropload({
+		    scrollArea : window,
+		    /* domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_hotNewsList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_hotNewsList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	/**************ios匹配，延时获取userid*******************/
+	var params = {
+			'userid':userid,
+            'type_id':type_id,
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };
+	console.info(params);
+	dropload_machineList(params);//获取资讯列表
+	/*********************忽略未读消息************************/
+    $('.header-reg').on('touchend',function(){
+    	var params1 = {
+    			'userid':userid,
+    	           'typeID':3,//圈子通知
+    	};
+    	ignoreMessage(params1);
+    });
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+	
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw ">
+	    <section class="header ovw posin"  style="position: fixed;  z-index: 500;">热点资讯<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg">忽略未读</a></section>
+	    <section class="ms-contents ovw rdzx" style="margin-top:1.333rem;"></section>
+<!--    <samp class="hot-time ovw">2017-01-20 12:00</samp>
+	    <ul class="hot-infor-ula ovw">
+	    	<li class="hot-infor-a"><a href="#">最近大批农民工返乡，北上广成空城</a></li>
+	    	<li class="hot-infor-b"><a href="#"><img src="images/hot_2.jpg"/></a></li>
+	    	<li class="hot-infor-a hot-infor-c"><a href="#">春节将近，大批农民工返乡高峰期，北上广成空城</a></li>
+	    	<li class="hot-infor-a hot-infor-c hot-infor-d"><a href="#">阅读全文</a></li>
+	    </ul>
+	    <samp class="hot-time ovw">2017-01-20 12:00</samp>
+	    <ul class="hot-infor-ula ovw">
+	    	<li class="hot-infor-a"><a href="#">最近大批农民工返乡，北上广成空城</a></li>
+	    	<li class="hot-infor-b"><a href="#"><img src="images/hot_2.jpg"/></a></li>
+	    	<li class="hot-infor-a hot-infor-c"><a href="#">春节将近，大批农民工返乡高峰期，北上广成空城</a></li>
+	    	<li class="hot-infor-a hot-infor-c hot-infor-d"><a href="#">阅读全文</a></li>
+	    </ul> -->
+	</section>
+</body>
+</html>

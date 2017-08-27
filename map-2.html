@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+//  $('.sear-close').on("touchstart", function (e) {
+//      $(this).prev('input').val('')
+//  });
+    })
+
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+		<section class="header-fixed-cont ovw">
+			<section class="header-fixed ovw">
+	    <section class="header ovw posin">
+	    	<div class="search-visa ovw posin"><aside class="serch-t"><img src="images/search.png" class="search-icon">请输入您感兴趣的内容</aside><input type="text" class="visa-in"></div>
+	    	<a href="#" class="header-back ovw"><img src="images/back.png"/></a><a href="#" class="header-reg header-rele">发布</a>
+	    </section>
+	    <ul class="eval-all-ula ms-work-ula release-menu-ula ovw">
+	    	<li class="hover"><a href="#">区域</a></li>
+	    	<li><a href="#">类型</a></li>
+	    	<li><a href="#">评分</a></li>
+	    </ul>
+	     </section>
+	      </section>
+	    <section class="map-content ovw">
+	    	<img src="images/map.jpg" style="width: 100%;"/>
+	    </section>
+	    <section class="map-release ovw">
+	    	<article class="release-near-art ovw">
+	    		<dl class="release-near-dl ovw">
+	    			<dt><img src="images/goods_1.png"/><span class="rele-near-name fl ovw">张三三</span></dt>
+	    			<dd>
+	    				<div class="rele-near-dete ovw">
+	    					<div class="near-discuse ovw fl">
+	    						<p class="star-eval ovw fr">
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a star"></span>
+					    			<span class="fl star-a "></span>
+					    		</p>
+					    		<cite class="fr">评价:</cite>
+	    					</div>
+	    				</div>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">农机类型：</label>
+	    					<span class="fl">拖拉机、播种机、旋耕机</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">作业地点：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村</span>
+	    				</p>
+	    				<p class="near-pa ovw">
+	    					<label class="fl">详细说明：</label>
+	    					<span class="fl">河北省保定市开封县妙龄镇奥博村村口需要收割，有兴趣的联系我...</span>
+	    				</p>
+	    			</dd>
+	    		</dl>
+	    	</article>
+	    </section>
+	    <section class="base-sele ovw">
+	    		<ul class="eval-all-ula base-sele-main ovw">
+	    			<li><a href="#">全国</a></li>
+	    			<li><a href="#"><img src="images/rele_1.jpg" class="imga"/><img src="images/rele_3.jpg" class="imgb"/>附近</a></li>
+	    			<li class="hover"><a href="#"><img src="images/rele_2.jpg" class="imga"/><img src="images/rele_4.jpg" class="imgb"/>地图 </a></li>
+	    		</ul>
+	    	</section>
+	</section>
+	<section class="layer-bj layer-map-bj" style="display: block;"></section>
+	<section class="layer-map ovw">
+		<ul class="ld-card-ula mers-ula-f ovw">
+			<li class="mers-lia-c mers-lia-f">
+		    		<aside class="add-plant-as add-plant-ad ovw fl">
+		    			<select class="add-state"><option>省份</option></select>
+		    		</aside>
+		    		<aside class="add-plant-as add-plant-ad ovw fl" style="margin-left: 0.266rem;">
+		    			<select class="add-state"><option>区县</option></select>
+		    		</aside>
+		    		<aside class="add-plant-as add-plant-ad ovw fr">
+		    			<select class="add-state"><option>城市 </option></select>
+		    		</aside>
+		    	</li>
+		    	<li class="mers-lia-c">
+		    		<aside class="add-plant-as add-plant-ad ovw fr">
+		    			<select class="add-state"><option>乡镇 </option></select>
+		    		</aside>
+		    		<aside class="add-plant-as add-plant-ad ovw fl">
+		    			<select class="add-state"><option>村</option></select>
+		    		</aside>
+		    	</li>
+	    </ul>
+	    <a class="over-order ovw" href="#" style="margin: 0.2rem auto;">确定</a>
+	</section>
+</body>
+</html>

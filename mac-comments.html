@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position:fixed;z-index:100;"><span class="title">农机评价</span><a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <section class="comments-cont ovw">
+	    	<ul class="comments-ula ovw" style="padding-top: 1.333rem;">
+	    		<li class="comments-lia">评分：</li>
+	    		<li class="comments-lib">
+	    			<p class="star-eval ovw">
+		    			<span class="fl star-a" star="0"></span>
+		    			<span class="fl star-a" star="0"></span>
+		    			<span class="fl star-a" star="0"></span>
+		    			<span class="fl star-a" star="0"></span>
+		    			<span class="fl star-a" star="0"></span>
+		    		</p>
+	    		</li>
+	    		<li class="comments-lia">评价：</li>
+	    		<li class="comments-lic"><textarea class="comlain-text ovw"></textarea></li>
+	    	</ul>
+	    </section>
+	    <a class="over-order ovw mac-comments" href="javascript:void(0);">提交</a>
+	</section>
+
+<script type="text/javascript">
+$(function(){
+	var type = parseInt(GetQueryParam("type"));//1农机；2农活；3零活；4商品；5零工；6二手
+	var commentId = parseInt(GetQueryParam("commentId"));
+	var ownerID = parseInt(GetQueryParam("ownerID"));
+	var header="评价";
+	var back = '';
+	switch(type){
+		case 1: header = "农机评价";back = 'work-details.html?machineID='+commentId;break;
+		case 2: header = "农活评价";back = 'farm-work-details.html?farmWorkID='+commentId;break;
+		case 3: header = "零活评价";back = 'find-job-details.html?findJobID='+commentId;break;
+		case 4: header = "商品评价";back = 'goods-details.html?goodsID='+commentId;break;
+		case 5: header = "零工评价";back = 'recruit-job-details.html?recruitJobID='+commentId;break;
+		case 6: header = "二手评价";back = 'details-second-goods.html?secondGoodsID='+commentId;break;
+                case 7: header = "司机评价";back = 'vehicle-details.html?carID='+commentId;break;
+	}
+	$('.header-back').on('click',function(){
+		window.location.href=back;
+	})
+	$('.title').html(header);
+	$.each($('.star-a'),function(i,val){
+		$($('.star-a')[i]).on('click',function(){
+			$(this).prevAll('span').addClass('star');
+			$(this).nextAll('span').removeClass('star');
+			if ($(this).attr('star')==0){
+				$(this).addClass('star');
+				$(this).attr('star',1);
+			}else{
+				$(this).removeClass('star');
+				$(this).attr('star',0);
+			}	
+		})
+	})
+	$('.mac-comments').on('click',function(){
+		var score = parseInt($('.star').length);
+		var content = $.trim($('.comlain-text').val());
+		if(!isNull(content)){
+			layer.msg('请填写评价内容！');
+			return false;
+		}
+		params = {
+			'userid':userid,//用户ID
+			'ownerID':ownerID,//发布人ID
+			'infoID':commentId,
+			'score':score,
+			'content':content,
+			'type' :type,//1农机；2农活；3零活；4商品；5零工；6二手;7约车
+		};
+		machComment(params);
+	})
+
+//*****************************通用评论除话题外*********************
+function machComment(params){      //type:1农机；2农活；3零活；4商品；5零工；6二手;7约车
+    var cmd = 'commentRelease';//通用评论接口命令
+    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+    var jsonp = 1;
+    params = objKeySort(params);//按照属性名升序排列
+    var params_str = objChangeStr(params);//拼接params参数的属性值
+    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+    $.ajax({
+        url : apiURL,//接口地址
+        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+        dataType : 'jsonp',
+        success: function(data){
+            if(data['resultCode']==1){
+                layer.msg(header+'内容已提交!');
+                setTimeout(function(){
+                	window.location.href=back;
+                },1000);
+            }else{
+                layer.msg(header+'内容提交失败，系统出错!');
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.msg('网络请求延迟！');
+            console.info(XMLHttpRequest.status);
+            console.info(XMLHttpRequest.readyState);
+            console.info(textStatus);
+        },
+    });
+}
+})
+</script>
+</body>
+</html>

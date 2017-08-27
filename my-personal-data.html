@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script type="text/javascript">
+$(function(){
+	
+	function get_userInfo(userid){
+        var cmd = 'userInfo';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+                'userid' : userid,
+                };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : 'http://ngy.innke.net/api/index.php',//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+            	var sex = data['body']['gender'];
+            	if(sex==0){
+            		var sex_li = '保密';
+            	}else if(sex==1){
+            		var sex_li = '男';
+            	}else if(sex==2){
+            		var sex_li = '女';
+            	}
+            var htm = '<li><label class="help-name ovw">头像</label>'+
+	    		'<img src="'+data['body']['userAvatar']+'" class="personal-tx" />'+
+	    	'</li><li><label class="help-name ovw">用户名</label>'+
+	    		'<span class="personal-some ovw">'+data["body"]["username"]+'</samp>'+
+	    	'</li><li><label class="help-name ovw">真实姓名</label>'+
+	    		'<span class="personal-some ovw">'+data['body']['truename']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">身份证号</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['identityCard']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">性别</label>'+
+	    		'<span class="personal-some ovw">'+sex_li+'</samp>'+
+	    	'</li><li><label class="help-name ovw">生日</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['birthday']+'</samp></li>';
+	    		
+	    		var htm2 = '<li><label class="help-name ovw">电子邮箱</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['email']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">邮政编码</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['postalCode']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">固定电话</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['telephone']+'</samp>'+
+	    	'</li><li class="per-ulb-lia"><label class="help-name ovw">详细地址</label>'+
+	    		'<p class="personal-address fr ovw">'+data['body']['detailAddress']+'</p>'+
+	    	'</li><li><label class="help-name ovw">家庭人数</label>'+
+	    		'<samp class="help-nub ovw">'+data['body']['familySize']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">兴趣爱好</label>'+
+	    		'<span class="personal-some ovw">'+data['body']['hobbies']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">自我介绍</label>'+
+	    		'<span class="personal-some ovw">'+data['body']['selfIntroduction']+'</samp>'+
+	    	'</li><li><label class="help-name ovw">备注</label>'+
+	    		'<span class="personal-some ovw">'+data['body']['remark']+'</samp>'+
+	    	'</li><li><a href="my-planting.html"><label class="help-name ovw">我的种植</label>'+
+	    		'<span class="personal-some ovw">无</samp></a></li>';	
+$('.btzl').append(htm);
+$('.xtzl').append(htm2);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	get_userInfo(2);
+})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">个人资料<a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <cite class="personal-title ovw">必填资料</cite>
+	    <ul class="help-center personal-ula ovw btzl">
+	<!--     	<li>
+	    		<label class="help-name ovw">头像</label>
+	    		<img src="images/per_1.png" class="personal-tx" />
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">用户名</label>
+	    		<span class="personal-some ovw">谭杰</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">真实姓名</label>
+	    		<span class="personal-some ovw">谭杰</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">身份证号</label>
+	    		<samp class="help-nub ovw">130***********</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">性别</label>
+	    		<span class="personal-some ovw">男</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">生日</label>
+	    		<samp class="help-nub ovw">09-12</samp>
+	    	</li> -->
+	    </ul>
+	    <cite class="personal-title ovw">选填资料</cite>
+	    <ul class="help-center personal-ula personal-ulb ovw xtzl">
+	    <!--	<li>
+	    		<label class="help-name ovw">电子邮箱</label>
+	    		<samp class="help-nub ovw">tanjei@xu-nao.com</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">邮政编码</label>
+	    		<samp class="help-nub ovw">02602</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">固定电话</label>
+	    		<samp class="help-nub ovw">021-88739940</samp>
+	    	</li>
+	    	<li class="per-ulb-lia">
+	    		<label class="help-name ovw">详细地址</label>
+	    		<p class="personal-address fr ovw">上海市闵行 虹桥镇 泰虹路268号万科时一区3号楼601</p>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">家庭人数</label>
+	    		<samp class="help-nub ovw">3</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">兴趣爱好</label>
+	    		<span class="personal-some ovw">上网	</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">自我介绍</label>
+	    		<span class="personal-some ovw">诚实上进	</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">备注</label>
+	    		<span class="personal-some ovw">无</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name ovw">我的种植</label>
+	    		<span class="personal-some ovw">无</samp>
+	    	</li> -->
+	    </ul>
+	</section>
+</body>
+</html>

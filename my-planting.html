@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>我的种植</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- 高德地图JavaScript API入口脚本 -->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5b163180aeab0e502ebecf40361e0579"></script> 
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .pro_name{
+        overflow: hidden;
+    width: 1.5rem;
+    height: 0.7rem;
+    display: block;
+    float: left;
+    word-break: break-all;
+    overflow: hidden;
+    }
+</style>
+<script type="text/javascript">
+$(function(){
+	
+	//当前域名配置
+	var host = window.location.host;
+	var default_image = 'http://'+host+'/images/goods_2.jpg';
+	var count = 0;
+	var type = 0;
+	function get_myPlantList(params){
+        var cmd = 'myPlantList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var machineListHtml = '';
+                    
+                    $.each(data['body']['list'],function(i,val){
+                   // var img = images.split(',');
+                 /*   if(isNull(val['images'])){
+                   images = handleAppValue(val['images']);
+                   }else{
+                	   images = '';
+                   } */
+                   if(val['images']['0']==''){
+                	   var image_src = default_image;
+                   }else{
+                	   var image_src = val['images']['0'];
+                   }
+                    	machineListHtml += '<ul class="my-plant-ula ovw"><a href="my-planting-details.html?cropID='+val['cropID']+'"><li class="plant-lia"><img src="'+image_src+'" style="height:auto ;width:100%"/></li>'+
+            	    		'<li class="plant-lib" style="padding-right: 0.4rem;"><p class="plant-pa plant-pc ovw"><font style="display: block; float: left;">类型:</font><span class="pro_name">'+val['cropType']+'</span></p><p class="plant-pa ovw"><font style="display: block; float: left;">面积:</font><span class="pro_name">'+val['cropArea']+'</span></p></li>'+
+            	    		'<li class="plant-lic" style="padding-left: 0.63rem;"><p class="plant-pa plant-pc ovw"><font style="display: block; float: left;">产品:</font><span class="pro_name">'+val['production']+'</span></p><p class="plant-pa ovw"><font style="display: block; float: left;">产值:</font><span class="pro_name">'+val['output']+'</span></p></li></a></ul>';
+            	    	count++;
+                    });
+                    //$('.machineList').append(machineListHtml);
+                }else{
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+	            		html = '<div class="none-more-content">暂无内容</div>';
+						$('.my-plant-cont').html(html);
+						return false;
+	            	}
+                }
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                            machineListHtml += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.my-plant-cont').html(machineListHtml);	
+                         }else{
+                         	$('.my-plant-cont').html(machineListHtml);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        // dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(machineListHtml);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+                
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	
+	//console.info(count);
+	
+    var params = {
+            'userid' : userid,
+            'typeID':type,
+            'page':PAGE,
+            'num':PAGE_NUM,
+            };
+    //get_myPlantList(params);
+	//*********************************农机搜索列表上拉加载*****************
+	function dropload_machineList(params){
+		dropload = $('.machineList').dropload({
+		    scrollArea : window,
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    },
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_myPlantList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_myPlantList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	dropload_machineList(params);
+	
+	
+	$(document).on('touchstart click','.header-back',function(){//返回按钮返回原生页面
+		backtoNative();	
+	})
+	
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;">我的种植<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <section class="my-plant-cont ovw machineList" style="margin-top:1.333rem;">
+	   <!--  	<ul class="my-plant-ula ovw">
+	    		<li class="plant-lia"><img src="images/goods_2.jpg"/></li>
+	    		<li class="plant-lib">
+	    			<p class="plant-pa plant-pc ovw"><font>类型:</font>五谷</p>
+	    			<p class="plant-pa ovw"><font>面积:</font>100亩</p>
+	    		</li>
+	    		<li class="plant-lic">
+	    			<p class="plant-pa plant-pc ovw"><font>产品:</font>水稻</p>
+	    			<p class="plant-pa ovw"><font>产值:</font>100kg</p>
+	    		</li>
+	    	</ul>
+	    	<ul class="my-plant-ula ovw">
+	    		<li class="plant-lia"><img src="images/goods_1.png"/></li>
+	    		<li class="plant-lib">
+	    			<p class="plant-pa plant-pc ovw"><font>类型:</font>五谷</p>
+	    			<p class="plant-pa ovw"><font>面积:</font>100亩</p>
+	    		</li>
+	    		<li class="plant-lic">
+	    			<p class="plant-pa plant-pc ovw"><font>产品:</font>水稻</p>
+	    			<p class="plant-pa ovw"><font>产值:</font>100kg</p>
+	    		</li>
+	    	</ul> -->
+	    </section>
+	    <a class="over-order ovw" href="my-planting-2.html">添加</a>
+	</section>
+</body>
+</html>

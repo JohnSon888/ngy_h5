@@ -1,0 +1,72 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>地理编码</title>
+    <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder"></script>
+</head>
+<body>
+<div id="container"></div>
+<div id="tip">
+    
+    <span id="result"></span>
+    <input type="text" class="lng">
+    <input type="text" class="lat">
+    <input type="button" class="lnglat">
+</div>
+<script type="text/javascript">
+// $(function(){
+	 var map = new AMap.Map("container", {
+        resizeEnable: true
+    });
+    function geocoder(str) {
+        var geocoder = new AMap.Geocoder({
+        });
+        //地理编码,返回地理编码结果
+        geocoder.getLocation(str, function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                return geocoder_CallBack(result);
+            }
+        });
+    }
+    function addMarker(i, d) {
+        var marker = new AMap.Marker({
+            map: map,
+            position: [ d.location.getLng(),  d.location.getLat()]
+        });
+        var infoWindow = new AMap.InfoWindow({
+            content: d.formattedAddress,
+            offset: {x: 0, y: -30}
+        });
+        marker.on("mouseover", function(e) {
+            infoWindow.open(map, marker.getPosition());
+        });
+    }
+    //地理编码返回结果展示
+    function geocoder_CallBack(data) {
+        //地理编码结果数组
+        var geocode = data.geocodes;
+        var lng = geocode[0].location.getLng();
+    	var lat = geocode[0].location.getLat();
+    	lng_lat = {
+    		'lng':lng,
+    		'lat':lat,
+    	}
+    	$('.lng').val(lng);
+    	$('.lat').val(lat);
+    	addMarker(0, geocode[0]);
+    }
+    var lng = geocoder('安徽省合肥市瑶海区明光路街道');
+    $('.lnglat').on('click',function(){
+    	alert($('.lng').val());
+    	alert($('.lat').val());
+    })
+// })
+
+</script>
+</body>
+</html>

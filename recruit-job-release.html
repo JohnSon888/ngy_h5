@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- 经纬度 -->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder"></script>
+<!--  laydate -->
+<!-- <script type="text/javascript" src="src/lib/layerdate/laydate.dev.js"></script>  -->
+<style type="text/css">
+.mach-type{ background: #ffffb8;
+    left: 90px;
+    position: absolute;
+    top: 166px;
+    width: 6.7rem;
+    z-index: 900;
+display:none}
+.mach-type ul{text-align: center;}
+.mach-type ul li{height: 0.66rem; line-height: 0.66rem; padding: 0.2rem 0;}
+.ld-lia-border{border 0px;}
+#start_time{height:0.4rem;line-height:0.4rem;margin-top:0.1rem;}
+</style>
+<script type="text/javascript">
+requestMylocation();
+var lng;
+var lat;
+$(function(){
+//	userid = 83;
+	var from = GetQueryParam('from');
+	var p_c_a = GetQueryParam("address");
+	var recruitJobID = GetQueryParam("jobID");
+	var recruit_job_type = '';
+	$('.header-back').on('click',function(){
+                $.delStorage('pca');
+            	$.delStorage('temp_params');
+		if(from=="app"){
+			window.location.href="recruit-job-list.html";
+		}else if(from=="h5"){
+			window.location.href="my-work-2.html";
+		}else{
+			backtoNative();
+		}
+	})
+	var province;
+	var city;
+	var area;
+	var town;
+	var village; 
+	
+	
+	function pjobTypeList(typeid){//招零工类型
+        var cmd = 'pjobTypeList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {};
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+	        	if(isNull(data['body']['list'])){
+	        		var pjobTypeListHtml = '';
+	        		$.each(data['body']['list'],function(i,val){
+	        			if(isNull(p_c_a)){
+	        				var get_temp_params =  eval('('+$.getStorage('temp_params')+')');
+	        				if(val['typeID']==get_temp_params.pjobType){
+	        					pjobTypeListHtml += '<option selected="selected" value='+val['typeID']+'   pjobType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        				}else{
+	        					pjobTypeListHtml += '<option value='+val['typeID']+'  pjobType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        				}
+	        			}else{
+	        				pjobTypeListHtml += '<option value='+val['typeID']+'  pjobType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        			}
+	        		})
+	        		$('.pjobType').append(pjobTypeListHtml);
+	        		if(isNull(typeid)){
+	        			$('.pjobType').val(typeid);
+	        		}
+	        	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+//	pjobTypeList(typeid);
+	
+	/*****************************零工详情*****************************/
+	function pjobDetails(params){//招零工详情
+        var cmd = 'pjobDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	var recruit_job_type = parseInt(data['body']['typeID']);
+            	console.info(data);
+            	/*'title':zlg_title,
+				'intro':zlg_intro,
+                'province' : province,
+                'city' : city,
+                'area':area,
+                'town':town,
+                'village':village,
+                'address':zlg_address,
+                'machineType':pjobType,
+                'starttime':zlg_starttime,
+                'price':zlg_price,*/
+    			if(!isNull(p_c_a)){
+                $('.zlg_title').val(data['body']['title']);
+	            $('.zlg_price').val(data['body']['price']);
+	            $('.zlg_starttime').val(data['body']['timeline']);
+	            $('.zlg_address').val(data['body']['detailAddress']);
+	            $('.zlg_intro').val(data['body']['intro']);
+	            $('.psqy').val(data['body']['address']);
+                    $('.cycle').val(data['body']['cycle']);
+	        	pjobTypeList(recruit_job_type);
+ 				$('.jobID').val(recruitJobID);
+	        	
+                var pca = {
+                        'sf':data['body']['area']['province']['areaID'],
+                        'cs':data['body']['area']['city']['areaID'],
+                        'qx':data['body']['area']['area']['areaID'],
+                        'xz':data['body']['area']['town']['areaID'],
+                        'cz':data['body']['area']['village']['areaID'], 
+                    }
+                $.setStorage('pca',pca);
+    			}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	/*****************************默认地点*****************************/
+
+		setTimeout(function(){
+			if(!isNull(recruitJobID)&&!isNull(p_c_a)){
+	        var arr_areaID = current_location_areaIDs.split(",");
+	        $('.psqy').val(current_location_address);
+	        province = arr_areaID[0];
+			city = arr_areaID[1]==''?0:arr_areaID[1];
+			area = arr_areaID[2]==''?0:arr_areaID[2];
+			town = arr_areaID[3]==''?0:arr_areaID[3];
+			village = arr_areaID[4]==''?0:arr_areaID[4];
+			}
+	    },500);
+
+	if(isNull(p_c_a)){
+		var get_temp_params =  eval('('+$.getStorage('temp_params')+')');//由JSON字符串转换为JSON对象
+	//	$('.zlg_name').val(get_temp_params.username);
+		// $('.goods-type').attr('goodsType',get_temp_params.goodsType);
+//		$('.zlg_phone').val(get_temp_params.phone);//
+		$('.zlg_title').val(get_temp_params.title);//
+		$('.zlg_price').val(get_temp_params.price);//
+		$('.zlg_starttime').val(get_temp_params.starttime);//
+		$('.psqy').val(get_temp_params.psqy);//
+		$('.zlg_address').val(get_temp_params.zlg_address);//
+		$('.zlg_intro').val(get_temp_params.zlg_intro);//
+                $('.cycle').val(get_temp_params.cycle);
+//		$('.pjobType').val(get_temp_params.pjobType);//
+			pjobTypeList(get_temp_params.pjobType);
+		if(p_c_a!="empty"){
+			$('.psqy').val(p_c_a);
+			geocoder(p_c_a);
+		}
+		from = get_temp_params.from;
+	}
+	
+	function pjobRelease(params){//发布招零工
+        var cmd = 'pjobRelease';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+            	if(data['resultCode']==1){
+                    if(!isNull(recruitJobID)){
+	        		layer.msg('招零工发布内容已提交！');
+                    }else{
+                        layer.msg('招零工发布内容已保存！');
+                    }
+	        		setTimeout(function(){
+	    				if(from=="app"){
+	    					window.location.href="recruit-job-list.html";
+	    				}else if(from=="h5"){
+	    					window.location.href="my-work-2.html";
+	    				}else if(from=="details"){
+	    					window.location.href="recruit-job-details.html?recruitJobID="+recruitJobID+"";
+	    				}else{
+	    					backtoNative();
+	    				}
+	    			},1000); 
+	        	}else{
+                            sign = 1;
+	        		layer.msg('招零工发布失败，系统错误！');
+	        	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	$('.psqy').on('click',function(){//作业地点
+	/* 	var zlg_name = $.trim($('.zlg_name').val());
+		var zlg_phone = $.trim($('.zlg_phone').val()); */
+		var zlg_title = $.trim($('.zlg_title').val());
+		var zlg_price = $.trim($('.zlg_price').val());
+		var zlg_starttime = $.trim($('.zlg_starttime').val());
+		var psqy = $.trim($('.psqy').val());
+//		var zlg_address = $.trim($('.zlg_address').val());
+                var cycle = $.trim($('.cycle').val());
+		var zlg_intro = $.trim($('.zlg_intro').val());
+		var pjobType = $('.pjobType option:selected').attr('pjobType');
+		
+		var temp_params = {
+/* 			'username':zlg_name,
+			'phone':zlg_phone, */
+			'title':zlg_title,
+			'price':zlg_price,
+			'starttime':zlg_starttime,
+			'psqy':psqy,
+                        'cycle':cycle,
+//			'zlg_address':zlg_address,
+			'zlg_intro':zlg_intro,
+			'pjobType':pjobType,
+			'from':from,
+		};
+		$.setStorage('temp_params',temp_params);
+		if(isNull(recruitJobID)){
+			window.location.href = "place.html?type=5&detailsID="+recruitJobID+"";			
+		}else{
+			window.location.href = "place.html?type=5";			
+		}
+	})
+	
+	if(isNull(recruitJobID)){
+            $('.over-order').html("保存");
+		var details_params = {
+				 'userid':userid,
+				'jobID':recruitJobID,
+			}
+			//console.info(params);
+		pjobDetails(details_params);
+}else if(!isNull(p_c_a)){
+pjobTypeList();
+}
+
+	//点击确定商品农活
+	$('.over-order').on('click touched',function(){
+		if(sign==1){
+/* 			var zlg_name = $.trim($('.zlg_name').val());
+			var zlg_phone = $.trim($('.zlg_phone').val()); */
+			var zlg_title = $.trim($('.zlg_title').val());
+			var zlg_address = $.trim($('.zlg_address').val());
+                        var cycle = $.trim($('.cycle').val());
+			var zlg_intro = $.trim($('.zlg_intro').val());
+			var zlg_price = $.trim($('.zlg_price').val());
+			var zlg_starttime = timeStyle($.trim($('.zlg_starttime').val()));
+			var pjobType =$('.pjobType option:selected').attr('pjobType');
+			var psqy = $('.psqy').val();
+			if(isNull(p_c_a)||isNull(recruitJobID)){
+				var ssq = eval('('+$.getStorage('pca')+')')?eval('('+$.getStorage('pca')+')'):'';
+			}else{
+				var ssq = '';
+			}
+			province = ssq.sf==undefined?province:ssq.sf;
+			city = ssq.cs==undefined?city:ssq.cs;
+			area = ssq.qx==undefined?area:ssq.qx;
+			town = ssq.xz==undefined?town:ssq.xz;
+			village = ssq.cz==undefined?village:ssq.cz;
+/* 			if(!isNull(zlg_name)){
+				layer.msg('请填写姓名');
+		    	return false;
+			}
+			if(!isNull(zlg_phone)){
+				layer.msg('请填写电话');
+		    	return false;
+			}
+			  if(!isPhoneNo(zlg_phone)){
+					layer.msg('电话格式不正确');
+			    	return false;
+				  } */
+			if(!isNull(zlg_title)){
+				layer.msg('请填写招工标题');
+		    	return false;
+			}
+			if(!isNull(zlg_price)){
+				layer.msg('请填写薪酬报价');
+		    	return false;
+			}
+			if(!isNull(zlg_starttime)){
+				layer.msg('请填写开始时间');
+		    	return false;
+			}
+
+			var timestamp=new Date().getTime()/1000;
+			var today_date = toLocalTime(timestamp,1);
+			if(today_date>zlg_starttime){
+				layer.msg('开始时间不得小于今天');
+		    	return false;
+			}
+//			if(!isNull(pjobType)||pjobType==0){
+//				layer.msg('请填写作业类型');
+//		    	return false;
+//			}
+                        if(!isNull(cycle)){
+				layer.msg('请填写作业周期');
+		    	return false;
+			}
+			if(!isNull(psqy)){
+				layer.msg('请填写作业地点');
+		    	return false;
+			}
+			if(!isNull(zlg_address)){
+				layer.msg('请填写门牌号码');
+		    	return false;
+			}
+			if(!isNull(zlg_intro)){
+				layer.msg('请填写详细介绍');
+		    	return false;
+			}
+                        sign = 0;
+			if(isNull(recruitJobID)){
+				var goodsRelease_params = {
+						'jobID':recruitJobID,
+						'userid' : userid,
+	/* 					'username':zlg_name, */ 
+		                'title':zlg_title,
+						'intro':zlg_intro,
+		                'province' : province,
+		                'city' : city,
+		                'area':area,
+		                'town':town,
+		                'village':village,
+                                'cycle':cycle,
+		                'address':zlg_address,
+		                'machineType':pjobType,
+		                'starttime':zlg_starttime,
+		                'price':zlg_price,
+		                'lng':$('.lng').val(),
+						'lat':$('.lat').val(),
+				}
+			}else{
+			var goodsRelease_params = {
+					'userid' : userid,
+/* 					'username':zlg_name, */ 
+	                'title':zlg_title,
+					'intro':zlg_intro,
+	                'province' : province,
+	                'city' : city,
+	                'area':area,
+	                'town':town,
+	                'village':village,
+                        'cycle':cycle,
+	                'address':zlg_address,
+	                'machineType':pjobType,
+	                'starttime':zlg_starttime,
+	                'price':zlg_price,
+	                'lng':$('.lng').val(),
+					'lat':$('.lat').val(),
+			}
+			}
+			console.info(goodsRelease_params);
+			pjobRelease(goodsRelease_params);
+		}
+	}) 
+/*************验证手机号************/	
+	function isPhoneNo(phone) {
+ var pattern = /^1[34578]\d{9}$/; 
+ return pattern.test(phone); 
+}
+
+	// var params = {
+ //                'userid' : userid,
+ //                'starttime' : starttime,
+ //                'endtime' : endtime,
+ //                'typeID' : typeID,
+ //                'count' : count,
+ //                'price' : price,
+ //                'province' : province,
+ //                'city' : city,
+ //                'area':area,
+ //                'town':town,
+ //                'village':village,
+ //                'address':address,
+ //                'intro':intro,
+ //                };
+});
+function didUpdateLocation(longitude, latitude){
+    lng = longitude;
+    lat = latitude;
+}
+</script>
+</head>
+<body>
+	    <section class="body-bj ovw">
+	    	<section class="header ovw posin" style="position: fixed; z-index: 500;">招零工发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+		     <section class="release-near-content ovw" style="margin-top: 1.3333rem;">
+		     	<ul class="ld-card-ula rele-work-persoal ovw">
+		  <!--    		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">姓名：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_name" type="text" placeholder="请输入您的姓名"/>
+			    	</li>
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">电话：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_phone" type="text" placeholder="请输入您的电话" maxlength=11;/>
+			    	</li> -->
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">招工标题：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_title" type="text" placeholder="请输入招工标题" maxlength=30/>
+			    	</li>
+			    	</li>
+			    	<li class="ld-lia-border">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">作业类型:</label>
+			    			<select class="add-state pjobType"><option pjobType="0">请选择作业类型</option></select>
+			    		</aside>
+			    	</li>
+			    			     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">薪酬报价：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_price" type="text" placeholder="请输入薪酬报价"/>
+			    	</li>
+			    				    			     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw add-plant-ad">开始时间：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_starttime add-state" id='start_time' type="date" placeholder="请输入开始时间"/>
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">作业周期：</label>
+			    		<input class="ld-lia-in mers-lia-a cycle" type="text" placeholder="请输入作业周期"/>
+			    	</li>
+			    	<li class="ld-lia re-work-address">
+			    		<label class="ld-lia-la ovw">作业地点：</label>
+			    		<input class="ld-lia-in psqy" type="text" placeholder="请作业地点"/>
+			    		<img src="images/add_1.png" class="address-s"/>
+                                </li>
+                                <li class="ld-lia">
+			    		<label class="ld-lia-la ovw">门牌号码：</label>
+			    		<input class="ld-lia-in mers-lia-a zlg_address" type="text" placeholder="请输入门牌号码"/>
+			    	</li>
+			    	<li class="ld-lia ld-lie">
+			    		<label class="ld-lia-la ovw">详细介绍：</label>
+			    		<textarea class="merchants-text ovw zlg_intro"></textarea>
+			    	</li>
+		     	</ul>
+		     </section>
+		<!--      <section class="mach-type" style="">
+		     	<ul>
+		     		<li typeid="1">测试1农机类型</li>
+		     		<li typeid="2">测试2农机类型</li>
+		     		<li typeid="3">测试3农机类型</li>
+		     		<li typeid="4">测试4农机类型</li>
+		     	</ul>
+		     </section>
+		      -->
+		     <!--  隐藏域存经纬度 -->
+		     <input type="hidden" class="lng" value="">
+    		 <input type="hidden" class="lat" value="">
+    		 <input type="hidden" class="jobID" value="">
+		    <a class="over-order ovw" href="javascript:;">发布</a>
+	    </section>
+
+</body>
+</html>

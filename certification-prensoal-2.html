@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+	.none-more-content{
+        color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">农机手认证<a href="certification-list.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <div class="njrz" style="padding-top: 1.333rem;">
+		    
+		    </div>
+		    <a class="over-order ovw" href="certification-prensoal.html?authorizationID=0">添加</a>
+	    </section>
+<script type="text/javascript">
+$(function(){
+	var count = 0;//数据加载总数
+	function machAuthList(params){
+		var cmd = 'machAuthList';//技能认证列表接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(isNull(data['body']['list'])){
+	            	var njrzHtml = '';
+	            	$.each(data['body']['list'],function(i,val){
+	            		njrzHtml += '<a href=certification-prensoal.html?authorizationID='+val['authorizationID']+'><dl class="cer-per-dla ovw"><dt><p class="cer-per-pa ovw"><font>农机类型：</font>'+val['machineTypeName']+'</p><p class="cer-per-pa ovw"><font>牌照：</font><samp>'+val['license']+'</samp></p></dt><dd><p class="cer-per-pa ovw"><font>驾驶人：</font>'+val['trueName']+'</p><p class="cer-per-pa ovw"><font>证件号：</font><samp>'+val['licenseNumber']+'</samp></p></dd></dl></a>';
+	            		count++;
+	            	})
+	            }else{
+	            	if(count!=0){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+	            		html = '<div class="none-more-content">暂无内容</div>';
+						$('.njrz').html(html);
+						return false;
+	            	}
+	            }
+	            // 为了测试，延迟1秒加载
+                setTimeout(function(){
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)){
+                            njrzHtml += '<div class="dropload-down" style="display:none;"><div class="dropload-noData">加载完成</div></div>'; 
+                         }
+                    	$('.njrz').html(njrzHtml);	
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        $('.dropload-down').hide();
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+                        dropload_skills(params);
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                            }
+                    	$('.dropload-down').before(njrzHtml);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	
+	var dropload;
+	//dropload
+	function dropload_machAuthList(params){
+		dropload = $('.njrz').dropload({
+		    scrollArea : window,
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    },
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	machAuthList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	machAuthList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	setTimeout(function(){
+		var params={
+			'userid':userid,
+			'page':PAGE,
+			'num':PAGE_NUM,
+		};
+		dropload_machAuthList(params);
+	},100)
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,734 @@
+﻿<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <title></title>
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/demo.css">
+        <link rel="stylesheet" href="css/own.css">
+        <link rel="stylesheet" href="css/public.css">
+        <link rel="stylesheet" type="text/css" href="css/swiper.css" />
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="js/swiper.js"></script>
+
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+        <script type="text/javascript" src="src/lib/common/public.js"></script>
+        <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!-- layer -->
+        <script type="text/javascript" src="src/lib/layer/layer.js"></script>
+        <!-- dropload -->
+        <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+        <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+        <style type="text/css">
+            .none-more-content {
+                color: #868686;
+                font-size: 14px;
+                height: 200px;
+                line-height: 200px;
+                text-align: center;
+                background: white;
+                /*margin-top: 1.333rem;*/
+            }
+
+            .my-order-sate {
+                margin-top: 1.3333rem;
+            }
+
+            .work-deta-ul li {
+                line-height: 22px;
+            }
+
+            .posin span {
+                width: 50%;
+                overflow: hidden;
+                display: block;
+                margin-left: 25%;
+            }
+
+            .my-order-select li.fl {
+                background: #dd1616;
+                border: 1px solid #eb1c10;
+            }
+
+            .my-order-select li.fl a {
+                color: white;
+            }
+
+            .cancel-order1 {
+                display: none;
+            }
+        </style>
+        <script>
+            $(function () {
+                /*$('.import-a').on('focus',function(){
+                 $(this).parent().next().css('background','#dd1616')
+                 })
+                 $('.import-a').on('blur',function(){
+                 $(this).parent().next().css('background','#bbb')
+                 })*/
+                //轮播
+                var mySwiper = new Swiper('.swiper-container', {
+                    autoplay: 5000, //可选选项，自动滑动
+                    pagination: '.swiper-pagination',
+                    paginationClickable: true,
+                })
+
+                $('.import-a').on('keyup', function () {
+                    if ($.trim($(this).val()).length > 0) {
+                        $(this).parent().next().css('background', '#dd1616');
+                        $(this).parent().next().removeClass('bb');
+                        $(this).parent().next().addClass('aa');
+                    } else {
+                        $(this).parent().next().css('background', '#bbb');
+                        $(this).parent().next().removeClass('aa');
+                        $(this).parent().next().addClass('bb');
+                    }
+                });
+                
+            })
+        </script>
+    </head>
+
+    <body>
+        <section class="body-bj ovw" id="inproduct">
+            <section class="header ovw posin" style="position:fixed;z-index:100;"><span></span><a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a>
+                <!-- <a href="javascript:void(0);" class="header-reg goods-mark">关注</a> -->
+                <a href="javascript:void(0);" class="header-reg goods-mark" style="right:1.3rem;"></a><!--  关注-->
+                <a href="javascript:;" class="header-reg goods-share"><img style="width: 22px;" src="images/share-button.png" /></a>
+            </section>
+
+            <!--商户图片轮播-->
+
+            <!--商户字段详情展示-->
+
+            <div class="p_tab">
+                <ul>
+                    <li>
+                        <a >店铺商品</a>
+                    </li>
+                    <li>
+                        <a class="touch">同类商家</a>
+                    </li>
+                </ul>
+                <section class="release-near-content ovw p_info_con p_info_show similar-goods" style="display:none;">
+                    <!--店铺商品-->
+                </section>
+                <section class="release-near-content ovw p_info_con similar-merchant" style="display:block;">
+                    <!--同类商家-->
+                </section>
+            </div>
+        </section>
+        <input type="hidden" value="0" class="merchant-userid"/>
+        <input type="hidden" value="0" class="merchant-type"/>
+        <input type="hidden" value="0" class="merchant-merchantID"/>
+        <a class="info_btn" href="javascript:;" style="display:none;">
+		<span>欢迎注册下载，惊喜等着你哦！&nbsp;&nbsp;马上注册</span>
+		<img src="images/ret.png" alt="">
+	</a>
+        <script type="text/javascript">
+            // $(function(){
+            setTimeout(function () {
+                //分享参数
+                var shareImage = '';
+                var shareText = '';
+                var shareTitle = '';
+                var shareURL = window.location.href+"&share=1&username="+username+"&userid="+userid;
+                var share_params = GetQueryParam('share');
+//                if(share_params==1){
+//                    var share_name = GetQueryParam('username');
+//                    var share_userid = GetQueryParam('userid');
+//                    var phoneID = GetQueryParam('imei');
+//                    var phoneModel = GetQueryParam('phoneModel');
+//                    var addressIDs = GetQueryParam('address');
+//                    $('.info_btn').attr('href','register.html?username='+share_name+'&userid='+share_userid+"&imei="+phoneID+"&phoneModel="+phoneModel+"&address="+addressIDs);
+//                    $('.info_btn').show();
+//                }
+                var merchantID = GetQueryString("merchantID");//商户ID
+                var from = GetQueryParam('from');
+                $('.header-back').on('touchend', function () {
+                    if (from == "h5") {
+                        //			window.location.href="my-work.html";
+                        backtoPrev(0);
+                    } else if (from == "order") {
+                        //			window.location.href="my-order.html";
+                        backtoPrev(0);
+                    } else if(from=="concern"){
+			window.location.href="my-subscription-1.html";
+                    }else {
+                        //			window.location.href="farm-work-list.html?search_txt="+searchContent;
+                        backtoPrev(0);
+                    }
+                })
+                //				推荐商品切换
+                $('#inproduct .p_tab li').each(function (i) {
+                    $($('#inproduct .p_tab li')[i]).click(function () {
+                        var $index = $(this).index();
+                        $('#inproduct .p_tab li a').removeClass('touch');
+                        $(this).find('a').addClass('touch');
+                        $('#inproduct .p_info_con').removeClass('p_info_show');
+                        $('#inproduct .p_info_con').eq($index).addClass('p_info_show');
+//                        $('.dropload-down').siblings().remove();
+                        if($index==1){
+                            $('.similar-goods').hide();
+                            $('.similar-merchant').show();
+                            var merchantTypeID = $('.merchant-type').val();
+                            var merchantListParams = {
+                                    'type' : merchantTypeID,//类型搜索,false
+                                    'page': PAGE,
+                                    'num': PAGE_NUM,
+                            };
+                            console.info(merchantListParams);
+                            lng_lat = [];//商户的经纬度
+                            markers = [];//商户位置在地图上的点标
+                            merchantDetails = [];//商户的内容清空
+                            count = 0;
+                            dropload.lock();
+                            dropload.resetload();
+                            $('.dropload-down').siblings().remove();
+                            dropload_merchantList(merchantListParams);
+                        }else{
+                            $('.similar-goods').show();
+                            $('.similar-merchant').hide();
+                            var merchantUserid = $('.merchant-userid').val();
+                            var goodsListParams = {
+                                    'userid' : merchantUserid,//类型搜索,false
+                                    'page': PAGE,
+                                    'num': PAGE_NUM,
+                            };
+//                            console.info(goodsListParams);
+                            goodsCount = 0;
+                            dropload.lock();
+                            dropload.resetload();
+                            $('.dropload-down').siblings().remove();
+                            dropload_machineList(goodsListParams);//获取商品
+                        }
+                    })
+                })
+                //*********************************商户详情***********************************
+                function merchantDetail(params) {
+                    var cmd = 'merchantDetail'; //商户详情接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            console.info(data);
+                            if (isNull(data['body'])) {
+                                $('.header span').html(data['body']['merchantName']);
+                                //分享信息赋值
+                                var body = data['body'];
+                                if(isNull(body['images'][0])){
+                                    body['images'] = body['images'];
+                                }else{
+                                    body['images'] = ['images/loop2.png'];
+                                }
+                                shareImage = body['images'][0];//商户图片
+                                shareText = body['businessScope'];//商户经营范围
+                                shareTitle = body['merchantName'];//商户名称
+                                switch (body['isFav']) {    //是否关注
+                                    case '0':
+                                        var image = '<img style="width:22px;" src="images/topic_3.png" isFav="' + body['isFav'] + '"/>';
+                                        $('.goods-mark').append(image);
+                                        break;
+                                    case '1':
+                                        var image = '<img style="width:22px;" src="images/topic_5.png" isFav="' + body['isFav'] + '"/>';
+                                        $('.goods-mark').append(image);
+                                        break;
+                                }
+                                var imagesHtml = '';            //商户轮播图
+                                $.each(body['images'], function (i, val) {
+                                    imagesHtml += '<div class="swiper-slide"><img src="' + val + '"><p class="bottom">' + data['body']['merchantName'] + '</p></div>';
+                                });
+                                imagesHtml = '<div id="loop"><div class="swiper-container"><div class="swiper-wrapper">' + imagesHtml + '</div><div class="swiper-pagination"></div></div></div>';
+                                var infoHtml = '';          //商户字段详情展示
+                                var grade = (!isNull(body['grade'])||(body['grade']==0))?5:body['grade'];
+                                var comment_star = showStar(grade);//星标评论
+//                                var comment_star = showStar(body['grade']);//星标评论
+                                if (isNull(body['promotion'])) {          //是否有优惠活动
+                                    var promotionHtml = '<li class="fr_shop_name">' +
+                                            '<div class="special disCount">' +
+                                            '<p class="bor_col" style="margin-top: 0.1rem;">惠</p>' +
+                                            '<p>' + body['promotion'] + '</p>' +
+                                            '</div>' +
+                                            '</li>';
+                                } else {
+                                    var promotionHtml = '';
+                                }
+                                infoHtml = '<ul class="my-order-dete ovw p_info">' +
+                                        '<li class="comments-lia">' +
+                                        '<label class="my-order-dete-time ovw fl">评分： </label>' +
+                                        '<p class="star-eval ovw">' + comment_star +
+                                        '<span class="fl num">(' + body['commentCount'] + ')</span>' +
+                                        '</p>' +
+                                        '</li>' +
+                                        '<li><label class="my-order-dete-time ovw fl">商户类型： </label>' +
+                                        '<p class="my-order-dete-pb ovw fl">' + body['typeName'] + '</p>' +
+                                        '</li>' +
+                                        '<li><label class="my-order-dete-time ovw fl">商户名称： </label>' +
+                                        '<p class="my-order-dete-pb  ovw fl">' + body['merchantName'] + '</p>' +
+                                        '</li>' +
+                                        '<li><label class="my-order-dete-time ovw fl">商户地址： </label>' +
+                                        '<p class="my-order-dete-pb ovw fl">' + body['address'] + ' </p>' +
+                                        '</li>' +
+                                        '<li><label class="my-order-dete-time ovw fl">商户电话： </label>' +
+                                        '<a href="tel:'+body['phone']+'"><p class="my-order-dete-pb my-order-dete-num ovw fl">' + body['phone'] + '</p></a>' +
+                                        '</li>' +
+                                        '<li><label class="my-order-dete-time ovw fl">经营范围：</label>' +
+                                        '<p class="my-order-dete-pb ovw fl">' + body['businessScope'] + '</p>' +
+                                        '</li>' + promotionHtml +
+                                        '</ul>';
+                                $('.p_tab').before(imagesHtml+infoHtml);
+                                //轮播
+                                var mySwiper = new Swiper('.swiper-container', {
+                                    autoplay: 5000, //可选选项，自动滑动
+                                    pagination: '.swiper-pagination',
+                                    paginationClickable: true,
+                                });
+                                var merchantUserid = isNull(body['merchantUserID'])?body['merchantUserID']:0;
+                               $('.merchant-type').val(body['cate_id']);
+                               $('.merchant-userid').val(merchantUserid);
+                               $('.merchant-merchantID').val(body['merchantID']);
+//                                var params = {
+//                                    'userid': merchantUserid,
+//                                    'page': PAGE,
+//                                    'num': PAGE_NUM,
+//                                };
+//                                dropload_machineList(params);//获取商品
+                                var merchantListParams = {
+                                    'type' : body['cate_id'],//类型搜索,false
+                                    'page': PAGE,
+                                    'num': PAGE_NUM,
+                                };
+                                dropload_merchantList(merchantListParams);//同类商家
+                            } else {
+                                html = '<div class="none-more-content">暂无内容</div>';
+                                $('.header').after(html);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+                var params = {
+                    'userid': userid,
+                    'merchantID': merchantID,
+                }
+                merchantDetail(params);
+
+                $(document).on('touchstart', '.work-ok', function (e) {
+                    if (userid == 0) {
+                        gotoLogin();
+                    } else {
+                        $('.layer-work').show();
+                        $('.layer-work-cont').show();
+                    }
+                    e.preventDefault();
+                })
+
+                //**********************************商户关注***************************
+                $('.goods-mark').on('touchend', function () {
+                    if (userid == 0) {
+                        gotoLogin();
+                    } else {
+                        var is_mark = parseInt($('.goods-mark img').attr('isFav'));
+                        switch (is_mark) {
+                            case 0: //关注
+                                var macMark_params = {
+                                    'userid': userid,
+                                    'id': merchantID,
+                                    'type': 9, //1农机；2农活；3零活；4商品；5圈子；6零工；7二手;9商铺
+                                };
+                                mark(macMark_params);
+                                $('.goods-mark img').attr('src', 'images/topic_5.png');
+                                $('.goods-mark img').attr('isFav', 1);
+                                break;
+                            case 1: //取消关注
+                                var macUnMark_params = {
+                                    'userid': userid,
+                                    'id': merchantID,
+                                    'type': 9, //1农机；2农活；3零活；4商品；5圈子；6零工；7二手;9商铺
+                                };
+                                UnMark(macUnMark_params);
+                                $('.goods-mark img').attr('src', 'images/topic_3.png');
+                                $('.goods-mark img').attr('isFav', 0);
+                                break;
+                        }
+                    }
+                });
+
+                //**********************************商户分享***************************
+                $('.goods-share').on('touchend', function () {
+//                    shareURL += "&imei="+phoneIMEI+"&phoneModel="+phoneModels+"&address="+current_location_areaIDs;
+                    if (userid == 0) {
+                        gotoLogin();
+                    } else {
+                        share(shareImage, shareText, shareTitle, shareURL);
+                    }
+                });
+                
+                /**************ios匹配，延时获取userid*******************/
+//                setTimeout(function () {
+//                    var params = {
+//                        'userid': userid,
+//                        'page': PAGE,
+//                        'num': PAGE_NUM,
+//                    };
+//                    dropload_machineList(params);//获取商品
+//                }, 100);
+/**********************************************商户搜索列表*****************************/
+            var count = 0;
+            var map;
+            var lng_lat = [];//商户的经纬度
+            var markers = [];//商户位置在地图上的点标
+            var merchantDetails = [];//商户的内容
+            function merchantList(params) {
+                var cmd = 'merchantList';//商户搜索列表接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var up = 1;//默认是上拉
+                if (params.page == 0) {
+                    up = 0;
+                    count = 0;
+                    params.page = 1;
+                }
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        console.info(data);
+                        if (isNull(data['body']['list'])) {
+                            var merchantListHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                if(val['merchantID']!=$('.merchant-merchantID').val()){
+                                var grade = (!isNull(val['grade'])||(val['grade']==0))?5:val['grade'];
+                                var comment_star = showStar(grade);//星标评论
+                                if (isNull(val['lng']) && isNull(['lat'])) {
+                                    var temp_lng_lat = {'lng': val['lng'], 'lat': val['lat']};
+                                    lng_lat.push(temp_lng_lat);
+                                }//farmingcloud_test/farming.html,//work-details.html?machineID='+val['machineID']+'&search_txt='+searchContent+'	 
+//                                merchantListHtml += '<article class="release-near-art ovw machine-list" machineID="'+val['machineID']+'"><a href="work-details.html?machineID='+val['machineID']+'&search_txt='+searchContent+'" machineID="'+val['machineID']+'">' +
+                                if(isNull(val['tag'])){ //商户标签
+                                    var tagImg = '<img src="images/top.png" alt="" />';
+                                }else{
+                                    var tagImg = '';
+                                }
+                                if(val['isMerchant']==1){ //商户是否认证
+                                    var merchantImg = '<img src="images/member.png" alt="" />';
+                                }else{
+                                    var merchantImg = '';
+                                }
+                                if (isNull(val['promotion'])) {          //是否有优惠活动
+                                    var promotionHtml = '<div class="special">' +
+                                            '<p class="bor_col">惠</p>' +
+                                            '<p>'+val['promotion']+'</p>' +
+                                            '</div>';
+                                } else {
+                                    var promotionHtml = '';
+                                }
+                                if(isNull(val['poster'])){
+                                    var poster = val['poster'];
+                                }else{
+                                    var poster = "images/info-1.jpg";
+                                }
+                                var merchantTypes = val['merchantType'].split(' ');
+                                merchantListHtml += '<div class="shop_list"><a href="javascript:;" class="merchant-detail" merchantID="'+val['merchantID']+'">'+
+                                    '<div class="list_content"><div class="fl_picture" style="overflow:hidden;"><img style="width:2.56rem;" src="'+poster+'" alt="" />'+
+                                    '<div class="pic">'+tagImg+'</div>'+
+                                    '</div>'+
+                                    '<div class="fr_shop_name"><div class="name_con">'+
+                                    '<div class="name">'+val['merchantName']+merchantImg+'</div>'+
+                                    '<p class="serve">'+merchantTypes[2]+'</p></div>'+
+                                    '<div style="clear:both"></div>'+
+                                    '<div class="shop_site">'+val['address']+'</div>'+
+                                    '<div class="shop_comment"><div class="rele-near-dete ovw">'+
+                                    '<div class="near-discuse ovw fl">'+
+                                        '<p class="star-eval ovw fr">'+comment_star+'</p>'+
+                                        '<cite class="fr">评价:</cite>'+
+                                    '</div>'+
+                                    '<div class="telephone" phone="tel:'+val['phone']+'">'+
+                                        '<img src="images/ing_3.png" alt="" />'+
+                                    '</div></div></div>'+promotionHtml+
+                                    '</div></div></a></div>';
+                                merchantDetails.push(val);
+                                count++;
+                            }else{
+                                if(data['body']['list'].length==1){
+                                    merchantListHtml = '<div class="none-more-content" style="background: white;">暂无内容</div>';
+                                }else{
+                                    merchantListHtml += '';
+                                }
+                            }
+                            });
+                            // $('.machineList').append(merchantListHtml);
+                        } else {
+                            sign=0;
+                            if ((count != 0)) {//上拉加载无内容锁定无数据
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                            } else {
+                                html = '<div class="none-more-content" style="background: white;">暂无内容</div>';
+                                $('.dropload-down').siblings().remove();
+//                                $('.similar-merchant').html(html);
+                                $('.dropload-down').before(html);
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                                return false;
+                            }
+                        }
+                        // 为了测试，延迟1秒加载
+                        setTimeout(function () {
+                            $('.none-more-content').remove();
+                            if (up == 0) {//下拉加载
+                                if (count < ((params.page) * params.num) && count != 0) {
+                                    merchantListHtml += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.machineList').html(merchantListHtml);
+                                } else {
+                                    $('.machineList').html(merchantListHtml);
+                                    dropload_merchantList(params);
+                                }
+                                dropload.resetload();
+                                dropload.unlock();// 解锁loadDownFn里锁定的情况
+                                // dropload.noData(false);
+                                $('.dropload-down').hide();
+                                params.page = 2;// 重置页数，重新获取loadDownFn的数据
+                            } else {
+                                if (count < ((params.page) * params.num)) {
+                                    dropload.lock();// 锁定
+                                    dropload.noData();// 无数据
+                                    $('.dropload-down').hide();
+                                }
+                                $('.similar-merchant').prepend(merchantListHtml);
+                                dropload.resetload();// 每次数据加载完，必须重置
+                            }
+                            if($('.shop_list').length>0){
+                                sign=0;
+                            }
+                        }, 300);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            $(document).on('click','.telephone',function(e){
+                window.location.href = $(this).attr('phone');
+                return false;
+            })
+            $(document).on('click','.merchant-detail',function(){
+                var merchantID = $(this).attr('merchantID');
+                var detail_url = 'http://'+window.location.host+'/merchant-detail.html?merchantID='+merchantID;
+                openH5(detail_url);
+            })
+        /**********************************************商户搜索列表上拉加载****************************************/
+            function dropload_merchantList(params) {
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var time = toLocalTime(ts, 6);
+                dropload = $('.similar-merchant').dropload({
+                    scrollArea: window,
+                    domUp: {
+                        domClass: 'dropload-up',
+                        domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                    },
+                    domDown: {
+                        domClass: 'dropload-down',
+                        domRefresh: '<div class="dropload-refresh"></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                        domNoData: '<div class="dropload-noData">已加载全部数据</div>'
+                    },
+                    loadUpFn: function (me) {
+                        //下拉刷新
+                        params.page = 0;
+                        merchantList(params);
+                        params.page = 1;
+                    },
+                    loadDownFn: function (me) {
+                        //上拉加载
+                        merchantList(params);
+                        params.page++;
+                    },
+                    threshold: 50
+                });
+            }
+/***********************店铺商品***************************************/
+            var goodsCount = 0;  //已加载条数
+                function get_myGoods(params) {//获取我的商品
+                    var cmd = 'myGoods';//接口命令
+                    var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                    var jsonp = 1;
+                    var up = 1;//默认是上拉
+                    if (params.page == 0) {
+                        up = 0;
+                        goodsCount = 0;
+                        params.page = 1;
+                    }
+                    params = objKeySort(params);//按照属性名升序排列
+                    var params_str = objChangeStr(params);//拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            console.info(data);
+                            if (isNull(data['body']['list'])) {
+                                var search_html = '';
+                                var orderStatus = '';
+                                var css_type = '';
+                                $.each(data['body']['list'], function (i, val) {
+                                    var comment_star = showStar(data['body']['grade']);//星标评论
+                                    //<a href="goods-details.html?goodsID='+val['goodsID']+'&from=h5">
+                                    search_html += '<article class="release-near-art ovw">'+
+                                                        '<a href="goods-details-new.html?from=merchant&goodsID='+val['goodsID']+'"><dl class="release-near-dl ovw">'+
+                                                            '<dt><img src="' + val['poster'] + '"/><span class="rele-near-name fl ovw"> ' + val['publisherName'] + '</span></dt>'+
+                                                            '<dd>'+
+                                                                '<div class="rele-near-dete ovw">'+
+                                                                    '<div class="near-discuse ovw fl">'+
+                                                                        '<p class="star-eval ovw fr">'+comment_star+'</p>'+
+                                                                        '<cite class="fr">评价:</cite>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+                                                                '<p class="near-pa ovw">'+
+                                                                    '<label class="fl">发布时间：</label>'+
+                                                                    '<samp class="fl">' + val['timeline'] + '</samp>'+
+                                                                '</p>'+
+                                                                '<p class="near-pa ovw">'+
+                                                                    '<label class="fl">商品：</label>'+
+                                                                    '<span class="fl">' + val['goodsName'] + '</span>'+
+                                                                '</p>'+
+                                                                '<p class="near-pa ovw">'+
+                                                                    '<label class="fl">价格：</label>'+
+                                                                    '<samp class="fl">¥' + val['goodsPrice'] + '</samp>'+
+                                                                '</p>'+
+                                                            '</dd>'+
+                                                        '</dl></a>'+
+                                                    '</article>';
+                                    goodsCount++;
+                                });
+                            } else {
+                                if ((goodsCount != 0)) {//上拉加载无内容锁定无数据
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                } else {
+                                    html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+//                                    $('.similar-goods').html(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                                }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function () {
+                                $('.none-more-content').remove();
+                                if (up == 0) {//下拉加载
+                                    if (goodsCount < ((params.page) * params.num) && goodsCount != 0) {
+                                        search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                        $('.ms-contents').html(search_html);
+                                    } else {
+                                        $('.ms-contents').html(search_html);
+                                        dropload_machineList(params);
+                                    }
+                                    dropload.resetload();
+                                    dropload.unlock();// 解锁loadDownFn里锁定的情况
+                                    //dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2;// 重置页数，重新获取loadDownFn的数据
+                                } else {
+                                    if (goodsCount < ((params.page) * params.num)) {
+                                        dropload.lock();// 锁定
+                                        dropload.noData();// 无数据
+                                        $('.dropload-down').hide();
+                                    }
+                                    $('.similar-goods').prepend(search_html);
+//                                    $('.dropload-down').before(search_html);
+                                    dropload.resetload();// 每次数据加载完，必须重置
+                                }
+                            }, 500);
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+                //*********************************我的商品列表上拉加载*****************
+                function dropload_machineList(params) {
+                    var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                    var time = toLocalTime(ts, 6);//下拉时间定义
+                    dropload = $('.p_info_show').dropload({
+                        scrollArea: window,
+                        domUp: {
+                            domClass: 'dropload-up',
+                            domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                            domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                            domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                        },
+                        domDown: {
+                            domClass: 'dropload-down',
+                            domRefresh: '<div class="dropload-refresh"></div>',
+                            domLoad: '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+                            domNoData: '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+                        },
+                        loadUpFn: function (me) {
+                            //下拉刷新
+                            params.page = 0;
+                            get_myGoods(params);
+                            params.page = 1;
+                        },
+                        loadDownFn: function (me) {
+                            //上拉加载
+                            get_myGoods(params);
+                            params.page++;
+                        },
+                        threshold: 50
+                    });
+                }
+
+            }, 200)
+        </script>
+    </body>
+
+</html>

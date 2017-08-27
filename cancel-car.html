@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="email=no" name="format-detection">
+                <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+		<title></title>
+		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="css/demo.css">
+		<link rel="stylesheet" href="css/my.css">
+		<script type="text/javascript" src="js/jquery.min.js" ></script>
+                <script type="text/javascript" src="js/flexible.js" ></script>
+                <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+                <script type="text/javascript" src="src/lib/common/common.js"></script>
+                <script type="text/javascript" src="src/lib/common/farming.js"></script>
+                <script type="text/javascript" src="src/lib/public/public.js"></script>
+                <script type="text/javascript" src="src/lib/common/public.js"></script>
+                <!-- layer -->
+                <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+
+	</head>
+
+	<body id="com_d">
+		<section class="body-bj ovw">
+			<section class="header ovw posin">取消预约
+				<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a>
+			</section>
+			<section class="comments-cont ovw">
+
+				<ul class="comments-ula ovw" style="padding-bottom: 0.4rem;">
+					<li class=" mers-lia-d" style="border: none;margin-top: 0.33rem;">
+						<aside class=" ovw">
+
+							<label class="fl ovw font_30">取消原因：</label>
+							<form>
+
+								<p class=" se-hand-sa ovw se-hand-sb delivery_yes" delivery="1">自己不用车了</p>
+								<p class=" se-hand-sa ovw delivery_no" delivery="2">司机协商取消用车</p>
+								<p class=" se-hand-sa ovw delivery_no" delivery="3">价格未谈妥</p>
+							</form>
+						</aside>
+					</li>
+					<li class="mers-lia-c mers-lia-d  com_li">
+						<aside class="add-plant-as ovw">
+							<label class="fl ovw font_28">备注：</label>
+							<textarea placeholder="写下您的想法" class="com_text font_28"></textarea>
+
+						</aside>
+					</li>
+					<!--<li class="sfps">
+						<label class="ld-lia-la ovw fl" style="padding-left: 0;min-width: 2.2rem;">取消原因：</label>
+						
+
+					</li>-->
+
+				</ul>
+
+			</section>
+
+			<a class="over-order ovw" href="javascript:;">提交</a>
+		</section>
+		<script type="text/javascript">
+                        var carID = GetQueryParam('carID');
+                        $('.header-back').on('touchend', function () {
+                            window.location.href = 'vehicle-details.html?carID='+carID;
+                        });
+			$('form .se-hand-sa').each(function(){
+				$('form .se-hand-sa').click(function(){
+					var $index = $(this).index();
+					$('form .se-hand-sa').removeClass('se-hand-sb');
+					$(this).addClass('se-hand-sb');
+				})
+				
+			})
+                        function carCancelReserveList(params){
+                            var cmd = 'carCancelReserveList';//接口命令
+                            var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                            var jsonp = 1;
+                            params = objKeySort(params);//按照属性名升序排列
+                            var params_str = objChangeStr(params);//拼接params参数的属性值
+                            params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                            $.ajax({
+                                    url : apiURL,//接口地址
+                                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                                dataType : 'jsonp',
+                                success: function(data){console.info(data);
+                                    if(data['resultCode']==1){
+                                        layer.msg('您取消预约的请求已提交');
+                                        setTimeout(function(){
+                                            window.location.href = 'my-vehicle.html';
+//                                            window.location.href = 'vehicle-list.html';
+                                        },1000);
+                                    }else{
+                                        layer.msg(data['resultMessage']);
+                                    }
+                                },
+                                error: function(XMLHttpRequest, textStatus, errorThrown){
+                                    layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                                },
+                            });
+                        }
+
+                        $('.over-order').click(function(){
+                            var cancel_id = $('.se-hand-sb').attr('delivery');
+                            var cancel_info = $('.com_text').val();
+                            var params = {
+                                'userid': userid,
+                                'carID' : carID,
+                                'cancel_id': cancel_id,
+                                'cancel_info' : cancel_info,
+                            }
+//                            console.info(params);
+                            carCancelReserveList(params);
+                        })
+		</script>
+	</body>
+
+</html>

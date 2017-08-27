@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script>
+	
+	$(function(){
+		$('.star-a').on('touchstart',function(){
+			$(this).addClass('star');
+			$(this).prevAll('span').addClass('star');
+			$(this).nextAll('span').removeClass('star');
+		})
+	})
+
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">发布<a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <section class="comments-cont ovw">
+	    	<ul class="comments-ula ovw">
+	    		<li class="comments-lia">评分：</li>
+	    		<li class="comments-lib">
+	    			<p class="star-eval ovw">
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a"></span>
+		    			<span class="fl star-a"></span>
+		    		</p>
+	    		</li>
+	    		<li class="comments-lia">评价：</li>
+	    		<li class="comments-lic"><textarea class="comlain-text ovw"></textarea></li>
+	    	</ul>
+	    </section>
+	    <a class="over-order ovw" href="#">提交</a>
+	</section>
+</body>
+</html>

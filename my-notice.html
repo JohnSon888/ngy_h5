@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>我的消息</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .notice_ul{
+    width: 96%;
+    margin-top: 1.233rem;
+    border-bottom: solid 1px #eee;
+    float: right;
+    }
+    .notice_li1{
+  height: 1.0rem;
+    line-height: 1rem;
+    font-size: 14px;
+    }
+        .notice_li2{
+        width: 100%;
+    color: #999;
+    line-height:1rem;
+        }
+        .notice_p{
+        width:96%;
+        font-size: 14px;
+        line-height: 0.8rem;
+    	margin-top: 0.3rem;
+        }
+</style>
+<script type="text/javascript">
+$(function(){
+//	 userid = 62;
+        var newsType = GetQueryParam('newsType');
+	var messageID = GetQueryParam('messageID');
+	var messageTime = GetQueryParam('messageTime');
+	var messageTitle = GetQueryParam('messageTitle');
+	var messageContent = GetQueryParam('messageContent');
+	
+        if(newsType==0){
+            messageContent = '<span news-type="'+newsType+'">'+messageContent+'</span>'; 
+        }else{
+            messageContent = '<span news-type="'+newsType+'" style="color:rgb(91,0,246);">'+messageContent+'</span>'; 
+        }
+        
+	$('.notice_li1_la').text(messageTitle);
+	$('.notice_li1_sa').text(messageTime);
+	$('.notice_li1_p').html(messageContent);
+        $(document).on('touchend','.notice_li1_p span',function(){
+            var news_type = $(this).attr('news-type');
+            var gameURL = $('.game').val();
+            switch(parseInt(news_type)){
+                case 1 : toHome();break;//首页
+                case 2 : toCenter();break;//个人中心
+                case 3 : window.location.href = "mac-list.html";break;//农机列表
+                case 4 : window.location.href = "farm-work-list.html";break;//农活列表
+                case 5 : window.location.href = "recruit-job-list.html";break;//零工列表
+                case 6 : window.location.href = "find-job-list.html";break;//零活列表
+                case 7 : window.location.href = "shop-list.html";break;//集市列表
+                case 8 : window.location.href = "second-hand-list.html";break;//旧货列表
+                case 9 : window.location.href = "merchant-list.html";break;//商户列表
+                case 10 : window.location.href = "vehicle-list.html";break;//约车列表
+                case 11 : window.location.href = "my-circle-2.html";break;//圈子列表
+                case 12 : window.location.href = gameURL;break;//游戏
+                case 13 : window.location.href = "sign-in.html";break;//签到
+            }
+        })
+        function get_gameURL(params){//获取首页链接
+            var cmd = 'geth5';//接口命令
+            var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+            var jsonp = 1;
+            params = objKeySort(params);//按照属性名升序排列
+            var params_str = objChangeStr(params);//拼接params参数的属性值
+            params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+            $.ajax({
+                url : apiURL,//接口地址
+                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                dataType : 'jsonp',
+                success: function(data){ 
+                    console.info(data);
+                    $('.game').val(data['body']['game']);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('网络请求延迟！');
+                    console.info(XMLHttpRequest.status);
+                    console.info(XMLHttpRequest.readyState);
+                    console.info(textStatus);
+                },
+            });
+        }
+        var game_params = {};
+        get_gameURL(game_params);
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+    	var params2 = {
+    			'userid':userid,
+    	           'messageID':messageID,//圈子通知
+    	};
+    	readMessage(params2);
+
+},100);  
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+			window.location.href="sys-infor.html";
+    })
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw" style="background:#fff;">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;">我的消息<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <ul class="release-near-content notice_ul ovw xtxx" style="margin-top:1.333rem;">
+	 	<li class="notice_li1">
+	    		<label class="ovw fl notice_li1_la">...</label>
+	    	</li>
+	    	<li class="notice_li2">
+				<samp class=" ovw fl notice_li1_sa">...</samp>
+	    	</li>	
+	    </ul>
+	    <p class="notice_p fr notice_li1_p"><samp class="ovw fl">...</samp></p>
+	</section>
+    <input class="game" type="hidden"/>
+</body>
+</html>

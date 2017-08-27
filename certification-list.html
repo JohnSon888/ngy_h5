@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script src="src/lib/public/public.js" type="text/javascript"></script>
+</head>
+<body>
+	    <section class="body-bj ovw">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">认证列表<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <!-- <section class="cer-list-cont ovw">
+		    	<a href="./certification-iphone.html">
+		    		<dl class="cer-dla cer-dla-a ovw">
+		    			<dt>
+		    				<span>手机认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-ld.html">
+		    		<dl class="cer-dla cer-dla-b ovw">
+		    			<dt>
+		    				<span>实名认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-land.html">
+		    		<dl class="cer-dla cer-dla-c ovw">
+		    			<dt>
+		    				<span>土地认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-merchants-2.html">
+		    		<dl class="cer-dla cer-dla-d ovw">
+		    			<dt>
+		    				<span>大户认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-prensoal-2.html">
+		    		<dl class="cer-dla cer-dla-e ovw">
+		    			<dt>
+		    				<span>农机手认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-merchants.html">
+		    		<dl class="cer-dla cer-dla-f ovw">
+		    			<dt>
+		    				<span>商户认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>已认证</dd>
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-work.html">
+		    		<dl class="cer-dla cer-dlb cer-dla-g ovw">
+		    			<dt>
+		    				<span>技能认证</span>
+		    				<p>身份信息经公安备案</p>
+		    			</dt>
+		    			<dd>未认证</dd>
+		    		</dl>
+		    	</a> 
+		    </section>
+		    <a class="over-order ovw" href="javascript:;">确定</a>-->
+	    </section>
+<script type="text/javascript">
+$(function(){
+	var from = GetQueryParam('from');
+	$('.header-back').on('click',function(){
+		if(from=="app"){
+			window.history.go(-1);
+		}else if(from=="driver"){
+			window.history.go(-1);
+		}else{
+			backtoNative();
+		}
+	})
+	/************************获取认证权限接口*************************************/
+	function getVerifyAuth(userid){
+		var cmd = 'getAuthentication';
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    var params = {
+	    	'userid':userid,
+	    }
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	 console.info(data);//0未申请 1成功 2拒绝 3审核中
+	            if(isNull(data['body'])){
+	            	switch(parseInt(data['body']['phone'])){
+	            		case 0:var phone = "未认证";var color1 = "style='color:#999'";var nextURL1 = "./certification-iphone.html;";break;
+	            		case 1:var phone = "已认证";var color1 = "style='color:#1daf00'";var nextURL1 = "./certification-iphone.html?pass=1";break;
+	            		case 2:var phone = "认证未通过";var color1 = "style='color:red'";var nextURL1 = "./certification-iphone.html";break;
+	            		case 3:var phone = "待审核";var color1 = "style='color:#1daf00'";var nextURL1 = "./certification-iphone.html";break;
+	            	}
+	            	switch(parseInt(data['body']['realname'])){
+	            		case 0:var realname = "未认证";var color2 = "style='color:#999'";var nextURL2 = "./certification-ld.html";break;
+	            		case 1:var realname = "已认证";var color2 = "style='color:#1daf00'";var nextURL2 = "./certification-ld.html?pass=1";break;
+	            		case 2:var realname = "认证未通过";var color2 = "style='color:red'";var nextURL2 = "./certification-ld.html";break;
+	            		case 3:var realname = "待审核";var color2 = "style='color:#1daf00'";var nextURL2 = "./certification-ld.html";break;
+	            	}
+	            	switch(parseInt(data['body']['land'])){
+	            		case 0:var land = "未认证";var color3 = "style='color:#999'";var nextURL3 = "./certification-land.html";break;
+	            		case 1:var land = "已认证";var color3 = "style='color:#1daf00'";var nextURL3 = "./certification-land.html?pass=1";break;
+	            		case 2:var land = "审核未通过";var color3 = "style='color:red'";var nextURL3 = "./certification-land.html";break;
+	            		case 3:var land = "待审核";var color3 = "style='color:#1daf00'";var nextURL3 = "./certification-land.html";break;
+	            	}
+	            	switch(parseInt(data['body']['contractor'])){
+	            		case 0:var contractor = "未认证";var color4 = "style='color:#999'";var nextURL4 = "./certification-merchants-2.html";break;
+	            		case 1:var contractor = "已认证";var color4 = "style='color:#1daf00'";var nextURL4 = "./certification-merchants-2.html?pass=1";break;
+	            		case 2:var contractor = "认证未通过";var color4 = "style='color:red'";var nextURL4 = "./certification-merchants-2.html";break;
+	            		case 3:var contractor = "待审核";var color4 = "style='color:#1daf00'";var nextURL4 = "./certification-merchants-2.html";break;
+	            	}
+	            	switch(parseInt(data['body']['machine'])){
+	            		case 0:var machine = "未认证";var color5 = "style='color:#999'";var nextURL5 = "./certification-prensoal-2.html";break;
+	            		case 1:var machine = "已认证";var color5 = "style='color:#1daf00'";var nextURL5 = "./certification-prensoal-2.html?pass=1";break;
+	            		case 2:var machine = "认证未通过";var color5 = "style='color:red'";var nextURL5 = "./certification-prensoal-2.html";break;
+	            		case 3:var machine = "待审核";var color5 = "style='color:#1daf00'";var nextURL5 = "./certification-prensoal-2.html";break;
+	            	}
+	            	switch(parseInt(data['body']['merchants'])){
+	            		case 0:var merchants = "未认证";var color6 = "style='color:#999'";var nextURL6 = "./certification-merchants.html";break;
+	            		case 1:var merchants = "已认证";var color6 = "style='color:#1daf00'";var nextURL6 = "./certification-merchants.html?pass=1";break;
+	            		case 2:var merchants = "认证未通过";var color6 = "style='color:red'";var nextURL6 = "./certification-merchants.html";break;
+	            		case 3:var merchants = "待审核";var color6 = "style='color:#1daf00'";var nextURL6 = "./certification-merchants.html";break;
+	            	}
+	            	switch(parseInt(data['body']['skill'])){
+	            		case 0:var skill = "未认证";var color7 = "style='color:#999'";var nextURL7 = "./certification-work.html";break;
+	            		case 1:var skill = "已认证";var color7 = "style='color:#1daf00'";var nextURL7 = "./certification-work.html?pass=1";break;
+	            		case 2:var skill = "认证未通过";var color7 = "style='color:red'";var nextURL7 = "./certification-work.html";break;
+	            		case 3:var skill = "待审核";var color7 = "style='color:#1daf00'";var nextURL7 = "./certification-work.html";break;
+	            	}
+                        switch(parseInt(data['body']['driver'])){
+	            		case 0:var driver = "未认证";var color8 = "style='color:#999'";var nextURL8 = "./certification-Driver.html";break;
+	            		case 1:var driver = "已认证";var color8 = "style='color:#1daf00'";var nextURL8 = "./certification-Driver.html?pass=1";break;
+	            		case 2:var driver = "认证未通过";var color8 = "style='color:red'";var nextURL8 = "./certification-Driver.html";break;
+	            		case 3:var driver = "待审核";var color8 = "style='color:#1daf00'";var nextURL8 = "./certification-Driver.html";break;
+	            	}
+	            	var html = '<section class="cer-list-cont ovw" style="padding-top: 1.333rem;"><a href="'+nextURL1+'"><dl class="cer-dla cer-dla-a ovw"><dt><span>手机认证</span><p>身份信息经公安备案</p></dt><dd '+color1+'>'+phone+'</dd></dl></a><a href="'+nextURL2+'"><dl class="cer-dla cer-dla-b ovw"><dt><span>实名认证</span><p>身份信息经公安备案</p></dt><dd '+color2+'>'+realname+'</dd></dl></a><a href="'+nextURL3+'"><dl class="cer-dla cer-dla-c ovw"><dt><span>土地认证</span><p>身份信息经公安备案</p></dt><dd '+color3+'>'+land+'</dd></dl></a><a href="'+nextURL4+'"><dl class="cer-dla cer-dla-d ovw"><dt><span>大户认证</span><p>身份信息经公安备案</p></dt><dd '+color4+'>'+contractor+'</dd></dl></a><a href="'+nextURL5+'"><dl class="cer-dla cer-dla-e ovw"><dt><span>农机手认证</span><p>身份信息经公安备案</p></dt><dd '+color5+'>'+machine+'</dd></dl></a><a href="'+nextURL6+'"><dl class="cer-dla cer-dla-f ovw"><dt><span>商户认证</span><p>身份信息经公安备案</p></dt><dd '+color6+'>'+merchants+'</dd></dl></a><a href="'+nextURL7+'"><dl class="cer-dla cer-dlb cer-dla-g ovw"><dt><span>技能认证</span><p>身份信息经公安备案</p></dt><dd '+color7+'>'+skill+'</dd></dl></a><a href="'+nextURL8+'"><dl class="cer-dla cer-dla-a ovw" style="background: url(images/car_03.png) no-repeat 0.3rem 0.3466rem;background-size: auto 0.4233rem;"><dt><span>司机认证</span><p>身份信息经公安备案</p></dt><dd '+color8+'>'+driver+'</dd></dl></a></section><a class="over-order ovw" href="javascript:;" style="display:none;">确定</a>';
+	            	$('.body-bj').append(html);
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	setTimeout(function(){
+		getVerifyAuth(userid);
+	},100)
+	// $(document).on('click','.over-order',function(){
+	// 	alert(lng);alert(lat);
+	// })
+})
+
+</script>
+</body>
+</html>

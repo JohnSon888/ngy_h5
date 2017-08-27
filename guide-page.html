@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="js/swiper.js" ></script>
+<link rel="stylesheet" href="js/swiper.css" />
+</head>
+<body>
+<section class="bnner">
+	 <article class="swiper-container">
+       	    <ul class="swiper-shopping swiper-wrapper">
+	           <li class="swiper-slide s-bnna"><img src="images/bnner.jpg"/></li>
+	           <li class="swiper-slide s-bnna"><img src="images/bnner.jpg"/></li>
+	           <li class="swiper-slide s-bnna"><img src="images/bnner.jpg"/></li>
+	       </ul>
+	       <article class="swiper-pagination"></article>
+       </article>
+       <script>
+		new Swiper('.swiper-container', {
+			loop: true,
+			pagination: '.swiper-pagination',
+			autoplay: 4000,
+			speed: 300,
+			autoplayDisableOnInteraction: false
+			})
+		</script>
+		<a href="#" class="beg-next">马上体验</a>
+</section>
+
+</body>
+</html>

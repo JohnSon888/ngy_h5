@@ -1,0 +1,334 @@
+<!doctype html>
+<html>
+<head>
+<title>hybridapp</title>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta http-equiv=Content-Language content=zh-CN>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+ <script type="text/javascript" language="javascript" src="jquery-1.7.2.min.js"></script>
+<!--udsa.js为必须引用js，内置负责和Android、IOS通讯方法-->
+<script type="text/javascript" language="javascript" src="farming.js"></script>
+
+<script>
+
+var useragent = navigator.userAgent;
+if (useragent.indexOf("farmingcloud")>0) {
+    // alert('魔都行囊APP');
+    if (useragent.indexOf("farmingcloud/ios")>0) {
+        // alert('魔都行囊IOS');
+    }else if (useragent.indexOf("farmingcloud/android")>0) {
+        // alert('魔都行囊Android');
+    }
+}else {
+    alert('外部浏览器');
+}
+
+var userid;
+
+//通信功能初始化完成
+//页面初始化完成后，需要直接调用app通讯方法的话，必须在i nitReady 方法里面调用，否则会调用失败
+function initReady()
+{
+    //页面初始化获取用户ID
+    getUserInfo(function(value){
+        //用户信息在浏览器中是否需要保存到cookie之类的？
+        userid = value['userid'];
+    });
+}
+
+$(function(){
+    //设置参数
+    $('#set').click(function(){
+        set("key","value");
+    });
+    //获取参数
+    $('#get').click(function(){
+        get("key", function(value){
+            alert(value);
+        });
+    });
+    //获取用户登陆信息，返回值value是app登陆接口存储的参数数组
+    $('#getUserInfo').click(function(){
+        getUserInfo(function(value){
+            var userid = value['userid'];
+            alert(userid);
+        });
+    });
+    //获取版本
+    $('#getversion').click(function(){
+        getversion(function(version){
+            alert(version);
+        });
+    });
+    //打开分享
+    $('#share').click(function(){
+        share("http://pudong.xun-ao.com/ueditor/php/upload/image/20161026/1477479472307059.jpeg", "分享正文", "分享标题", "http://pudong.xun-ao.com/api/newsShare.php?id=780","1", "10");
+    });
+    //跳转登陆
+    $('#gotoLogin').click(function(){
+        gotoLogin();
+    });
+    //检查是否安装微信
+    $('#isWechatInstall').click(function(){
+        isWechatInstall(function(isInstall){
+            if (isInstall > 0) {
+                alert('已经安装微信');
+            }else {
+                alert('没有安装微信');
+                //需要隐藏微信支付
+            }
+        });
+    });
+    //检查是否安装支付宝
+    $('#isAlipayInstall').click(function(){
+        isAlipayInstall(function(isInstall){
+            if (isInstall > 0) {
+                alert('已经安装支付宝');
+            }else {
+                alert('没有安装支付宝');
+            }
+        });
+    });
+    //外部浏览器打开url
+    $('#openInSafari').click(function(){
+        openInSafari("http://www.baidu.com");
+    });
+    //图片预览
+    $('#imagePreview').click(function(){
+        var imageArray = new Array();
+        imageArray[0] = "http://gdjs.xun-ao.com/images/201612/thumb_img/62_thumb_P_1482554521081.gif";
+        imageArray[1] = "http://gdjs.xun-ao.com/images/201612/goods_img/62_P_1482704671171.jpg";
+        imageArray[2] = "http://gdjs.xun-ao.com/images/201612/goods_img/62_P_1482704671103.jpg";
+        imagePreview(imageArray, 1);
+    });
+    //图片上传
+    $('#uploadImage').click(function(){
+        uploadImage(3);
+    });
+
+    //获取当前定位
+    $('#requestMylocation').click(function(){
+        requestMylocation();
+    });
+    //朗读文字
+    $('#readText').click(function(){
+        readText('这是商品简介');
+    });
+    //获取用户登陆信息，返回值value是app登陆接口存储的参数数组
+    $('#getLocationInfo').click(function(){
+        getLocationInfo(function(value){
+            alert(value);
+        });
+    });
+    $('#openH5').click(function(){
+        openH5("http://ngyh5.xun-ao.com/work-details.html?machineID=507");
+    });
+    $('#backtoPrev0').click(function(){//无刷新
+       backtoPrev(0);
+    });
+    $('#backtoPrev1').click(function(){//重刷新
+       backtoPrev(1);
+    });
+});
+
+
+/**
+*   设置当前登陆用户的userid
+*   userid          用户id
+**/
+function setUserid(userid)
+{
+    alert("userid="+userid);
+}
+
+
+/**
+*   登陆成功回调
+*   userid          用户id
+*   username        用户昵称
+*   phone           手机号
+*   avatar          头像
+*   points          用户积分
+**/
+function loginSuccessed(userid, username, phone, avatar, points)
+{
+    alert("loginSuccessed="+userid);
+}
+
+/**
+*   图片上传成功回调
+*   imageUrl         图片url地址
+**/
+function imageUploaded(imageUrl)
+{
+    alert(imageUrl);
+}
+
+/**
+*   获取当前定位成功回调
+*   longitude   经度
+*   latitude    纬度
+**/
+function didUpdateLocation(longitude, latitude)
+{
+    alert("经度："+longitude+",维度："+latitude);
+}
+
+</script>
+
+<style type="text/css">
+body {float: left;display: inline;width: 100%;background: #aaa;margin: 0;overflow-y: auto;}
+.item{width: 100%;height: 50px;float: left;display: inline;text-align: center;font-size: 20px;margin: 5px 0;background: #A78;line-height: 50px;};
+
+/*style="overflow-x: auto; overflow-y: auto; height: 100px; width:200px;"*/
+</style>
+    
+</head> 
+
+<body>
+
+<div class="item" style="background:#fff;"><a id="page_title" href="mdxn.html">测试页面</a></div>
+
+<div class="item" id="set">设置全局变量</div>
+
+<div class="item" id="get">获取全局变量</div>
+
+<div class="item" id="getUserInfo">获取用户登陆信息</div>
+
+<div class="item" id="getversion">获取app版本</div>
+
+<div class="item" id="share">打开分享</div>
+
+<div class="item" id="gotoLogin">跳转登陆成功回调测试</div>
+
+<div class="item" id="isWechatInstall">检查是否安装微信</div>
+
+<div class="item" id="isAlipayInstall">检查是否安装支付宝</div>
+
+<div class="item" id="openInSafari">浏览器打开url：http://www.baidu.com</div>
+
+<div class="item" id="imagePreview">图片预览</div>
+
+<div class="item" id="uploadImage">图片上传回调测试</div>
+
+<div class="item" id="requestMylocation">获取当前定位回调测试</div>
+
+<div class="item" id="readText">朗读文字</div>
+
+<div class="item" id="getLocationInfo">获取位置信息</div>
+
+<div class="item" id="openH5">H5页面URL</div>
+
+<div class="item" id="backtoPrev0">无刷新</div>
+
+<div class="item" id="backtoPrev1">重刷新</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+
+<div class="item" id="">--------</div>
+
+<div class="item" id="">+++++++++++</div>
+</body>
+</html>

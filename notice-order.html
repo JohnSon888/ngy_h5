@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>订单通知</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+<script type="text/javascript">
+$(function(){
+	var count = 0;
+	function get_orderMessageList(params){//获取订阅消息列表
+        var cmd = 'orderMessageList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid':userid,
+                'typeID':typeID,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+            	console.info(data);
+                if(isNull(data['body']['list'])){	
+                    var search_html = '';
+                    var orderStatus = '';
+                    var css_type = '';
+                    var tz_href = '';
+                    $.each(data['body']['list'],function(i,val){
+                		switch(parseInt(val['orderStatus'])){
+            			case 0:
+            				var orderStatus = '待接单';
+           				 css_type = 'look-ok';
+            			       break;
+            			case 1:
+            			/* 	var orderStatus = '待接单';
+           				 css_type = 'look-ok'; */
+         				var orderStatus = '进行中';
+          				 css_type = 'look-ing';
+            			       break;
+            			case 2:
+            				var orderStatus = '进行中';
+              				 css_type = 'look-ing';
+            			       break;
+            			case 3:
+            			/* 	var orderStatus = '等待确认';
+              				 css_type = 'look-ok'; */
+              				var orderStatus = '已完成';
+              				 css_type = 'look-sa';
+            			       break;
+            			case 4:
+            				var orderStatus = '已完成';
+              				 css_type = 'look-sa';
+            			       break;
+            			case 5:
+            				var orderStatus = '已关闭';
+              				 css_type = 'look-sa';
+            			       break;
+            		}
+                		switch(parseInt(val['orderType'])){//根据订单类型，跳转对应详情页，订单类型：1.农机2.农活3.招零工4.商品 5.求职 6.二手
+            			case 1:
+            				tz_href = 'work-details.html?machineID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            			case 2:
+            				tz_href = 'farm-work-details.html?farmWorkID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            			case 3:
+            				tz_href = 'recruit-job-details.html?recruitJobID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            			case 4:
+            				tz_href = 'goods-details.html?goodsID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            			case 5:
+            				tz_href = 'find-job-details.html?findJobID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            			case 6:
+            				tz_href = 'details-second-goods.html?secondGoodsID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+                                case 7:
+            				tz_href = 'vehicle-details.html?carID='+val['orderID']+'&from=notice&messageID='+val['messageID']+'';
+            			       break;
+            		}
+                		
+                		
+//                    	if(val['isRead']=='0'){
+//                            search_html += '<article class="ms-works-art mr-look-art posin ovw">'+
+//                	    		'<a href="'+tz_href+'" messageID='+val['messageID']+' tz_href='+tz_href+'>'+
+//        	    			'<figure class="mr-look-tx ovw">'+
+//        	    				'<img src="'+val['userAvatar']+'" style="height:1.333rem"/>'+
+//        	    				'<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">'+val['username']+'</figcaption></figure>'+
+//        	    			'<p><font>种类：</font>'+val['typeName']+'</p>'+
+//        	    			'<p><font>说明：</font>'+val['intro']+'</p>'+
+//        	    			'<p><font>地区：</font>'+val['address']+'</p></a>'+
+//            	    		'<samp class="sys-no ovw"></samp>'+
+//        	    		'<span class="mr-look-state mr-look-sa '+css_type+' ovw">'+orderStatus+'</span></article>';
+//                    	}else{
+//                            search_html += '<article class="ms-works-art mr-look-art posin ovw">'+
+//            	    		'<a href="'+tz_href+'"  messageID='+val['messageID']+' tz_href='+tz_href+'>'+
+//    	    			'<figure class="mr-look-tx ovw">'+
+//    	    				'<img src="'+val['userAvatar']+'" style="height:1.333rem"/>'+
+//    	    				'<figcaption>'+val['username']+'</figcaption></figure>'+
+//    	    			'<p><font>种类：</font>'+val['typeName']+'</p>'+
+//    	    			'<p><font>说明：</font>'+val['intro']+'</p>'+
+//    	    			'<p><font>地区：</font>'+val['address']+'</p></a>'+
+//    	    		'<span class="mr-look-state mr-look-sa '+css_type+' ovw">'+orderStatus+'</span></article>';
+//                    	}
+                       if(val['isRead']=='0'){
+                            search_html += '<li style="background: url(../images/order-message.png) no-repeat 0.53rem center;background-size: 0.8rem;float: left;display: inline;line-height: normal;min-height: 1.613rem;height: auto;" ><a href="'+tz_href+'" messageID='+val['messageID']+'><label class="sys-content ovw fl" style="white-space: normal;width:4.8rem;float: left;display: inline;word-break: break-all;padding-top: 0.5rem;padding-bottom: 0.5rem;">'+val['messageTitle']+'</label>'+
+            	    		'<samp class="sys-time ovw fr" style="padding-top: 0.5rem;margin-left: 0.3rem;">'+val['messageTime']+'</samp>'+
+            	    		'<samp class="sys-no ovw"></samp>'+
+            	    	'</a></li>';
+                    	}else{
+                    		search_html += '<li style="background: url(../images/order-message.png) no-repeat 0.53rem center;background-size: 0.8rem;float: left;display: inline;line-height: normal;min-height: 1.613rem;height: auto;" ><a href="'+tz_href+'"  messageID='+val['messageID']+'><label class="sys-content ovw fl" style="white-space: normal;width:4.8rem;float: left;display: inline;word-break: break-all;padding-top: 0.5rem;padding-bottom: 0.5rem;">'+val['messageTitle']+'</label>'+
+            	    		'<samp class="sys-time ovw fr" style="padding-top: 0.5rem;margin-left: 0.3rem;">'+val['messageTime']+'</samp>'+
+            	    	'</a></li>';
+                    	}
+                    	count++;
+                   });
+                   //$('.ddtz').append(search_html);
+                }else{
+              /*   	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.ddtz').append(search_html); */
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+	            	}else{
+	            		search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.ddtz').html(search_html);
+						return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.ms-contents').html(search_html);	
+                         }else{
+                         	$('.ms-contents').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                        $('.dropload-down').hide();
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	//*********************************订单通知列表上拉加载*****************
+	function dropload_machineList(params){
+		dropload = $('.ddtz').dropload({
+		    scrollArea : window,
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    },
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_orderMessageList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_orderMessageList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	var params = {
+            'userid':userid,
+           // 'machineType' : 1,
+           'typeID':1,
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };
+	dropload_machineList(params);//获取我的零活
+},100);  
+	/*********************忽略未读消息************************/
+    $('.header-reg').on('touchend',function(){
+    	var params1 = {
+    			'userid':userid,
+    	           'typeID':2,//订单通知
+    	};
+    	ignoreMessage(params1);
+    });
+	
+	/********************点击跳转详情页*************************/
+/*     $(document).on('touchstart','.notice_con',function(){
+    	var messageID = $(this).attr('messageID');
+    	var tz_href = $(this).attr('tz_href');
+    	var params2 = {
+    			'userid':userid,
+    	           'messageID':messageID,//圈子通知
+    	};
+   	window.location.href=tz_href;
+    	readMessage(params2);
+    }); */
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;">订单通知<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg">忽略未读</a></section>
+	    <ul class="release-near-content sys-ula or-in-ula ovw ddtz" style="margin-top:1.333rem;">
+	    	<!-- <article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类：</font>二手摩托车</p>
+		    		<p><font>说明：</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区：</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-ing ovw">进行中</span>
+	    	</article>
+	    	<!---->
+	    	<!-- <article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类：</font>二手摩托车</p>
+		    		<p><font>说明：</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区：</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-over ovw">已完成</span>
+	    	</article>
+	    	<!---->
+	    	<!-- <article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类：</font>二手摩托车</p>
+		    		<p><font>说明：</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区：</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-ok ovw">待接单</span>
+	    	</article>-->
+	    </ul>
+	</section>
+</body>
+</html>

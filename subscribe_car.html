@@ -1,0 +1,604 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="email=no" name="format-detection">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<title></title>
+		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="css/demo.css">
+		<link rel="stylesheet" href="css/own.css">
+		<link rel="stylesheet" type="text/css" href="css/my.css" />
+		<script type="text/javascript" src="js/jquery.min.js" ></script>
+                <script type="text/javascript" src="js/flexible.js" ></script>
+                <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+                <script type="text/javascript" src="src/lib/common/common.js"></script>
+                <script type="text/javascript" src="src/lib/common/farming.js"></script>
+                <script type="text/javascript" src="src/lib/public/public.js"></script>
+                <script type="text/javascript" src="src/lib/common/public.js"></script>
+                <!-- layer -->
+                <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+	</head>
+
+	<body style="background: #ececec;" id="subscribe_car">
+		<section class="all-main">
+			<section class="header ovw posin" style="position:fixed;z-index:100;">预约车
+				<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a>
+                                <a href="my-vehicle.html" class="header-reg header-rele">我的预约车</a>
+			</section>
+			<ul class="ld-card-ula ovw" style="padding-top: 1.333rem;">
+				<!--联系人-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><!--<span class="must-fill-in">*&nbsp;</span>-->联系人：</label>
+                                        <input class="ld-lia-in mers-lia-a contactor-name" type="text" style="width: 80% !important;" maxlength="15"  placeholder="请输填写联系人"/>
+				</li>
+				<!--联系电话-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><!--<span class="must-fill-in">*&nbsp;</span>-->联系电话：</label>
+					<input class="ld-lia-in mers-lia-a contactor-phone" type="number" oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入您的电话" />
+				</li>
+			
+				<!--出发地-->
+				<p class="comp">出发地</p>
+				<li class="mers-lia-c">
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">省份:</label>
+						<select class="add-state start-province sf">
+							<option areaID="-1" value="-1">请选择省份</option>
+						</select>
+					</aside>
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">城市:</label>
+						<select class="add-state start-city cs">
+							<option areaID="0" value="0">请选择城市 </option>
+						</select>
+					</aside>
+				</li>
+				<li class="mers-lia-c">
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">区县:</label>
+						<select class="add-state start-area qx">
+							<option areaID="0" value="0">请选择区县</option>
+						</select>
+					</aside>
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">乡镇:</label>
+						<select class="add-state start-town xz">
+							<option areaID="0" value="0">请选择乡镇 </option>
+						</select>
+					</aside>
+				</li>
+				<li class="mers-lia-c mers-lia-d">
+					<aside class="add-plant-as add-plant-ad ovw">
+						<label class="fl ovw">村:</label>
+						<select class="add-state start-village cz">
+							<option areaID="0" value="0">请选择村庄</option>
+						</select>
+					</aside>
+				</li>
+				
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">门牌号码：</label>
+					<input class="ld-lia-in mers-lia-a start-address" type="text"  />
+				</li>
+				<!--目的地-->
+				<p class="comp">目的地</p>
+				<li class="mers-lia-c">
+					<!--份-->
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">省份:</label>
+						<select class="add-state end-province sf1">
+							<option areaID="-1" value="-1">请选择省份</option>
+						</select>
+					</aside>
+					<!--城市-->
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">城市:</label>
+						<select class="add-state end-city cs1">
+							<option areaID="0" value="0">请选择城市 </option>
+						</select>
+					</aside>
+				</li>
+				<li class="mers-lia-c">
+					<!--区县-->
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">区县:</label>
+						<select class="add-state end-area qx1">
+							<option areaID="0" value="0">请选择区县</option>
+						</select>
+					</aside>
+					<!--乡镇-->
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">乡镇:</label>
+						<select class="add-state end-town xz1">
+							<option areaID="0" value="0">请选择乡镇 </option>
+						</select>
+					</aside>
+				</li>
+				<!--村-->
+				<li class="mers-lia-c mers-lia-d">
+					<aside class="add-plant-as add-plant-ad ovw">
+						<label class="fl ovw">村:</label>
+						<select class="add-state end-village cz1">
+							<option areaID="0" value="0">请选择村庄</option>
+						</select>
+					</aside>
+				</li>
+				<!--门牌号码-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">门牌号码：</label>
+					<input class="ld-lia-in mers-lia-a end-address" type="text"  />
+				</li>
+
+				<!--车辆类型-->
+				<li class=" mers-lia-d">
+					<aside class="add-plant-as add-plant-ad ovw" style="margin-bottom: 0;">
+						<label class="fl ovw">车辆类型：</label>
+						<select class="add-state car-type chaw" style="width:6.83rem !important;">
+<!--							<option value="-1" >请选择车辆类型 </option>-->
+						</select>
+					</aside>
+				</li>
+				<!--乘客人数-->
+				<li class=" mers-lia-d">
+					<aside class="add-plant-as add-plant-ad ovw" style="margin-bottom: 0;">
+						<label class="fl ovw">乘客人数：</label>
+						<select class="add-state selfull passengers-num" style="width:6.83rem !important;">
+
+						</select>
+					</aside>
+				</li>
+				<!--出发时间-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">出发时间：</label>
+					<!--<input class="ld-lia-in mers-lia-a start-time" type="datetime-local" />-->
+                                        <input class="ld-lia-in mers-lia-a zlg_starttime add-state start-time" id="start_time" type="datetime-local" placeholder="请输入开始时间"/>
+				</li>
+
+				<!--备注-->
+				<!--<li class="ld-lia ld-lie bz-text comli" style="height: 2.32rem !important;">
+					<label class="ld-lia-la ovw comlab">备注：</label>
+					<textarea class="ovw expressArea-remark comtext" placeholder="dkfjsk"></textarea>
+				</li>-->
+				<li class="mers-lia-c mers-lia-d  com_li" style="height: 2.32rem !important;margin-top: 0.2rem;">
+					<aside class="add-plant-as ovw" style="height: 100%;">
+						<label class="fl ovw font_28">备注:</label>
+						<textarea class="com_text font_28"></textarea>
+
+					</aside>
+
+			</ul>
+
+		</section>
+		<footer>
+			<a class="over-order ovw" href="javascript:void(0);" style="margin: 0.4rem auto;">预约</a>
+		<input type="hidden" class="authorizationID" value="0" />
+		</footer>
+		
+<script>
+    var nowTime = parseInt(new Date().getTime()/1000);//当前时间戳
+    var nowDate = toLocalTime(nowTime,8);
+//    document.getElementById("start_time").value = "2014-01-02T11:42:13.510";
+    $('.start-time').val(nowDate);
+    //获取约车类型
+	function getVehicleType(params){
+            var cmd = 'getVehicleType';//接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(isNull(data['body']['list'])){
+                            var carTypeHtml = '';//车辆类型
+                            $.each(data['body']['list'],function(i,val){
+                                carTypeHtml += '<option value="'+val['id']+'" >'+val['cate_name']+'</option>';
+                            })
+                            $('.car-type').append(carTypeHtml);
+                        }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+        var getVehicleType_params = {};
+        getVehicleType(getVehicleType_params);
+
+    var passengersHtml = '';//乘车人数
+    $.each(passengers,function(i,val){
+        passengersHtml += '<option value="'+i+'" >'+val+'</option>';
+    })
+    var from = GetQueryParam("from");
+    $('.header-back').on('click',function(){
+        if(from=="h5"){
+            window.history.go(-1);
+        }else{
+            backtoNative();
+        }
+    })
+    var province;
+	var city;
+	var area;
+	var town;
+	var village; 
+	/*****************************默认地点*****************************/
+	setTimeout(function(){
+                var arr_areaID = current_location_areaIDs.split(",");
+                province = arr_areaID[0];
+		city = arr_areaID[1]==''?0:arr_areaID[1];
+		area = arr_areaID[2]==''?0:arr_areaID[2];
+		town = arr_areaID[3]==''?0:arr_areaID[3];
+		village = arr_areaID[4]==''?0:arr_areaID[4];
+                getArea(0, 1, 0,0); //用户设置的区域位置
+                    if (province != '') {
+                        getArea(province, 2, 0,0);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (city != '') {
+                        getArea(city, 3, 0,0);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (area != '') {
+                        getArea(area, 4, 0,0);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (town != '') {
+                        getArea(town, 5, 0,0);
+                        var area_id = arr_areaID[3];
+                    }if (village != '') {
+                        var area_id = arr_areaID[4];
+                    }
+                getArea(0, 1, 1,0); //用户设置的区域位置
+                    if (province != '') {
+                        getArea(province, 2, 1,0);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (city != '') {
+                        getArea(city, 3, 1,0);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (area != '') {
+                        getArea(area, 4, 1,0);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (town != '') {
+                        getArea(town, 5, 1,0);
+                        var area_id = arr_areaID[3];
+                    }if (village != '') {
+                        var area_id = arr_areaID[4];
+                    }
+                $('.contactor-name').val(username);
+                $('.contactor-phone').val(telephone);
+        },500);
+    $('.passengers-num').append(passengersHtml);
+       /**获取地区信息接口
+        *type:1.省份；2.城市，3.区县；4.乡镇
+        **/
+                function getArea(areaID, type, when,orign) {
+                    var cmd = 'getArea'; //农机投诉接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    var params = {
+                        'areaID': areaID,
+                    };
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            if (isNull(data['body']['list'])) {
+                                var areaHtml = '';
+                                var areaHtml1 = '';
+                                if(when==0){
+                                    $.each(data['body']['list'], function (i, val) {
+                                        if (val['areaID'] != 0) {
+                                            areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                                        }
+                                    })
+                                }else{
+                                    $.each(data['body']['list'], function (i, val) {
+                                        if (val['areaID'] != 0) {
+                                            areaHtml1 += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                                        }
+                                    })
+                                }
+                                    switch (type) {
+                                        case 1:
+                                            $('.sf').append(areaHtml);
+                                            $('.sf1').append(areaHtml1);
+                                            break;
+                                        case 2:
+                                            $('.cs').append(areaHtml);
+                                            $('.cs1').append(areaHtml1);
+                                            break;
+                                        case 3:
+                                            $('.qx').append(areaHtml);
+                                            $('.qx1').append(areaHtml1);
+                                            break;
+                                        case 4:
+                                            $('.xz').append(areaHtml);
+                                            $('.xz1').append(areaHtml1);
+                                            break;
+                                        case 5:
+                                            $('.cz').append(areaHtml);
+                                            $('.cz1').append(areaHtml1);
+                                            break;
+                                    }
+                                    
+                                if (orign == 0) {        //0  带默认值
+                                    $('.sf').val(province);
+                                    $('.cs').val(city);
+                                    $('.qx').val(area);
+                                    $('.xz').val(town);
+                                    $('.cz').val(village);
+                                    $('.sf1').val(province);
+                                    $('.cs1').val(city);
+                                    $('.qx1').val(area);
+                                    $('.xz1').val(town);
+                                    $('.cz1').val(village);
+                                }
+                            } 
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+//                getArea(0, 1);
+                $('.sf').on('change', function () {
+                    if ($('.sf option:selected').attr('areaID') != -1) {
+                        $('.cs').html('');
+                        $('.cs').append('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        if ($('.sf option:selected').attr('areaID') != 0) {
+                            getArea($('.sf option:selected').attr('areaID'), 2,0);
+                        }
+                    } else {
+                        $('.cs').html('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.cs').on('change', function () {
+                    if ($('.cs option:selected').attr('areaID') != 0) {
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.cs option:selected').attr('areaID'), 3,0);
+                    } else {
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.qx').on('change', function () {
+                    if ($('.qx option:selected').attr('areaID') != 0) {
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.qx option:selected').attr('areaID'), 4,0);
+                    } else {
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.xz').on('change', function () {
+                    if ($('.xz option:selected').attr('areaID') != 0) {
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.xz option:selected').attr('areaID'), 5,0);
+                    } else {
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                }) 
+                 $('.sf1').on('change', function () {
+                    if ($('.sf1 option:selected').attr('areaID') != -1) {
+                        $('.cs1').html('');
+                        $('.cs1').append('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx1').html('');
+                        $('.qx1').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz1').html('');
+                        $('.xz1').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('');
+                        $('.cz1').append('<option areaID="0" value="0">请选择村庄</option>');
+                        if ($('.sf1 option:selected').attr('areaID') != 0) {
+                            getArea($('.sf1 option:selected').attr('areaID'), 2,1);
+                        }
+                    } else {
+                        $('.cs1').html('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx1').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz1').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.cs1').on('change', function () {
+                    if ($('.cs1 option:selected').attr('areaID') != 0) {
+                        $('.qx1').html('');
+                        $('.qx1').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz1').html('');
+                        $('.xz1').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('');
+                        $('.cz1').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.cs1 option:selected').attr('areaID'), 3,1);
+                    } else {
+                        $('.qx1').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz1').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.qx1').on('change', function () {
+                    if ($('.qx1 option:selected').attr('areaID') != 0) {
+                        $('.xz1').html('');
+                        $('.xz1').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('');
+                        $('.cz1').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.qx1 option:selected').attr('areaID'), 4,1);
+                    } else {
+                        $('.xz1').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz1').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.xz1').on('change', function () {
+                    if ($('.xz1 option:selected').attr('areaID') != 0) {
+                        $('.cz1').html('');
+                        $('.cz1').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.xz1 option:selected').attr('areaID'), 5,1);
+                    } else {
+                        $('.cz1').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                }) 
+        //保存预约车消息
+    var re_type = 0;
+	function vehicleAdd(params){
+        if (re_type) {
+            return true;
+        }
+        re_type = 1;
+            var cmd = 'vehicleAdd';//接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	        	if(data['resultCode']==1){
+	        		layer.msg('预约车信息提交成功!');
+	        		setTimeout(function(){
+			            window.location.href = 'my-vehicle.html';
+			        },1000);
+	        	}else{
+                    re_type = 0;
+//	        		layer.msg(data['resultMessage']);
+                                layer.confirm(data['resultMessage']+'您是否要取消约车？', {
+                                    btn: ['是','否'] //按钮
+                                  }, function(){
+                                    if(from=="h5"){
+                                        window.history.go(-1);
+                                    }else{
+                                        backtoNative();
+                                    }
+                                  }, function(){
+                                    
+                                  });
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                re_type = 0;
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+
+        $(document).on('click','.over-order',function(){
+            var info_username = $.trim($('.contactor-name').val());//联系人姓名
+            var info_mobile = $.trim($('.contactor-phone').val());//联系人电话
+	    var plant_province = $('.sf').val();//出发地
+            var plant_city = $('.cs').val();
+            var plant_county = $('.qx').val();
+            var plant_town = $('.xz').val();
+            var plant_village = $('.cz').val();
+             var plant_province1 = $('.sf1').val();//目的地
+            var plant_city1 = $('.cs1').val();
+            var plant_county1 = $('.qx1').val();
+            var plant_town1 = $('.xz1').val();
+            var plant_village1 = $('.cz1').val();
+            var info_addr = $.trim($('.start-address').val());//出发门牌号
+            var info_deli = $.trim($('.end-address').val());//目的地门牌号
+            var cate_id = $('.car-type').val();//车辆类型，写死不能为-1
+            var info_num = ($('.passengers-num').val())*1+1;//乘车人数
+            var start_time = $('.start-time').val();
+            var info_intro = $('.com_text').val();//备注
+	    var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+            if(!isNull(info_username)){
+	    	layer.msg('请正确填写联系人姓名');
+	    	return false;
+	    }
+	    if(info_mobile==''||!phoneReg.test(info_mobile)){
+	    	layer.msg('请正确填写电话号码');
+	    	return false;
+	    }
+            if(plant_county==0){
+	    	layer.msg('请正确填写出发地到区县级');
+	    	return false;
+	    }
+            if(plant_county1==0){
+	    	layer.msg('请正确填写目的地到区县级');
+	    	return false;
+	    }
+            if(cate_id==-1){
+	    	layer.msg('请选择车辆类型');
+	    	return false;
+	    }
+            if(!isNull(start_time)){
+	    	layer.msg('请正确填写出发时间');
+	    	return false;
+	    }
+	    var params = {
+			            'user_id': userid,
+			            'info_username':info_username,
+			            'info_mobile' : info_mobile,//
+			            'plant_province': plant_province,//
+			            'plant_city' : plant_city,//
+                                    'plant_county': plant_county,
+			            'plant_town': plant_town,//
+			            'plant_village' : plant_village,//
+                                    'plant_province1': plant_province1,//
+			            'plant_city1' : plant_city1,//
+                                    'plant_county1': plant_county1,
+			            'plant_town1': plant_town1,//
+			            'plant_village1' : plant_village1,//
+                                    'info_addr' : info_addr,
+			            'info_deli': info_deli,//
+			            'cate_id' : cate_id,//
+                                    'info_num' : info_num,
+                                    'start_time': start_time,//
+			            'info_intro' : info_intro,//
+	    };
+//                console.info(params);
+	    vehicleAdd(params);    
+	})
+        
+</script>
+	</body>
+
+</html>

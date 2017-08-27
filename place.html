@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .place-se{width:72%;text-align: center;}
+</style>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin"><span class="title"></span><a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    	<ul class="place-ula ovw">
+	    		<li>
+	    			<label class="fl">省份</label>
+	    			<select class="place-se fr sf"><option areaID="-1" value="-1">请选择省份</option></select>
+	    		</li>
+	    		<li>
+	    			<label class="fl">城市</label>
+                                <select class="place-se fr cs"><option areaID="0" value="0">请选择城市</option></select>
+	    		</li>
+	    		<li>
+	    			<label class="fl">区县</label>
+	    			<select class="place-se fr qx"><option areaID="0" value="0">请选择区县</option></select>
+	    		</li>
+	    		<li>
+	    			<label class="fl">乡镇</label>
+	    			<select class="place-se fr xz"><option areaID="0" value="0">请选择乡镇</option></select>
+	    		</li>
+	    		<li>
+	    			<label class="fl">村</label>
+	    			<select class="place-se fr cz"><option areaID="0" value="0">请选择村庄</option></select>
+	    		</li>
+	    	</ul>
+	    <a class="over-order ovw" href="#">确定</a>
+	</section>
+<script type="text/javascript">
+$(function(){
+//        $.delStorage('pca');
+        var province=0;
+	var city=0;
+	var area=0;
+	var town=0;
+	var village=0; 
+        if(isNull($.getStorage('pca'))){
+            var ssq = eval('('+$.getStorage('pca')+')')?eval('('+$.getStorage('pca')+')'):'';console.info(ssq);
+            province = ssq.sf==undefined?province:ssq.sf;
+            city = ssq.cs==undefined?city:ssq.cs;
+            area = ssq.qx==undefined?area:ssq.qx;
+            town = ssq.xz==undefined?town:ssq.xz;
+            village = ssq.cz==undefined?village:ssq.cz;
+            getArea(0, 1, 0); //用户设置的区域位置
+            if (province!=0) {
+                        getArea(province, 2, 0);
+                    }
+                    if (city != 0) {
+                        getArea(city, 3, 0);
+                    }
+                    if (area != 0) {
+                        getArea(area, 4, 0);
+                    }
+                    if (town != 0) {
+                        getArea(town, 5, 0);
+                    }
+        }else{
+            setTimeout(function () {
+                var arr_areaID = current_location_areaIDs.split(",");
+                province = arr_areaID[0];
+                city = arr_areaID[1]==''?0:arr_areaID[1];
+                area = arr_areaID[2]==''?0:arr_areaID[2];
+                town = arr_areaID[3]==''?0:arr_areaID[3];
+                village = arr_areaID[4]==''?0:arr_areaID[4];
+                getArea(0, 1, 0); //用户设置的区域位置
+                        if (province!=0) {
+                            getArea(province, 2, 0);
+                        }
+                        if (city != 0) {
+                            getArea(city, 3, 0);
+                        }
+                        if (area != 0) {
+                            getArea(area, 4, 0);
+                        }
+                        if (town != 0) {
+                            getArea(town, 5, 0);
+                        }
+            },500);
+        }
+	var type = GetQueryParam("type");
+        var detailsID = GetQueryParam("detailsID");
+        if(isNull(detailsID)){
+            switch(type){
+		case "1": var goBack = "release.html?address=empty&machineID="+detailsID;var title = "农机位置";break;
+		case "2": var goBack = "farm-work-release.html?address=empty&farmWorkID="+detailsID;var title = "农活位置";break;
+                case "3": var goBack = "goods-release.html?address=empty&goodsID="+detailsID;var title = "商品配送区域";break;
+                case "4": var goBack = "second-hand-release.html?address=empty&secondGoodsID="+detailsID;var title = "二手商品配送区域";break;
+                case "5": var goBack = "recruit-job-release.html?address=empty&jobID="+detailsID;var title = "招零工作业地点";break;
+                case "6": var goBack = "find-job-release.html?address=empty&vitaeID="+detailsID;var title = "找零活";break;
+            }
+        }else{
+            switch(type){
+                    case "1": var goBack = "release.html?address=empty";var title = "农机位置";break;
+                    case "2": var goBack = "farm-work-release.html?address=empty";var title = "农活位置";break;
+            case "3": var goBack = "goods-release.html?address=empty";var title = "商品配送区域";break;
+            case "4": var goBack = "second-hand-release.html?address=empty";var title = "二手商品配送区域";break;
+            case "5": var goBack = "recruit-job-release.html?address=empty";var title = "招零工作业地点";break;
+            case "6": var goBack = "find-job-release.html?address=empty";var title = "找零活";break;
+            }
+        }
+	$('.title').text(title);
+	$('.header-back').attr('href',goBack);
+
+	/****************************获取地区信息接口********************
+    **type:1.省份；2.城市，3.区县；4.乡镇
+    */
+	function getArea(areaID,type,when){
+        var cmd = 'getArea';//农机投诉接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+            'areaID':areaID,
+        };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+                if(isNull(data['body']['list'])){
+                    var areaHtml = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	areaHtml += '<option areaID="'+val['areaID']+'" value="'+val['areaID']+'">'+val['areaName']+'</option>';
+                    })
+                    switch(type){
+                        case 1:$('.sf').append(areaHtml);break;
+                        case 2:$('.cs').append(areaHtml);break;
+                        case 3:$('.qx').append(areaHtml);break;
+                        case 4:$('.xz').append(areaHtml);break;
+                        case 5:$('.cz').append(areaHtml);break;
+                    }
+                    if (when == 0) {        //0  带默认值
+                                $('.sf').val(province);
+                                $('.cs').val(city);
+                                $('.qx').val(area);
+                                $('.xz').val(town);
+                                $('.cz').val(village);
+                            }
+                }else{
+                    layer.msg('暂无区域内容');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+//    getArea(0,1);
+    $('.sf').on('change',function(){
+        if($('.sf option:selected').attr('areaID')!=-1){
+            $('.cs').html('');$('.cs').append('<option areaID="0" value="0">请选择城市</option>');
+            $('.qx').html('');$('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+            $('.xz').html('');$('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+            if($('.sf option:selected').attr('areaID')!=0){
+                getArea($('.sf option:selected').attr('areaID'),2);
+            }
+        }else{
+            $('.cs').html('<option areaID="0" value="0">请选择城市</option>');
+            $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+            $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+        }
+    })
+    $('.cs').on('change',function(){
+        if($('.cs option:selected').attr('areaID')!=0){
+            $('.qx').html('');$('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+            $('.xz').html('');$('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+            getArea($('.cs option:selected').attr('areaID'),3);
+        }else{
+            $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+            $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+        }
+    })
+    $('.qx').on('change',function(){
+        if($('.qx option:selected').attr('areaID')!=0){
+            $('.xz').html('');$('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+            getArea($('.qx option:selected').attr('areaID'),4);
+        }else{
+            $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+        }
+    })
+    $('.xz').on('change',function(){
+        if($('.xz option:selected').attr('areaID')!=0){
+            $('.cz').html('');$('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+            getArea($('.xz option:selected').attr('areaID'),5);
+        }else{
+            $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+        }
+    })
+ 
+    $('.over-order').on('click',function(){
+        var sfm = $('.sf option:selected').text();
+        var csm = parseInt($('.cs option:selected').attr('areaID'))?$('.cs option:selected').text():'';
+        var qxm = parseInt($('.qx option:selected').attr('areaID'))?$('.qx option:selected').text():'';
+        var xzm = parseInt($('.xz option:selected').attr('areaID'))?$('.xz option:selected').text():'';
+        var czm = parseInt($('.cz option:selected').attr('areaID'))?$('.cz option:selected').text():'';
+    	var sf = $('.sf option:selected').attr('areaID');
+    	var cs = $('.cs option:selected').attr('areaID');
+    	var qx = $('.qx option:selected').attr('areaID');
+    	var xz = $('.xz option:selected').attr('areaID');
+        var cz = $('.cz option:selected').attr('areaID');
+        if(sf==-1){
+            layer.msg('请选择地区信息');
+            return false;
+        }else{
+            var address = sfm+csm+qxm+xzm+czm;
+            var ids = 'sf='+sf+'&&cs='+cs+'&&qx='+qx+'&&xz='+xz+'&&cz='+cz;
+            switch(type){
+                case "1": var goBackUrl = "release.html?address="+address+"&machineID="+detailsID;break;
+                case "2": var goBackUrl = "farm-work-release.html?address="+address+"&farmWorkID="+detailsID;break;
+                case "3": var goBackUrl = "goods-release.html?address="+address+"&goodsID="+detailsID;break;
+                case "4": var goBackUrl = "second-hand-release.html?address="+address+"&secondGoodsID="+detailsID;break;
+                case "5": var goBackUrl = "recruit-job-release.html?address="+address+"&jobID="+detailsID;break;
+                case "6": var goBackUrl = "find-job-release.html?address="+address+"&vitaeID="+detailsID;break;
+            }
+            var pca = {
+                    'sf':sf,
+                    'cs':cs,
+                    'qx':qx,
+                    'xz':xz,
+                    'cz':cz,
+                }
+            $.setStorage('pca',pca);
+            // console.info($.getStorage('pca'));console.info(address);
+            window.location.href = goBackUrl;
+            
+        }
+    	
+    })
+// $.setStorage('name','张三');
+// alert($.getStorage('name'));
+// $.delStorage('name');
+// alert($.getStorage('name'));
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,1388 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>二手详情</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="css/public.css">
+<link rel="stylesheet" type="text/css" href="css/swiper.css" />
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<script src="src/lib/public/public.js" type="text/javascript"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+/*         .dropload-down{
+    margin-top:1.333rem;
+    } */
+        .pl_hide{
+    display:none;
+    }
+    .second_comment{
+    margin-top: 0.5rem;
+    }
+/*     .work-deta-content{
+    height:8rem;
+    } */
+    .work-deta-ul li{line-height: 22px;}
+    .posin span{width: 50%;overflow: hidden;display: block;margin-left: 25%;}
+    .my-order-select li.fl{background: #dd1616; border: 1px solid #eb1c10;}
+    .my-order-select li.fl a{color:white;}
+    .cancel-order1{display:none;}
+</style>
+<script>
+	$(function(){
+             var searchContent = isNull(GetQueryParam("search_txt"))?GetQueryParam("search_txt"):'';
+		$('.layer-work').on('touchstart',function(){
+			$('.layer-work').hide();
+			$('.layer-work-cont').hide();
+                        document.activeElement.blur();
+		})
+	})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section  style=" position: fixed;z-index:500;" class="header ovw posin"><span class="seconds_name"></span><a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a>
+	    	<a href="javascript:void(0);" class="header-reg farm-work-mark" style="right:1.3rem;"><img class='details_concern' concern="1" style="width: 22px;" src="images/topic_3.png" /></a><!--  关注-->
+	    	<a href="javascript:void(0);" class="header-reg farm-work-share"><img style="width: 22px;" src="images/share-button.png" /></a>
+	    </section>
+	    <section   style="margin-top: 0;" class="work-deta-content ovw">
+
+	<!--    	<dl class="work-deta-dla ovw">
+	    		<dt><img src="images/default.jpg"/></dt>
+	    		<dd>
+	    			<p>张三</p>
+	    			<span>131****0222</span>
+	    			<a href="#" class="work-tel"><img src="images/ing_3.png"/></a>
+	    		</dd>
+	    	</dl>
+	    	<ul class="work-deta-ul ovw">
+	    		<li><label class="fl ovw">认证信息：</label><span class="fl ovw">
+	    			<img src="images/cer-icon-2.png" class="cer-icon-a" />
+	    			<img src="images/cer-icon-3.png" class="cer-icon-b" />
+	    			<img src="images/cer-icon-4.png" class="cer-icon-c" />
+	    			<img src="images/cer-icon-5.png" class="cer-icon-d" />
+	    			<img src="images/cer-icon-1.png" class="cer-icon-e" />
+	    			<img src="images/cer_6.png" class="cer-icon-f" />
+	    			<img src="images/cer_7.png" class="cer-icon-g" />
+	    		</span></li>
+	    		<li><label class="fl ovw">发布时间：</label><span class="fl ovw">2016-12-12</span></li>
+	    		<li><label class="fl ovw">配送区域：</label><span class="fl ovw">2台</span></li>
+	    		<li><label class="fl ovw">商品种类：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">商品名称：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">价<font style="opacity: 0;">空格</font>格：</label><span class="fl ovw">88元/亩</span></li>
+	    		<li><label class="fl ovw">交易价格：</label><span class="fl ovw">2台</span></li>
+	    		<li><label class="fl ovw">新旧程度：</label><span class="fl ovw">2台</span></li>
+	    	</ul> -->
+	    </section>
+<!-- 	    <a class="over-order work-ok ovw cj_submit" href="javascript:;">成交</a> -->
+	    
+	    	    <!--  用于存发单人userid的隐藏域 -->
+	    <p id="user_info" userid='' style="display:none"></p>
+ 	    <!--<section class="synthesis-cont">-->
+<!-- 	    	<article class="synthesis-main ovw">
+	    <cite class="synthesis-cite ovw">
+	    			<label class="fl ovw">综合评分</label>
+	    		 		<p class="star-eval syn-t ovw fl">
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a"></span>
+		    			<span class="fl star-a"></span>
+		    		</p> 		 
+	    		</cite>
+	   
+	    		<dl class="synthesis-dla ovw">
+	    		<dt><img src="images/order_1.png"/></dt>
+	    			<dd>
+	    			<div class="syn-personal ovw">
+	    					<p class="star-eval ovw fl">
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a"></span>
+				    			<span class="fl star-a"></span>
+				    		</p>
+				    		<label class="fr">2017-01-05</label>
+	    				</div>
+	    				<p class="syn-pa ovw">...</p>
+	    			</dd>
+	    		</dl>
+	    	</article> -->
+	    <!--</section>--> 
+	    <!---->
+	    	    <section class="goodsCommentList ovw" style="background:#fff;margin-top: 0.4rem;"></section>
+	    <section class="layer-bj layer-work"></section>
+	    <section class="layer-work-cont ovw">
+	    	<ul class="layer-work-mian ovw">
+	    		<li class="layer-work-lia">预定商品：</li>
+	    		<li class="layer-work-lie"><input class="goods_name" type="text" readonly="true"/></li>
+	    		<li class="layer-work-lia">数量：</li>
+	    		<li class="layer-work-lie"><input class="goods_num" type="text"/></li>
+	    		<li class="layer-work-lia psqy">配送区域：</li>
+	    		<li class="layer-work-lic psqy">
+	    			<p class="layer-work-pc ovw fl"><select class="layer-work-ce ovw province"><option value="0">省</option></select></p>
+	    			<p class="layer-work-pc layer-work-pd ovw fl"><select class="layer-work-ce ovw city"><option value="0">市</option></select></p>
+	    			<p class="layer-work-pc ovw fr"><select class="layer-work-ce ovw area"><option value="0">区县</option></select></p>
+	    		</li>
+	    		<li class="layer-work-lia psqy">门牌号码：</li>
+	    		<li class="layer-work-lie psqy"><input class="cj_address" /></li>
+	    		<li class="layer-work-lif dg_submit"><a href="javascript:;">确认</a></li>
+	    	</ul>
+	    </section>
+	</section>
+    <a class="info_btn" href="javascript:;" style="display:none;">
+		<span>欢迎注册下载，惊喜等着你哦！&nbsp;&nbsp;马上注册</span>
+		<img src="images/ret.png" alt="">
+	</a>
+    <script type="text/javascript">
+	$(function(){
+		//分享参数
+		var shareImage = '';
+		var shareText = '';
+		var shareTitle = '';
+		var shareURL = window.location.href+"&share=1&username="+username+"&userid="+userid;
+                var share_params = GetQueryParam('share');
+//                if(share_params==1){
+//                    var share_name = GetQueryParam('username');
+//                    var share_userid = GetQueryParam('userid');
+//                    var phoneID = GetQueryParam('imei');
+//                    var phoneModel = GetQueryParam('phoneModel');
+//                    var addressIDs = GetQueryParam('address');
+//                    $('.info_btn').attr('href','register.html?username='+share_name+'&userid='+share_userid+"&imei="+phoneID+"&phoneModel="+phoneModel+"&address="+addressIDs);
+//                    $('.info_btn').show();
+//                }
+                		
+		var secondGoodsID = GetQueryParam("secondGoodsID");
+                var from = GetQueryParam('from');
+		/*************消息通知消息状态处理****************/
+		var messageID = GetQueryParam('messageID');
+		if(from=='notice'){
+			setTimeout(function(){
+			var notice_params = {
+					'messageID':messageID,
+					'userid':userid,
+			}
+			console.info(notice_params);
+	    	readMessage(notice_params);
+			},100);  
+		}
+		
+	$('.header-back').on('click',function(){
+		if(from=="concern"){
+			window.location.href="my-subscription-1.html";//我的收藏
+//                        backtoPrev(0);
+		}else if(from=="h5"){
+//			window.location.href="my-work-5.html";//我的发布
+                        backtoPrev(0);
+		}else if(from=="order"){
+//			window.location.href="my-order.html";//我的订单
+                        backtoPrev(0);
+		}else if(from=="notice"){
+			window.location.href="notice-order.html";//订单通知
+		}else{
+//			window.location.href="second-hand-list.html?search_txt="+searchContent;
+                        backtoPrev(0);
+		}
+	})
+		$(document).on('touchstart','.cj_submit',function(e){
+			var dg_userid = $('#user_info').attr('userid');
+			if(userid == dg_userid){
+                            layer.open({
+                                content: '您确定要结束发布吗？'
+                                ,btn: ['是', '否']
+                                ,yes: function(index){
+                                    var secondGoodsRevoke_params = {
+                                            'userid':userid,
+                                            'secondGoodsID':secondGoodsID,
+                                    };
+                                    secondGoodsRevoke(secondGoodsRevoke_params);
+                                }
+                        });
+			}else{
+                            if(userid==0){
+                                gotoLogin();
+                            }else{
+                                $('.layer-work').show()
+				$('.layer-work-cont').show()
+                            }
+			}
+                        e.preventDefault();
+		})
+                	
+/****************************二手商品取消发布接口******************************/
+    function secondGoodsRevoke(params){
+        var cmd = 'secondGoodsRevoke';//商品取消发布接口
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+             data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){console.info(data);
+                if(data['resultCode']==1){
+                    layer.msg("二手商品取消发布成功!");
+                    setTimeout(function(){
+                        if(from=="h5"){
+                            backtoPrev(1);
+//                            window.location.href = 'http://'+window.location.host+'/my-work-5.html';
+                        }else{
+                            window.location.href = 'http://'+window.location.host+'/second-hand-list.html';
+                        }
+                    },1000);
+                }else{
+                    layer.msg(data['resultMessage']);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+		//*********************************二手商品详情***********************************
+		function secondGoodsDetail(params){
+			var cmd = 'secondGoodsDetail';//二手商品详情接口命令
+		    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+		    var jsonp = 1;
+		    params = objKeySort(params);//按照属性名升序排列
+		    var params_str = objChangeStr(params);//拼接params参数的属性值
+		    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+		    $.ajax({
+		        url : apiURL,//接口地址
+		         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+		        dataType : 'jsonp',
+		        success: function(data){
+		        	console.info(data);
+		            if(isNull(data['body'])){
+		            	//分享信息赋值
+		            	var body = data['body'];
+		            	shareImage = body['userAvatar'];
+						shareText = body['intro'];
+						shareTitle = body['goodsName'];
+		            	//是否认证，背景图片
+		            	if(data['body']['authentication']['phone']==1){
+		            		var phone_img = "images/cer-icon-2.png";
+		            	}else{
+		            		var phone_img = "images/cer_1.png";
+		            	}
+		            	if(data['body']['authentication']['realname']==1){
+		            		var realname_img = "images/cer-icon-3.png";
+		            	}else{
+		            		var realname_img = "images/cer_2.png";
+		            	}
+		            	if(data['body']['authentication']['land']==1){
+		            		var land_img = "images/cer-icon-4.png";
+		            	}else{
+		            		var land_img = "images/cer_3.png";
+		            	}
+		            	if(data['body']['authentication']['contractor']==1){
+		            		var contractor_img = "images/cer-icon-5.png";
+		            	}else{
+		            		var contractor_img = "images/cer_4.png";
+		            	}
+		            	if(data['body']['authentication']['machine']==1){
+		            		var machine_img = "images/cer-icon-6.png";
+		            	}else{
+		            		var machine_img = "images/cer_7.png";
+		            	}
+		            	if(data['body']['authentication']['merchants']==1){
+		            		var merchants_img = "images/cer-icon-7.png";
+		            	}else{
+		            		var merchants_img = "images/cer_6.png";
+		            	}
+		            	if(data['body']['authentication']['skill']==1){
+		            		var skill_img = "images/cer-icon-1.png";
+		            	}else{
+		            		var skill_img = "images/cer_5.png";
+		            	}
+                                var imagesHtml = '';
+                            $.each(body['images'],function(i,val){
+                                imagesHtml += '<li class="add-pic-ld" style="float:left;width:25%;"><span class="fl plant-imgb ovw pic pic-add" style="margin:10px 7px;width:1.83rem;height:1.83rem;"><img src="'+val+'"></span></li>';
+                            })
+                            imagesHtml = "<div style='width:100%;border-top:1px solid #ececec;'><ul class='work-deta-ul'>"+imagesHtml+"</ul></div>";
+		            	//******************判断是否关注**************************************
+		            	var isfav = parseInt(data['body']['isFav']);
+		            	if(isfav==1){//已经关注
+		            		$('.details_concern').attr('src','images/topic_5.png');
+		            		$('.details_concern').attr('concern','2');
+		            	}else{//未关注
+		            		$('.details_concern').attr('src','images/topic_3.png');
+		            		$('.details_concern').attr('concern','1');
+		            	}
+		            	/***************订单状态******************/
+			    		var img = "images/ing_6.jpg";
+			            var show_status = '<cite class="my-order-sate my-order-icona ovw" style="background: #fff url('+img+') no-repeat scroll 0.4rem center / auto 0.4666rem;margin-top: 1.333rem;">待接单</cite>';
+		             	switch(parseInt(data['body']['status'])){
+		             	case 2:img = "images/ing_8.jpg";
+             			show_status = '<cite class="my-order-sate my-order-icona ovw" style="background: #fff url('+img+') no-repeat scroll 0.4rem center / auto 0.4666rem;margin-top: 1.333rem;">进行中</cite>';break;
+		             	case 3:img = "images/ing_8.jpg";
+	             			show_status = '<cite class="my-order-sate my-order-icona ovw" style="background: #fff url('+img+') no-repeat scroll 0.4rem center / auto 0.4666rem;margin-top: 1.333rem;">进行中</cite>';break;
+	             		case 4:img = "images/ing_7.jpg";
+	             			show_status = '<cite class="my-order-sate my-order-icona ovw" style="background: #fff url('+img+') no-repeat scroll 0.4rem center / auto 0.4666rem;margin-top: 1.333rem;">已完成</cite>';break;
+	             		case 5:img = "images/ing_7.jpg";
+//                                    $('.edit').hide();
+//                                $('.cj_submit').hide();
+             			show_status = '<cite class="my-order-sate my-order-icona ovw" style="background: #fff url('+img+') no-repeat scroll 0.4rem center / auto 0.4666rem;margin-top: 1.333rem;">已关闭</cite>';break;
+		             	}
+		            	//var machDetailHtml = '<dl class="work-deta-dla ovw"><dt><img src="'+data['body']['userAvatar']+'"/></dt><dd><p>'+data['body']['username']+'</p><span>'+phone_replace(data['body']['phone'])+'</span><a href="#" class="work-tel"><img src="images/ing_3.png"/></a></dd></dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">认证信息：</label><span class="fl ovw"><img src="'+phone_img+'" class="cer-icon-a" /><img src="'+realname_img+'" class="cer-icon-b" /><img src="'+land_img+'" class="cer-icon-c" /><img src="'+contractor_img+'" class="cer-icon-d" /><img src="'+machine_img+'" class="cer-icon-e" /><img src="'+merchants_img+'" class="cer-icon-f" /><img src="'+skill_img+'" class="cer-icon-g" /></span></li><li><label class="fl ovw">发布时间：</label><span class="fl ovw">'+toLocalTime(data['body']['timeline'],1)+'</span></li><li><label class="fl ovw">农机类型：</label><span class="fl ovw">'+data['body']['typeName']+'</span></li><li><label class="fl ovw">农机数量：</label><span class="fl ovw">'+data['body']['count']+'台</span></li><li><label class="fl ovw">作业地点：</label><span class="fl ovw">'+data['body']['address']+'</span></li><li><label class="fl ovw">理想报价：</label><span class="fl ovw">'+data['body']['price']+'元/亩</span></li><li><label class="fl ovw">详细说明：</label><span class="fl ovw">'+data['body']['intro']+'</span></li></ul>';
+				    	if(data['body']['isDeli']==1){//配送
+                                            $('.layer-work-cont').css({'height':'8.32rem'});
+				    		if(data['body']['AllArea']==0){
+					    		var deliver_html = '<li><label class="fl ovw">配送区域：</label><span class="fl ovw">周边</span></li>';
+				    		}else{
+				    			var deliver_html = '<li><label class="fl ovw">配送区域：</label><span class="fl ovw">全国</span></li>';
+				    		}
+
+				    	}else{//不配送
+                                            $('.layer-work-cont').css({'height':'5.32rem'});
+                                            $('.psqy').hide();
+				    		var deliver_html = '';
+				    	}
+		            	var secondGoodsDetailHtml='<dl class="work-deta-dla ovw">'+
+				    		'<dt><a href="list.html?userid='+data['body']['userid']+'&poster='+data['body']['userAvatar']+'&username='+data['body']['username']+'"><img src="'+data['body']['userAvatar']+'"/></a></dt>'+
+				    		'<dd>'+
+				    			'<p userid_fd='+data['body']['userid']+' >'+data['body']['username']+'</p>'+
+				    			'<span>'+phone_replace(data['body']['phone'])+'</span>'+
+				    			'<a href="tel:'+data['body']['phone']+'" class="work-tel" style="display:none;"><img src="images/ing_3.png"/></a>'+
+				    		'</dd>'+
+				    	'</dl>'+
+				    	'<ul class="work-deta-ul ovw">'+
+				    		'<li><label class="fl ovw">认证信息：</label><span class="fl ovw">'+
+				    			'<img src="'+phone_img+'" class="cer-icon-a" />'+
+				    			'<img src="'+realname_img+'" class="cer-icon-b" />'+
+				    			'<img src="'+land_img+'" class="cer-icon-c" />'+
+				    			'<img src="'+contractor_img+'" class="cer-icon-d" />'+
+				    			'<img src="'+machine_img+'" class="cer-icon-e" />'+
+				    			'<img src="'+merchants_img+'" class="cer-icon-f" />'+
+				    			'<img src="'+skill_img+'" class="cer-icon-g" />'+
+				    		'</span></li>'+
+//				    		'<li><label class="fl ovw">发布时间：</label><span class="fl ovw">'+data['body']['timeline'].substring(0,data['body']['timeline'].length-3)+'</span></li>'+
+				    		'<li><label class="fl ovw">发布时间：</label><span class="fl ovw">'+data['body']['timeline']+'</span></li>'+
+				    		'<li><label class="fl ovw">商品地址：</label><span class="fl ovw">'+data['body']['address']+' '+data['body']['detailAddress']+'</span></li>'+
+				    		'<li><label class="fl ovw">商品种类：</label><span class="fl ovw">'+data['body']['goodsTypeName']+'</span></li>'+
+				    		'<li><label class="fl ovw">商品名称：</label><span class="fl ovw">'+data['body']['goodsName']+'</span></li>'+
+				    		'<li><label class="fl ovw">商品原价：</label><span class="fl ovw">￥'+data['body']['originalPrice']+'</span></li>'+
+				    		'<li><label class="fl ovw">期望售价：</label><span class="fl ovw">￥'+data['body']['price']+'</span></li>'+
+				    		'<li><label class="fl ovw">新旧程度：</label><span class="fl ovw">'+data['body']['depreciation']+'</span></li>'+
+				    		'<li><label class="fl ovw">详细介绍：</label><span class="fl ovw">'+data['body']['intro']+'</span></li>'+
+				    		''+deliver_html+''+
+				    	'</ul>'+imagesHtml;
+				    	var syn_pa_html = data['body']['intro'];
+		            	$('.work-deta-content').append(secondGoodsDetailHtml);
+		            	var cj_html='<a class="over-order work-ok ovw cj_submit" href="javascript:;">成交</a>';
+		            	$('.work-deta-content').after(cj_html);
+		            	$('.work-deta-content').before(show_status);
+		            	
+		            	//$('.syn_pa').html(syn_pa_html);
+		            	$('.goods_name').val(data['body']['goodsName']);
+				    	$('.work-ok').css({'display':'block'});
+				    	$('#user_info').attr('userid',data['body']['userid']);
+				    	$('.seconds_name').text(data['body']['goodsName']);
+		            }else{
+		            	html = '<div class="none-more-content">暂无内容</div>';
+	                    $('.work-deta-content').html(html);
+	                    $('.work-ok').css({'display':'none'});
+		            }
+		            
+		    		var params = {
+		    				'secondGoodsID':secondGoodsID,
+		    			};
+		    		var fd_userid =  data['body']['userid'];//发布人id
+                                var fd_phone =  data['body']['phone'];//发布人id
+		    		var goods_status = data['body']['status'];//商品详情状态
+		    		var isCommented = data['body']['isCommented']
+		    		//console.info(fd_userid);	
+		    		secondGoodsReserveList(params,fd_userid,goods_status,isCommented,fd_phone);
+		    		
+		    		
+		    		dropload_commentList(machCommentList_params);
+		            
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {
+		            layer.msg('网络请求延迟！');
+		            console.info(XMLHttpRequest.status);
+		            console.info(XMLHttpRequest.readyState);
+		            console.info(textStatus);
+		        },
+		    });
+		}
+		/**************ios匹配，延时获取userid*******************/
+		setTimeout(function(){
+		var params={
+				'userid':userid,
+				'secondGoodsID':secondGoodsID,
+		}
+		console.info(params);
+		secondGoodsDetail(params);
+		},100);  
+		//**********************************二手商品关注***************************
+	 	$('.farm-work-mark').on('click touched',function(){
+	 		if(userid==0){
+				gotoLogin();
+			}else{
+				var macMark_params = {
+						'userid':userid,
+						'id':secondGoodsID,
+						'type':7,//1农机；2农活；3零活；4商品；5圈子；6零工；7二手
+				};
+				var is_concern = parseInt($('.details_concern').attr('concern'));
+				if(is_concern==1){//未关注
+					$('.details_concern').attr('src','images/topic_5.png');
+					$('.details_concern').attr('concern','2');		
+					mark(macMark_params);
+				}else{
+					$('.details_concern').attr('src','images/topic_3.png');
+					$('.details_concern').attr('concern','1');		
+					UnMark(macMark_params);
+				}
+				//mark(macMark_params);
+			}
+		});
+		//**********************************二手商品分享***************************
+	 	$('.farm-work-share').on('click touched',function(){
+//                    shareURL += "&imei="+phoneIMEI+"&phoneModel="+phoneModels+"&address="+current_location_areaIDs;
+	 		if(userid==0){
+				gotoLogin();
+			}else{
+				share(shareImage, shareText, shareTitle, shareURL);
+			}
+		});
+
+		/******************************二手订购列表接口****************************************************/	
+		function secondGoodsReserveList(params,fd_userid,goods_status,isCommented,fd_phone){//二手订购列表接口
+	        var cmd = 'secondGoodsReserveList';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        if(userid==fd_userid){
+                    $('.cj_submit').html('结束发布');
+                    $('.cj_submit').css({'background':'none','border':'1px solid #dd1616','color':'#dd1616'});
+                    $('.work-tel').attr('href','javascript:;');
+                    $('.work-tel').addClass('edit');
+                    $('.work-tel').css({'display':'block'});
+                    $('.work-tel img').attr('src','images/edit_03.png');
+                }
+                if(goods_status==5){
+                    $('.edit').hide();
+                    $('.cj_submit').hide();
+                }
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){  
+	            	console.info(data);
+		        	if(isNull(data['body']['list'])){
+		        		var body = data['body']['list']['0'];
+		        		
+	        			if(isNull(body['phone'])){
+	        				var phone = phone_replace(body['phone']);
+	        			}else{
+	        				var phone = '';
+	        			}
+	        			var secondGoodsReserveListHtml="";
+		        		var jd_userid = body['userid'];
+//		        		console.info(jd_userid);
+		        		/***************发单人***********************/
+	        			if(userid == fd_userid){//判断用户是否为发单人
+	        				if(body['status']==1){//待接单
+	        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt></dl>'+
+		    	    		'<ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul><ul class="my-order-select ovw"  style="border-top: 1px solid #ececec;">'+
+			    	    	'<li class="fl refuse" orderID="'+body['orderID']+'" userid="'+body['userid']+'" ><a href="javascript:;">拒绝</a></li>'+
+			    	    	'<li class="fr agree" orderID="'+body['orderID']+'"  userid="'+body['userid']+'" ><a href="javascript:;">同意</a></li></ul>'+
+		    	    '</article>';
+		    	    	
+		        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+	        				}
+	        			if(body['status']==2){//已同意
+	        				if(goods_status==2){
+			        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	  //  '<a class="over-order ovw qr_commit" href="javascript:;" orderID="'+body['orderID']+'" >确认完成</a>'+
+			    	  '<a class="over-order ovw " href="javascript:;">已同意</a>'+
+		    	    '</article>';
+	        				}else if(goods_status==3){
+	        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	    '<a class="over-order ovw qr_complecte" href="javascript:;" orderID="'+body['orderID']+'" >确认完成</a>'+
+			    	 // '<a class="over-order ovw " href="javascript:;">已同意</a>'+
+		    	    '</article>';
+	        				}else if(goods_status==4){
+	        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	  //  '<a class="over-order ovw qr_complecte" href="javascript:;" orderID="'+body['orderID']+'" >确认完成</a>'+
+			    	  '<a class="over-order ovw " href="javascript:;">订单已完成</a>'+
+		    	    '</article>';
+	        				}else if(goods_status==5){
+	        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	  //  '<a class="over-order ovw qr_complecte" href="javascript:;" orderID="'+body['orderID']+'" >确认完成</a>'+
+			    	  '<a class="over-order ovw " href="javascript:;">订单已关闭</a>'+
+		    	    '</article>';
+	        				}
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+	        				}
+	        			if(body['status']==3){//已拒绝
+		        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+	        		    	'<dl class="my-order-content-dla ovw">'+
+	    	    		'<dt>'+
+	    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+	    	    			'<div class="fl">'+
+	    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+	    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+	    	    			'</div>'+
+	    	    		'</dt>'+
+	    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+	    		//	'<p class="my-order-content-pc ovw">已拒绝该订单</p>'+
+	    				    	  '<a class="over-order ovw " href="javascript:;" style="border-top:1px solid #ececec;">已拒绝</a>'+
+	    	    '</article>';
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+	        				}
+	        			}else{
+		        		
+		        		/***************接单人**********************/
+		        		if(userid == jd_userid){//已经有人订购，且是自己订购的
+			        		var secondGoodsReserveListHtml = '';
+	        				if(body['status']==1){//待接单
+	        				     
+			        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    	'</dl>'+
+			    	    	'<ul class="work-deta-ul ovw" ><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul><p class="my-order-content-pc ovw" style="border-top:1px solid #ececec;">您已订购请等待商户确认</p>'+
+			    	    '</article>'+
+			    	    '<a class="over-order ovw qx_order" href="javascript:;" orderID="'+body['orderID']+'" >取消订单</a>'+
+			    	   '<ul class="my-order-select ovw">'+
+			    	    	'<li class="fl" style="display:none;"><a href="sms:'+fd_phone+'">发送短信</a></li>'+
+			    	    	'<li class="fr" style="display:none;"><a href="tel:'+fd_phone+'">拨打电话</a></li></ul>';
+			    	    	
+			        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}else if(body['status']==2){//已同意
+		        				if(goods_status==2){//发布人同意后
+			        				secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	    	'<a class="over-order ovw qr_commit" href="javascript:;" orderID="'+body['orderID']+'" >确认完成</a>'+
+			    	    '</article>';
+		        				}else if(goods_status==3){
+		        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+			    	    	'<a class="over-order ovw " href="javascript:;" orderID="'+body['orderID']+'" >订单已完成，等待农户确认！</a>'+
+			    	    '</article>';
+		        				}
+		        				else if(goods_status==4){
+	            					if(isCommented==0){
+	            						var is_comment = '立即评价';
+	            						var pl_hide = '';
+	            					}else{
+	            						var is_comment = '已评价';
+	            						var pl_hide = 'pl_hide';
+	            					}
+		        					secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    	'</dl><ul class="work-deta-ul ovw"><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul>'+
+					    	   '<p class="my-order-content-pc ovw">订单已完成</p>'+
+			    	    	'<a class="over-order ovw secondGoods_comment '+pl_hide+' " href="javascript:;" orderID="'+body['orderID']+'" ownerID='+fd_userid+'  isCommented='+isCommented+'>立即评价</a>'+
+			    	    	'</article>';
+		        				}
+
+	    	    	
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}else if(body['status']==3){//已拒绝
+		        				secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;float:left;"><img src="'+body['userAvatar']+'" class="order-tx" style="height: auto;width:100%;border-radius: 0;"/></div>'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+body['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl>'+
+		    	    	'<ul class="work-deta-ul ovw" ><li><label class="fl ovw">接单时间：</label><span class="fl ovw">'+body['orderTime']+'</span></li></ul><p class="my-order-content-pc ovw" style="border-top:1px solid #ececec;">您的订单已被拒绝，如有疑问请联系商家！</p>'+
+		    	    '</article>'+
+		    	    '<a class="over-order ovw cancel-order1" href="javascript:;" orderID="'+body['orderID']+'" style="background:gray;">取消订单</a>'+
+			    	   '<ul class="my-order-select ovw">'+
+			    	    	'<li class="fl" style="display:none;"><a href="sms:'+fd_phone+'">发送短信</a></li>'+
+			    	    	'<li class="fr" style="display:none;"><a href="tel:'+fd_phone+'">拨打电话</a></li></ul>';
+	    	    	
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}
+		        		
+		        		
+		        		
+		        		
+		        		}else{//已经有人订购，不是自己订购的
+/* 		        			$('.cj_submit').remove();
+		        		var not_mine_html = '<article class="my-order-content-b ovw"><p class="my-order-content-pc ovw">该商品已被其他顾客订购！</p></article>'
+		        		$('.work-deta-content').after(not_mine_html); */
+		        		}
+	        			}
+		     /*   		$.each(data['body']['list'],function(i,val){
+/* 		        			if(isNull(val['phone'])){
+		        				var phone = phone_replace(val['phone']);
+		        			}else{
+		        				var phone = '';
+		        			} */
+/* 		        			if(userid == fd_userid){//判断用户是否为发单人
+		        				if(val['status']==1){//待接单
+				        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'区+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    		'<ul class="my-order-select ovw">'+
+				    	    	'<li class="fl refuse" orderID="'+val['orderID']+'" userid="'+val['userid']+'" ><a href="javascript:;">拒绝</a></li>'+
+				    	    	'<li class="fr agree" orderID="'+val['orderID']+'"  userid="'+val['userid']+'" ><a href="javascript:;">同意</a></li></ul>'+
+			    	    	'</dl>'+
+			    	    '</article>';
+			    	    	
+			        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        				}
+		        			if(val['status']==2){//已同意
+			        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl>'+
+			    	    '<a class="over-order ovw qr_commit" href="javascript:;" orderID="'+val['orderID']+'" >确认完成</a>'+
+		    	    '</article>';
+
+		    	    	
+		        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        				}
+		        			if(val['status']==3){//已拒绝
+			        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl>'+
+		    			'<p class="my-order-content-pc ovw">已拒绝该订单</p>'+
+		    	    '</article>';
+		    	    	
+		        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        				}
+		        			} */
+/* 		        			else if(userid ==val['userid']){  //判断用户是否为接单人
+		        				
+		        				if(val['status']==1){//待接单
+		     
+			        			secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+			        		    	'<dl class="my-order-content-dla ovw">'+
+			    	    		'<dt>'+
+			    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+			    	    			'<div class="fl">'+
+			    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+			    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+			    	    			'</div>'+
+			    	    		'</dt>'+
+			    	    	'</dl>'+
+			    	    	'<p class="my-order-content-pc ovw">您已订购请等待商户确认</p>'+
+			    	    '</article>'+
+			    	    '<a class="over-order ovw qx_order" href="javascript:;" orderID="'+val['orderID']+'" >取消订单</a>'+
+			    	   '<ul class="my-order-select ovw">'+
+			    	    	'<li class="fl"><a href="sms:'+data['body']['phone']+'">发送短信</a></li>'+
+			    	    	'<li class="fr"><a href="tel:'+data['body']['phone']+'">拨打电话</a></li></ul>';
+			    	    	
+			        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}else if(val['status']==2){//已同意
+		        				secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl>'+
+		    	    	'<p class="my-order-content-pc ovw">您已成功订购，请等待商户联系您</p>'+
+		    	    '</article>';
+	    	    	
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}else if(val['status']==3){//已拒绝
+		        				secondGoodsReserveListHtml += '<article class="my-order-content-b ovw">'+
+		        		    	'<dl class="my-order-content-dla ovw">'+
+		    	    		'<dt>'+
+		    	    			'<img src="'+val['userAvatar']+'" class="order-tx" />'+
+		    	    			'<div class="fl">'+
+		    	    				'<p class="my-order-name ovw"><font class="fl ovw">'+val['username']+'</font><img src="images/ing_5.png" class="fl"/></p>'+
+		    	    			    '<span class="my-order-name ovw">'+phone+'</span>'+
+		    	    			'</div>'+
+		    	    		'</dt>'+
+		    	    	'</dl>'+
+		    	    	'<p class="my-order-content-pc ovw">您订购失败，如有疑问联系商家！</p>'+
+		    	    '</article>';
+	    	    	
+	        		$('.cj_submit').remove();//如果已订购 删除成交按钮
+		        			}
+		    				} else{
+		        				secondGoodsReserveListHtml +="";
+		        			}
+
+		        			
+		        		})*/
+						$('.goodsCommentList').before(secondGoodsReserveListHtml);
+                           
+		        		
+		        	}
+		        	/* else{
+		            		html = '<div class="none-more-content">暂无内容</div>';
+							$('.cj_submit').html(html);
+							return false;
+		        	} */
+	            	
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+
+		
+		
+
+		
+		
+		/******************************二手取消订购接口****************************************************/	
+		function secondGoodsCancelReserve(params){//二手取消订购接口
+	        var cmd = 'secondGoodsCancelReserve';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('商品取消订购成功！');
+		        		setTimeout(function(){
+			        			window.location.reload();
+			    			},1000); 
+	            	}else{
+	            	    layer.msg('商品取消订购失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+		
+		$(document).on('click','.qx_order',function(){  //接单人点击取消订单  操作取消订单
+			var orderID = $(this).attr('orderID');
+			//var userid = 2;
+			
+			var params = {
+				'userid':userid,
+				'orderID':orderID
+			}
+			secondGoodsCancelReserve(params);
+			});
+		
+		/******************************二手订购同意接口****************************************************/	
+		function secondGoodsAccept(params){//二手订购同意接口
+	        var cmd = 'secondGoodsAccept';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('您已同意该商品订单！');
+		        		setTimeout(function(){
+		        			window.location.reload();
+		    			},1000); 
+	            	}else{
+	            	    layer.msg('同意商品订单失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+		
+		$(document).on('click','.agree',function(){  //发单人点击同意订单  操作同意订单
+			var orderID = $(this).attr('orderID');
+			
+			var params = {
+				'userid':userid,
+				'secondGoodsID':secondGoodsID,
+				'orderID':orderID
+			}
+			//console.info(params);
+			secondGoodsAccept(params);
+			});
+		
+		/******************************二手订购拒绝接口****************************************************/	
+		function secondGoodsRefuse(params){//二手订购同意接口
+	        var cmd = 'secondGoodsRefuse';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('您已拒绝该商品订单！');
+		        		setTimeout(function(){
+		        			window.location.reload();
+		    			},1000); 
+	            	}else{
+	            	    layer.msg('拒绝商品订单失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+
+		$(document).on('click','.refuse',function(){ //发单人点击拒绝按钮  操作拒绝订单
+			var orderID = $(this).attr('orderID');
+			//var userid = 1;
+			
+			var params = {
+				'userid':userid,
+				'secondGoodsID':secondGoodsID,
+				'orderID':orderID
+			}
+			//console.info(params);
+			secondGoodsRefuse(params);
+			});
+		
+		
+		/******************************二手订购接口****************************************************/	
+		function secondGoodsReserve(params){//二手订购接口
+	        var cmd = 'secondGoodsReserve';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('商品订购成功，等待商家确认！');
+		        		setTimeout(function(){
+			        			window.location.reload();
+			    			},1000); 
+	            	}else{
+	            	    layer.msg('商品订购失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+
+		$('.dg_submit').on('click',function(){
+			var secondGoodsID = GetQueryParam("secondGoodsID");
+			var count = $.trim($('.goods_num').val());
+			var province = $('.province').val();
+			var city = $('.city').val();
+			var area = $('.area').val();
+			var address = $.trim($('.cj_address').val());
+			var dg_userid = $('#user_info').attr('userid');
+/* 			if(userid == dg_userid){
+				layer.msg('您不能订购自己的商品');
+		    	return false;
+			} */
+			if(count==""||count==0){
+				layer.msg('请输入购买商品数量');
+		    	return false;
+			}
+                    if($($('.psqy')[0]).css('display')!="none"){
+			if(province==0){
+				layer.msg('请选择省份');
+		    	return false;
+			}
+			if(city==0){
+				layer.msg('请选择城市');
+		    	return false;
+			}
+			if(area==0){
+				layer.msg('请选择区县');
+		    	return false;
+			}
+			if(address==""){
+				layer.msg('请输入门牌号码');
+		    	return false;
+			}
+                    }
+			var params={
+					'secondGoodsID':secondGoodsID,
+					'userid':userid,
+					'count':count,
+					'province':province,
+					'city':city,
+					'area':area,
+					'address':address,
+			}
+			//console.info(params);
+			secondGoodsReserve(params);
+		});
+		
+		/******************************二手订单确认接口（接单人）****************************************************/	
+		function secondGoodsConfirm(params){//二手订购同意接口
+	        var cmd = 'secondGoodsConfirm';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('该商品订单已确认！');
+		        		setTimeout(function(){
+		        			window.location.reload();
+		    			},1000); 
+	            	}else{
+	            	    layer.msg('确认商品订单失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+		$(document).on('click','.qr_commit',function(){ //接单人点击确认完成按钮  确认该订单
+			var orderID = $(this).attr('orderID');
+			//var userid = 1;
+			
+			var params = {
+				'userid':userid,
+				'orderID':orderID
+			}
+			//console.info(params);
+			secondGoodsConfirm(params);
+			});
+		
+		/******************************二手订单完成接口（发布人）****************************************************/	
+		function secondGoodsComplete(params){//二手订购同意接口
+	        var cmd = 'secondGoodsComplete';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	console.info(data);
+	            	if(data['resultCode']==1){
+		                layer.msg('该商品订单已完成！');
+		        		setTimeout(function(){
+		        			window.location.reload();
+		    			},1000); 
+	            	}else{
+	            	    layer.msg('完成商品订单失败，系统错误！');
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+		}
+		$(document).on('click','.qr_complecte',function(){ //发布人点击完成按钮  完成该订单
+			var orderID = $(this).attr('orderID');
+			//var userid = 1;
+			
+			var params = {
+				'userid':userid,
+				'secondGoodsID':secondGoodsID
+			}
+			//console.info(params);
+			secondGoodsComplete(params);
+			});
+		
+		
+	    /******************评价跳转*****************/
+	    
+	    $(document).on('click','.secondGoods_comment',function(){
+	    	var ownerID = $(this).attr('ownerID');
+	    	var isCommented = $(this).attr('isCommented');
+	    	if(isCommented==0){
+	    		window.location.href='mac-comments.html?commentId='+secondGoodsID+'&type=6&ownerID='+ownerID+'';
+	    	}else{
+	            layer.msg("您已经评论过了！");
+	    	}
+	    })
+		
+		
+	/******************************获取省市区接口****************************************************/	
+		function getArea(params,type){//获取省市区接口
+	        var cmd = 'getArea';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        //var params ='';
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	var search_html = '';
+	                $.each(data['body']['list'],function(i,val){
+	                	search_html+='<option value='+val['areaID']+'>'+val['areaName']+'</option>';
+	               });
+	                if(type==1){//加载省
+	                $('.province').append(search_html);
+	                }
+	                if(type==2){//加载市
+	                    $('.city').append(search_html);
+	                    }
+	                if(type==3){//加载区县
+	                    $('.area').append(search_html);
+	                    }
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+		var params={
+				'areaID':0,//获取省级列表
+		};
+		getArea(params,1);
+		
+		$('.province').on('change',function(){//获取省级下属的市级列表
+			var areaID = $(this).val();
+			$('.city').html('<option value="0">市</option>');
+			$('.area').html('<option  value="0">区县</option>');
+			
+			var params={
+					'areaID':areaID,
+			};
+			getArea(params,2);
+		});
+		
+		$('.city').on('change',function(){//获取省级下属的市级列表
+			var areaID = $(this).val();
+			//$('.city').html('');
+			$('.area').html('<option  value="0">区县</option>');
+			
+			var params={
+					'areaID':areaID,
+			};
+			getArea(params,3);
+		});
+                var machCommentList_params = {
+		    				'infoID':secondGoodsID,//信息ID
+		    				'infoType':6,//1农机；2农活；3零活；4商品；5零工；6二手
+		    				'page':PAGE,
+		    				'num':PAGE_NUM,
+		    			};
+		/*****************************二手评论列表************************************/
+		function secondgoodsCommentList(params){
+			var cmd = 'commentList';//农机手评论列表接口命令
+		    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+		    var jsonp = 1;
+		    var up = 1;//默认是上拉
+		    if(params.page==0){
+		    	up = 0;
+		    	count = 0;
+		    	params.page=1;
+		    }
+		    params = objKeySort(params);//按照属性名升序排列
+		    var params_str = objChangeStr(params);//拼接params参数的属性值
+		    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+		    $.ajax({
+		        url : apiURL,//接口地址
+		         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+		        dataType : 'jsonp',
+		        success: function(data){ console.info(data);
+		        	if(isNull(data['body']['list'])){
+		        		var comment_star = showStar(data['body']['list']['grade']);//星标评论
+		        		var goodsComment = '';
+		        		var goodsCommentListHtml = '';
+		        		var comment_star =  showStar(0);
+		        		$.each(data['body']['list'],function(i,val){
+		        			comment_star = showStar(val['score']);
+							goodsCommentListHtml += '<article class="second_comment ovw" style="padding-bottom: 10px;border-bottom: 1px solid #ececec;"><cite class="synthesis-cite ovw"><label class="fl ovw"> </label></cite><dl class="synthesis-dla ovw"><dt style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;"><img src="'+val['userAvatar']+'" style="height: auto;width:100%;border-radius: 0;"/></dt><dd><div class="syn-personal ovw"><p class="star-eval ovw fl">'+comment_star+'</p><label class="fr">'+val['commentTime']+'</label></div><p class="syn-pa ovw">'+val['content']+'</p></dd></dl></article>';	
+							count++;
+		        		});
+                                        if(count<=10){
+                                            goodsCommentListHtml = '<cite class="my-order-sate ovw" style="text-indent: 0.5rem;font-weight:bolder;color:#333333;margin-top:0;">评价</cite><cite class="synthesis-cite ovw" style=""><label class="fl ovw">综合评分</label><p class="star-eval syn-t ovw fl">'+comment_star+'</p></cite>'+goodsCommentListHtml;
+                                        }else{
+                                            goodsCommentListHtml = goodsCommentListHtml;
+                                        }
+		        	}else{
+		        		if((count!=0)){//上拉加载无内容锁定无数据
+		            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+		            	}else{
+		     //        		html = '<div class="none-more-content">暂无内容</div>';
+							// $('.goodsCommentList').html(html);
+							// return false;
+							dropload.resetload();
+                                                        dropload.noData();
+	                        dropload.lock();
+	                        $('.dropload-down').hide();
+		            	}
+		        	}
+		        	setTimeout(function(){
+		                    if(up==0){//下拉加载
+                                        $('.goodsCommentList').html('');
+                                        dropload_commentList(machCommentList_params);
+//		                    	if(count<((params.page)*params.num)&&count!=0){
+//		                    		goodsCommentListHtml += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+//		                            $('.goodsCommentList').html(goodsCommentListHtml);	
+//		                         }else{
+//		                         	$('.goodsCommentList').html(goodsCommentListHtml);	
+//		                         	goodsCommentList(msgList_params);
+//		                         }
+//		                    	dropload.resetload();
+//		                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+//		                        dropload.noData(false);
+//		                        $('.dropload-down').hide();
+//		                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+							}else{
+		                    	if(count<((params.page)*params.num)){
+		                                dropload.lock();// 锁定
+		                                dropload.noData();// 无数据
+		                                $('.dropload-down').hide();
+		                        }
+		                    	$('.dropload-down').before(goodsCommentListHtml);
+		                    	dropload.resetload();// 每次数据加载完，必须重置
+		                    }
+	                	},500);
+		        },
+		        error: function(XMLHttpRequest, textStatus, errorThrown) {
+		            layer.msg('网络请求延迟！');
+		            console.info(XMLHttpRequest.status);
+		            console.info(XMLHttpRequest.readyState);
+		            console.info(textStatus);
+		        },
+		    });
+		} 
+		
+		//*********************************评论列表上拉加载*****************
+		function dropload_commentList(params){
+			var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+			var time = toLocalTime(ts,6);
+			dropload = $('.goodsCommentList').dropload({
+			    scrollArea : window,
+			    domUp : {
+			        domClass   : 'dropload-up',
+			        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+			    },
+			    domDown : {
+			        domClass   : 'dropload-down',
+			        domRefresh : '<div class="dropload-refresh"></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+			        domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+			    },
+			    loadUpFn : function(me){
+			    	//下拉刷新
+			    	params.page=0;
+			    	secondgoodsCommentList(params);
+			    	params.page = 1;
+			    },
+			    loadDownFn : function(me){
+			    	//上拉加载
+			    	secondgoodsCommentList(params);
+			        params.page++;
+			    },
+			    threshold : 50
+			});
+		}
+		var count = 0;
+		
+	    /*************************跳转二手编辑页面******************************/
+	    $(document).on('click','.edit',function(){
+	    	if(userid==0){
+				gotoLogin();
+			}else{
+				window.location.href="second-hand-release.html?secondGoodsID="+secondGoodsID+"&from=details";
+			}
+	    })
+/* 		var machCommentList_params = {
+			'infoID':secondGoodsID,//信息ID
+			'infoType':6,//1农机；2农活；3零活；4商品；5零工；6二手
+			'page':PAGE,
+			'num':PAGE_NUM,
+		}; */
+//		dropload_commentList(machCommentList_params);
+		
+	});
+	</script>
+</body>
+</html>

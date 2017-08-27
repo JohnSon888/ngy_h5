@@ -1,0 +1,647 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="email=no" name="format-detection">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<title>司机认证</title>
+		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="css/demo.css">
+		<link rel="stylesheet" href="css/my.css">
+		<link rel="stylesheet" href="css/own.css">
+		<script type="text/javascript" src="js/jquery.min.js" ></script>
+                <script type="text/javascript" src="js/flexible.js" ></script>
+                <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+                <script type="text/javascript" src="src/lib/common/common.js"></script>
+                <script type="text/javascript" src="src/lib/common/farming.js"></script>
+                <script type="text/javascript" src="src/lib/public/public.js"></script>
+                <script type="text/javascript" src="src/lib/common/public.js"></script>
+                <!-- layer -->
+                <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+                <style>
+                     .pic-front{height:165px;overflow: hidden;}
+                </style>
+	</head>
+
+	<body id="cer_d">
+		<section class="all-main">
+			<section class="header ovw posin" style="position:fixed;z-index:100;">添加司机认证
+				<a href="certification-list.html" class="header-back ovw"><img src="images/back.png" /></a>
+			</section>
+			<ul class="ld-card-ula ovw" style="margin-top:1.2rem;padding-top: 0;">
+				
+				<li class="ld-lic" style="margin-top: 0.1rem;text-indent: 0;"><span class="must-fill-in">*&nbsp;</span>车辆和司机合照：</li>
+				<p class="font_24 col_6 stip">要求车辆正面和人员正面，露出车辆品牌型号牌照</p>
+                                <li class="ld-lid pic-front"><img src="images/id.png" pic-num="0"/></li>
+				
+			</ul>
+                        <ul class="ld-card-ula ovw">
+				
+				<li class="ld-lic" style="margin-top: 0.1rem;text-indent: 0;">驾驶证照片：</li>
+				<p class="font_24 col_6 stip">汽车摩托车司机必须填</p>
+				<li class="ld-lid pic-front"><img src="images/id.png" pic-num="0" height="165px"/></li>
+				
+			</ul>
+                        <ul class="ld-card-ula ovw">
+				
+				<li class="ld-lic" style="margin-top: 0.1rem;text-indent: 0;">行驶证照片：</li>
+				<p class="font_24 col_6 stip">汽车摩托车司机必须填</p>
+				<li class="ld-lid pic-front"><img src="images/id.png" pic-num="0" height="165px"/></li>
+				
+			</ul>
+			<p class="hr"></p>
+			<ul class="ld-card-ula ovw">
+				<!--身份证号码-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>身份证号码：</label>
+					<input class="ld-lia-in iphone-lia-la ld-card" type="text" maxlength="18" style="width: 65% !important;" />
+				</li>
+                                <!--联系电话-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>联系电话：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-drive-phone" type="number" oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入您的电话" style="width: 70% !important;" />
+				</li>
+				<!--驾驶证-->
+<!--				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>驾驶证：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-drive" type="text" style="width:6.8rem;" />
+				</li>-->
+				<!--行驶证-->
+<!--				<li class="ld-lia">
+					<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>行驶证：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-driver" type="text" style="width:6.8rem;" />
+				</li>-->
+				<!--车牌号-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">车牌号：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-car-number" type="text" style="width:6.8rem;" />
+				</li>
+				<!--运营证-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">运营证：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-run-certificates" type="text" style="width: 79% !important;" />
+				</li>
+				<!--车辆类型-->
+				<li class=" mers-lia-d">
+					<aside class="add-plant-as add-plant-ad ovw" style="margin-bottom: 0;">
+						<label class="fl ovw">车辆类型：</label>
+						<select class="add-state car-type chaw">
+<!--							<option value="-1" >请选择车辆类型 </option>-->
+						</select>
+					</aside>
+				</li>
+				<!--车型-->
+				<li class="ld-lia">
+					<label class="ld-lia-la ovw">车型：</label>
+					<input class="ld-lia-in ld-lia-i ld-name ld-type" type="text" style="width: 83% !important;" />
+				</li>
+				<!--个人地址-->
+				<p class="comp">个人地址<span class="font_24 col_6">（默认用户地址）</span></p>
+				<li class="mers-lia-c">
+					<!--份-->
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">省份:</label>
+						<select class="add-state storeAddress-province sf">
+							<option value="-1">请选择省份</option>
+						</select>
+					</aside>
+					<!--城市-->
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">城市:</label>
+						<select class="add-state storeAddress-city cs">
+							<option value="0">请选择城市 </option>
+						</select>
+					</aside>
+				</li>
+				<li class="mers-lia-c">
+					<!--区县-->
+					<aside class="add-plant-as add-plant-ad ovw fl">
+						<label class="fl ovw">区县:</label>
+						<select class="add-state storeAddress-area qx">
+							<option value="0">请选择区县</option>
+						</select>
+					</aside>
+					<!--乡镇-->
+					<aside class="add-plant-as add-plant-ad ovw fr">
+						<label class="fl ovw">乡镇:</label>
+						<select class="add-state storeAddress-town xz">
+							<option value="0">乡镇 </option>
+						</select>
+					</aside>
+				</li>
+				<!--村-->
+				<li class="mers-lia-c mers-lia-d" style="margin-bottom: 0.4rem;">
+					<aside class="add-plant-as add-plant-ad ovw">
+						<label class="fl ovw">村:</label>
+						<select class="add-state storeAddress-village cz">
+							<option value="0">村 </option>
+						</select>
+					</aside>
+				</li>
+			</ul>
+			<footer>
+				<p class="reg-notice">
+					<input type="checkbox" class="input_check" id="check3"><label for="check3"></label>
+                                        <span>已阅读并同意<i><a href="javascript:;" class="my-agreement" style="color:red;">《司机服务协议》</a></i></span>
+				</p>
+			<a class="over-order ovw" href="javascript:void(0);">保存</a>
+				
+			</footer>
+
+		</section>
+		<input type="hidden" class="isPass" value="0" />
+<script>
+    $('.my-agreement').on('click',function(){
+        var detail_url = 'http://'+window.location.host+'/my-agreement.html';
+        openH5(detail_url);
+    })
+    //获取约车类型
+	function getVehicleType(params,when,type){
+            var cmd = 'getVehicleType';//接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(isNull(data['body']['list'])){
+                            var carTypeHtml = '<option value="0" >请选择车辆类型</option>';//车辆类型
+                            $.each(data['body']['list'],function(i,val){
+                                carTypeHtml += '<option value="'+val['id']+'" >'+val['cate_name']+'</option>';
+                            })
+                            $('.car-type').append(carTypeHtml);
+                            if(when==1){
+                                $('.car-type').val(type);
+                            }
+                        }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+        
+
+    var pass = GetQueryParam("pass");//是否通过验证
+    if(pass==1){
+        $('footer').hide();
+    }
+        var province;
+	var city;
+	var area;
+	var town;
+	var village; 
+    /**********************获取司机认证信息接口*******************************/
+		function getDriverAuthInfo(userid){
+	        var cmd = 'getDriverAuthInfo';
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        var params = {
+	        	'userid':userid
+	        };
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){
+	            	if(isNull(data['body']['image'])){
+                            $('.isPass').val(data['body']['authorizationID']);
+                            $($('.pic-front')[0]).find('img').attr('src',data['body']['image']);
+                            $('.pic-front').addClass('pic');
+                            if(isNull(data['body']['driver_num'])){
+                                $($('.pic-front')[1]).find('img').attr('src',data['body']['driver_num']);
+                            }else{
+                                $($('.pic-front')[1]).find('img').attr('src','images/id.png');
+                                $($('.pic-front')[1]).removeClass('pic');
+                            }
+                            if(isNull(data['body']['auth_land_num'])){
+                                $($('.pic-front')[2]).find('img').attr('src',data['body']['auth_land_num']);
+                            }else{
+                                $($('.pic-front')[2]).find('img').attr('src','images/id.png');
+                                $($('.pic-front')[2]).removeClass('pic');
+                            }
+                            $('.ld-card').val(data['body']['identification']);//身份证号码
+                            $('.ld-drive-phone').val(data['body']['driver_phone']);//联系电话
+//                            $('.ld-drive').val(data['body']['driver_num']);//驾驶证
+//                            $('.ld-driver').val(data['body']['auth_land_num']);//行驶证
+                            $('.ld-car-number').val(data['body']['auth_machine_num']);//车牌号
+                            $('.ld-run-certificates').val(data['body']['auth_farmer_num']);//运营证
+//                            $('.car-type').val(data['body']['carType']);//车辆类型，写死不能为-1
+                            $('.ld-type').val(data['body']['auth_merchant_num']);//车型
+                            province = data['body']['address']['province']['areaID'];
+                            city = data['body']['address']['city']['areaID'];
+                            area = data['body']['address']['area']['areaID'];
+                            town = data['body']['address']['town']['areaID'];
+                            village = data['body']['address']['village']['areaID'];
+                            $('#check3').prop('checked',true);
+                            if(pass==1){
+                                $('.pic-front').removeClass('pic');
+                                if(data['body']['auth_machine_type']==0){
+                                    $('.car-type').remove();
+                                }else{
+                                    $('.car-type').html('<option value="'+data['body']['auth_machine_type']+'">'+data['body']['carType']+'</option>');
+                                }
+                                $('input').attr('readonly',true);
+                                $('textarea').attr('readonly',true);
+                                $('.sf option').text(data['body']['address']['province']['areaName']);
+                                $('.cs option').text(data['body']['address']['city']['areaName']);
+                                $('.qx option').text(data['body']['address']['area']['areaName']);
+                                $('.xz option').text(data['body']['address']['town']['areaName']);
+                                $('.cz option').text(data['body']['address']['village']['areaName']);
+                            }else{
+                                getArea(0, 1, 0); //用户设置的区域位置
+                                if (province != 0) {
+                                    getArea(province, 2, 0);
+                                }
+                                if (city != 0 ){
+                                    getArea(city, 3, 0);
+                                }
+                                if (area != 0) {
+                                    getArea(area, 4, 0);
+                                }
+                                if (town != 0) {
+                                    getArea(town, 5, 0);
+                                }
+                                var getVehicleType_params = {};
+                                getVehicleType(getVehicleType_params,1,data['body']['auth_machine_type']);
+                            }
+	            	}else{
+                            /*****************************默认地点*****************************/
+                            setTimeout(function(){
+                                $('.ld-drive-phone').val(telephone);//默认手机号
+                                    var arr_areaID = current_location_areaIDs.split(",");
+                                    province = arr_areaID[0];
+                                    city = arr_areaID[1]==''?0:arr_areaID[1];
+                                    area = arr_areaID[2]==''?0:arr_areaID[2];
+                                    town = arr_areaID[3]==''?0:arr_areaID[3];
+                                    village = arr_areaID[4]==''?0:arr_areaID[4];
+                                    getArea(0, 1, 0); //用户设置的区域位置
+                                        if (province != '') {
+                                            getArea(province, 2, 0);
+                                            var area_id = arr_areaID[0];
+                                        }
+                                        if (city != '') {
+                                            getArea(city, 3, 0);
+                                            var area_id = arr_areaID[1];
+                                        }
+                                        if (area != '') {
+                                            getArea(area, 4, 0);
+                                            var area_id = arr_areaID[2];
+                                        }
+                                        if (town != '') {
+                                            getArea(town, 5, 0);
+                                            var area_id = arr_areaID[3];
+                                        }if (village != '') {
+                                            var area_id = arr_areaID[4];
+                                        }
+                            },1000);
+                            var getVehicleType_params = {};
+                            getVehicleType(getVehicleType_params);
+                        }
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+            setTimeout(function(){
+                getDriverAuthInfo(userid);
+            },1000);
+            
+    //点击上传图片
+	$('.pic-front').click(function(){
+            var _this = $(this);
+            $('.pic-front img').attr('pic-num','0');
+            _this.find('img').attr('pic-num','1');
+		var pic_index = _this.find('img');
+		var num = _this.hasClass('pic');
+//                imageUploaded('http://www1.pconline.com.cn/zt/news20160823/images/app-download.png,');
+                var pic_num = _this.find('img').attr('pic-num');
+		if(num==true){
+			layer.open({
+			    content: '您确定要删除图片吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+				    layer.close(index);
+                                    _this.removeClass('pic');
+				    _this.html('<img src="images/id.png"/>');
+			   	}
+			});
+		}else{
+			var pic_num_left = 1-num;
+			uploadImage(pic_num_left);
+		}  
+/* 		var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+		imageUploaded(imageUrl);  */
+	});
+        //保存司机认证消息
+	function driverAdd(params){
+            var cmd = 'driverAdd';//接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(data['resultCode']==1){
+	        		layer.msg('司机认证提交成功，请等待审核!');
+//                                sign=1;
+	        		setTimeout(function(){
+			            window.location.href = 'certification-list.html';
+			        },1000);
+	        	}else{
+	        		layer.msg(data['resultMessage']);
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+        $(document).on('click','.over-order',function(){
+            if(sign==1){
+                sign=0;
+            var id = $('.isPass').val();//判断是否认证
+            var image;
+            var land_drive;
+            var land_driver;
+            $.each($('.pic-front'),function(i){
+                switch(i){
+                    case 0 :image = $($('.pic')[0]).find('img').attr('src');break;//合照
+                    case 1 :if($($('.pic-front')[1]).find('img').attr('src')=='images/id.png'){land_drive = '';}else{land_drive = $($('.pic-front')[1]).find('img').attr('src')};break//驾驶证
+                    case 2 :if($($('.pic-front')[2]).find('img').attr('src')=='images/id.png'){land_driver = '';}else{land_driver = $($('.pic-front')[2]).find('img').attr('src')};break//驾驶证
+                }
+            });
+//            var land_drive = $($('.pic')[1]).find('img').attr('src');//驾驶证
+//            var land_driver = $($('.pic')[2]).find('img').attr('src');//行驶证
+	    var land_num = $.trim($('.ld-card').val());//身份证号码
+            var info_mobile = $.trim($('.ld-drive-phone').val());//电话号码
+            var land_car_number = $.trim($('.ld-car-number').val());//车牌号
+            var land_run_number = $.trim($('.ld-run-certificates').val());//运营证
+            var land_car_type = $('.car-type').val();//车辆类型，写死不能为-1
+            var land_dcar_number = $.trim($('.ld-type').val());//车型
+            var province = $('.sf').val();
+            var city = $('.cs').val();
+            var area = $('.qx').val();
+            var town = $('.xz').val();
+            var village = $('.cz').val();
+	    var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+            if($($('.pic')[0]).length==0){
+	    	layer.msg('请上传车辆和司机合照');
+                sign=1;
+	    	return false;
+	    }  
+//            if($($('.pic')[1]).length==0){
+//	    	layer.msg('请上传驾驶证照片');
+//                sign=1;
+//	    	return false;
+//	    }
+//            if($($('.pic')[2]).length==0){
+//	    	layer.msg('请上传行驶证照片');
+//                sign=1;
+//	    	return false;
+//	    }
+	    if(land_num==''||!cardReg.test(land_num)){
+	    	layer.msg('请正确填写身份证号码');
+                sign=1;
+	    	return false;
+	    }
+            var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+	    if(info_mobile==''||!phoneReg.test(info_mobile)){
+	    	layer.msg('请正确填写电话号码');
+                sign=1;
+	    	return false;
+	    }
+//            if(!isNull(land_car_number)){
+//	    	layer.msg('请正确填写车牌号');
+//                sign=1;
+//	    	return false;
+//	    }
+            if(area==0){
+	    	layer.msg('请正确填写个人地址到区县级');
+                sign=1;
+	    	return false;
+	    }
+            if($('#check3').prop('checked')!=true){
+                layer.msg('请阅读并同意《司机服务协议》');
+                sign=1;
+	    	return false;
+            }
+	    if(id==0){	//新增
+	    	var params = {
+			            'user_id':userid,
+			            'auth_machine_img':image,
+			            'auth_id_num' : land_num,//
+                                    'phone' : info_mobile,
+			            'auth_machine_driver_num': land_drive,//
+			            'auth_land_num' : land_driver,//
+                                    'auth_machine_num':land_car_number,
+			            'auth_farmer_num':land_run_number,//
+			            'auth_machine_type' : land_car_type,//
+                                    'auth_merchant_num' : land_dcar_number,
+			            'plant_province': province,//
+			            'plant_city' : city,//
+                                    'plant_county' : area,
+                                    'plant_town': town,//
+			            'plant_village' : village,//
+	    		    };
+	   	}else{
+	   		var params = {
+                                    'id' : id,//认证ID（修改的时候需要传ID，否则就是新增）
+			            'user_id':userid,
+			            'auth_machine_img':image,
+			            'auth_id_num' : land_num,//
+                                    'phone' : info_mobile,
+			            'auth_machine_driver_num': land_drive,//
+			            'auth_land_num' : land_driver,//
+                                    'auth_machine_num':land_car_number,
+			            'auth_farmer_num':land_run_number,//
+			            'auth_machine_type' : land_car_type,//
+                                    'auth_merchant_num' : land_dcar_number,
+			            'plant_province': province,//
+			            'plant_city' : city,//
+                                    'plant_county' : area,
+                                    'plant_town': town,//
+			            'plant_village' : village,//
+	    		    };
+	   	}
+//                console.info(params);
+	    driverAdd(params);    
+        }
+	})
+
+        /**获取地区信息接口
+        *type:1.省份；2.城市，3.区县；4.乡镇
+        **/
+                function getArea(areaID, type, when) {
+                    var cmd = 'getArea'; //农机投诉接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    var params = {
+                        'areaID': areaID,
+                    };
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            if (isNull(data['body']['list'])) {
+                                var areaHtml = '';
+                                $.each(data['body']['list'], function (i, val) {
+                                    if (val['areaID'] != 0) {
+                                        areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                                    }
+                                })
+                                switch (type) {
+                                    case 1:
+                                        $('.sf').append(areaHtml);
+                                        break;
+                                    case 2:
+                                        $('.cs').append(areaHtml);
+                                        break;
+                                    case 3:
+                                        $('.qx').append(areaHtml);
+                                        break;
+                                    case 4:
+                                        $('.xz').append(areaHtml);
+                                        break;
+                                    case 5:
+                                        $('.cz').append(areaHtml);
+                                        break;
+                                }
+                                if (when == 0) {        //0  带默认值
+                                    $('.sf').val(province);
+                                    $('.cs').val(city);
+                                    $('.qx').val(area);
+                                    $('.xz').val(town);
+                                    $('.cz').val(village);
+                                }
+                            } else {
+                                layer.msg('暂无区域内容');
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+//                getArea(0, 1);
+                $('.sf').on('change', function () {
+                    if ($('.sf option:selected').attr('areaID') != -1) {
+                        $('.cs').html('');
+                        $('.cs').append('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        if ($('.sf option:selected').attr('areaID') != 0) {
+                            getArea($('.sf option:selected').attr('areaID'), 2);
+                        }
+                    } else {
+                        $('.cs').html('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.cs').on('change', function () {
+                    if ($('.cs option:selected').attr('areaID') != 0) {
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.cs option:selected').attr('areaID'), 3);
+                    } else {
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.qx').on('change', function () {
+                    if ($('.qx option:selected').attr('areaID') != 0) {
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.qx option:selected').attr('areaID'), 4);
+                    } else {
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.xz').on('change', function () {
+                    if ($('.xz option:selected').attr('areaID') != 0) {
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.xz option:selected').attr('areaID'), 5);
+                    } else {
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+        /**
+*   图片上传成功回调
+*   imageUrl         图片url地址
+**/
+function imageUploaded(imageUrl){
+//	imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+//	var img_html = '';
+//	for(i=0;i<imageUrl_arr.length;i++){
+//		img_html += '<img src="'+imageUrl_arr[i]+'"/>';
+//
+//	}
+//	$('.pic-front').html(img_html);
+//	//idImages.push(imageUrl);
+//	idImages = imageUrl_arr;
+//    //$('.pic-front img').attr('src',imageUrl_arr[0]);
+//    $('.pic-front').addClass('pic');
+        imageUrl_arr = handleAppValue(imageUrl);
+        $.each($('.pic-front'),function(i){
+            if($($('.pic-front')[i]).find('img').attr('pic-num')==1){
+                $($('.pic-front')[i]).find('img').attr('src',imageUrl_arr[0]);
+        	$($('.pic-front')[i]).addClass('pic');
+            }
+        });
+}
+</script>
+	</body>
+
+</html>

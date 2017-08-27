@@ -1,0 +1,489 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>我的订阅</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .subscription-ula li {
+    width: 14.2%;
+}
+</style>
+<script type="text/javascript">
+	$(function(){
+//		userid = 120;
+		var count = 0;
+		//var userid = GetQueryParam(userid);
+		function get_mySub(params){//获取我的订阅列表
+        var cmd = 'mySub';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义
+        var jsonp = 1;
+        //var params ='';
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	var typeName = parseInt(val['typeName']);
+                    	var duration = parseInt(val['duration']);
+                    	
+                    	switch(typeName){            			
+                		case 1:
+                			var type_name = '农机订阅';
+                		       break;
+                		case 2:
+                			var type_name = '农活订阅';
+                		       break;
+                		case 3:
+                			var type_name = '零活订阅';
+                		       break;
+                		case 5:
+                			var type_name = '话题订阅';
+                		       break;
+                		case 4:
+                			var type_name = '商品订阅';
+                		       break;
+                		case 6:
+                			var type_name = '零工订阅';
+                		       break;
+                		case 7:
+                			var type_name = '二手订阅';
+                		       break;
+                	}
+                    	
+                    	switch(duration){            			
+                		case 1:
+                			var duration_name = '每小时更新';
+                		       break;
+                		case 2:
+                			var duration_name = '每日更新';
+                		       break;
+                	}
+                    	
+                    	search_html+='<ul class="subscription-ulb ovw dy_uls">'+
+                	    	'<li class="subscription-ulb-lia"><img src="images/order_1.png"/></li>'+
+                	    	'<li class="subscription-ulb-lib"><p class="subscription-ulb-pa ovw">'+
+                	    			'<font class="fl">'+type_name+'</font>'+
+                	    			'<span class="subscription-ulb-spa fl ovw posin" style="line-height: 0.44rem;">'+duration_name+'</span></p>'+
+                	    	//	'<samp class="subscription-ulb-price ovw">'+val['condition']+'</samp>'+
+                	    		'<cite class="subscription-ula-ci ovw">'+val['address']+'</cite></li>'+
+                	    	'<li class="subscription-ulb-lic"><a class="button_dy" subscriptionID='+val['subscriptionID']+' href="javascript:;">编辑</a></li></ul>';
+            	    	count++;
+                   });
+                   //$('.body-bj').append(search_html);
+                }else{
+                	//search_html = '<div class="none-more-content">暂无内容</div>';
+                    //$('.body-bj').append(search_html);
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+/* 	            		html = '<div class="none-more-content" style="background:#ffffff;">暂无内容</div>';
+						$('.content').html(html);
+						return false; */
+	            		html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                        $('.dropload-down').siblings().remove();
+						$('.dropload-down').before(html);
+                        dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+                        return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"style="background:#ffffff;"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.content').html(search_html);	
+                         }else{
+                         	$('.content').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        //dropload.noData(false);
+                        $('.dropload-down').hide();
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+		
+
+		//*********************************我的订阅列表上拉加载*****************
+		function dropload_machineList(params){
+		    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+		    var time = toLocalTime(ts,6);//下拉时间定义
+			dropload = $('.content').dropload({
+			    scrollArea : window,
+			   /*  domUp : {
+			        domClass   : 'dropload-up',
+			        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+			    },
+			    domDown : {
+			        domClass   : 'dropload-down',
+			        domRefresh : '<div class="dropload-refresh"></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+			        domNoData  : '<div class="dropload-noData">加载完成</div>'
+			    }, */
+			    domUp : {
+			        domClass   : 'dropload-up',
+			        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+			    },
+	domDown : {
+			        domClass   : 'dropload-down',
+			        domRefresh : '<div class="dropload-refresh"></div>',
+			        domLoad    : '<div class="dropload-load"style="background:#ffffff;"><span class="loading"></span>加载中...</div>',
+			        domNoData  : '<div class="dropload-noData"style="background:#ffffff;">已加载全部数据</div>'
+	},
+			    loadUpFn : function(me){
+			    	//下拉刷新
+			    	params.page=0;
+			    	get_mySub(params);
+			    	params.page = 1;
+			    },
+			    loadDownFn : function(me){
+			    	//上拉加载
+			    	get_mySub(params);
+			        params.page++;
+			    },
+			    threshold : 50
+			});
+		}
+		
+		/**************ios匹配，延时获取userid*******************/
+		setTimeout(function(){		
+	var params = {//死数据
+			'userid':userid,
+			'type':1,//默认为农机订阅页面
+			'page':PAGE,
+			'num':PAGE_NUM
+	}
+	console.info(params);
+	dropload_machineList(params);
+		},100);  
+	
+	function get_editMySub(params){//编辑订阅
+        var cmd = 'editMySub';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+            	if(data['resultCode']==1){
+                    layer.msg('编辑订阅信息成功！');
+            	}else{
+            		layer.msg('编辑订阅信息失败！');
+            	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+
+	function get_unSub(params){//取消订阅
+        var cmd = 'unSub';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	if(data['resultCode']==1){
+                    layer.msg('取消订阅成功！');
+            	}else{
+            		layer.msg('取消订阅失败！');
+            	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	$('.subscription-ula li').on('click',function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$('.subscription-ulb').remove();
+		$('.none-more-content').remove();
+		//$('.content').remove();
+		var index = $(this).index();
+    	switch(index){            			
+		case 0:
+	    	count = 0;
+			var type = 1;//'农机';
+		       break;
+		case 1:
+	    	count = 0;
+			var type = 2;//'农活';
+		       break;
+		case 2:
+	    	count = 0;
+			var type = 3;//'零活';
+		       break;
+		case 3:
+	    	count = 0;
+			var type = 4;//'话题';
+		       break;
+		case 4:
+	    	count = 0;
+			var type = 5;//'商品';
+		       break;
+		case 5:
+	    	count = 0;
+			var type = 6;//'零工';
+		       break;
+		case 6:
+	    	count = 0;
+			var type = 7;//'二手';
+		       break;
+	}
+count = 0;
+    	dropload.lock();
+    	        dropload.resetload();
+    	delete dropload.opts.domUp;
+	//	$('.content').html('');
+$('.dropload-down').siblings().remove();
+$('.dropload-down').show();
+	var params = {
+    			'userid':userid,
+    			'type':type,
+    			'page':PAGE,
+    			'num':PAGE_NUM
+    	}
+    	console.info(params);
+    	dropload_machineList(params);
+    	$.each($('.dropload-down'),function(i){
+            if(i!=0) $($('.dropload-down')[i]).remove();
+       })
+	});
+	
+
+	
+	$(document).on('click','.button_dy',function(){   //将订阅id传给隐藏栏进行操作
+		var subscriptionID = parseInt($(this).attr('subscriptionID'));
+		$('.layer-cont').attr('subscriptionID',subscriptionID);
+		$('.sub-close').show();
+		$('.layer-cont').show();
+
+	});
+	
+	$('.layer-cont .duration').on('click',function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$('.sub-close').hide();
+		$('.layer-cont').hide();
+		var subscriptionID = parseInt($(this).parent().attr('subscriptionID'));
+		var duration = $(this).attr('duration');
+    	var params = {
+    			'userid':userid,
+    			'subscriptionID':subscriptionID,
+    			'duration':duration,
+    	}
+    	get_editMySub(params);
+    	$('.subscription-ula li').removeClass('hover');
+    	$('.subscription-ula li').eq(0).addClass('hover');
+    	count = 0;
+		$('.content').html('');
+		console.info(params);
+    	var params1 = {
+    			'userid':userid,
+    			'type':1,
+    			'page':PAGE,
+    			'num':PAGE_NUM
+    	}
+    	dropload_machineList(params1);
+    	
+	});
+	
+	$('.qxdy').on('touchend',function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$('.sub-close').hide();
+		$('.layer-cont').hide();
+		var subscriptionID = parseInt($(this).parent().attr('subscriptionID'));
+    	var params = {
+    			'userid':userid,
+    			'subscriptionID':subscriptionID,
+    	}
+    	get_unSub(params);
+    	$('.subscription-ula li').removeClass('hover');
+    	$('.subscription-ula li').eq(0).addClass('hover');
+    	count = 0;
+		$('.content').html('');
+		console.info(params);
+    	var params1 = {
+    			'userid':userid,
+    			'type':1,
+    			'page':PAGE,
+    			'num':PAGE_NUM
+    	}
+    	dropload_machineList(params1);
+	});	
+	
+	/*************************验证是否登录******************************/
+	$(document).on('touchstart click','.header-back',function(){//返回按钮返回原生页面
+		backtoNative();	
+	})
+			$(document).on('touchstart click','.header-reg',function(){
+		if(userid==0){//未登录状态
+    		gotoLogin();
+	    	//alert(1);
+		}else{//登录状态
+    		window. location.href ='subscribe-1.html';
+    	}
+	})
+	
+	});
+</script>
+<script>
+	$(function(){
+/* 		$(document).on('touchstart click','.subscription-ulb-lic',function(){
+	//	$('.subscription-ulb-lic').on('touchstart click',function(){
+			$('.sub-close').show();
+			$('.layer-cont').show();
+		}); */
+		$(document).on('touchstart click','.sub-close',function(){
+	//$('.sub-close').on('touchstart click',function(){
+			$('.sub-close').hide();
+			$('.layer-cont').hide();
+		})
+
+		
+	})
+
+
+	
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin"style=" position: fixed;   z-index: 500;">我的订阅<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg">添加订阅</a></section>
+	    <ul class="eval-all-ula subscription-ula ovw"  style="margin-top: 1.2333rem; position: fixed;z-index: 500;">
+	    	<li class="hover"><a href="javascript:;">农机</a></li>
+	    	<li><a href="javascript:;">农活</a></li>
+	    	<li><a href="javascript:;">零活</a></li>
+	    	<li><a href="javascript:;">商品</a></li>
+	    	<li><a href="javascript:;">话题</a></li>
+	    	<li><a href="javascript:;">零工</a></li>
+	    	<li><a href="javascript:;">二手</a></li>
+	    </ul>
+	    <section class="content" style="margin-top: 2.333rem;">
+	  <!--    <ul class="subscription-ulb ovw">
+	    	<li class="subscription-ulb-lia"><img src="images/order_1.png"/></li>
+	    	<li class="subscription-ulb-lib">
+	    		<p class="subscription-ulb-pa ovw">
+	    			<font class="fl">农活订阅</font>
+	    			<span class="subscription-ulb-spa fl ovw posin">每日更新</span>
+	    		</p>
+	    		<samp class="subscription-ulb-price ovw">¥200-300</samp>
+	    		<cite class="subscription-ula-ci ovw">上海市嘉定区</cite>
+	    	</li>
+	    	<li class="subscription-ulb-lic"><a  subscriptionID='1' href="javascript:;">编辑</a></li>
+	    </ul>
+	    <ul class="subscription-ulb ovw">
+	    	<li class="subscription-ulb-lia"><img src="images/order_1.png"/></li>
+	    	<li class="subscription-ulb-lib">
+	    		<p class="subscription-ulb-pa ovw">
+	    			<font class="fl">零活订阅</font>
+	    			<span class="subscription-ulb-spa fl ovw posin">每小时更新</span>
+	    		</p>
+	    		<samp class="subscription-ulb-price ovw">¥200-300</samp>
+	    		<cite class="subscription-ula-ci ovw">上海市嘉定区</cite>
+	    	</li>
+	    	<li class="subscription-ulb-lic"><a  subscriptionID='2' href="javascript:;">编辑</a></li>
+	    </ul>-->
+	    </section>
+	</section>
+	<!--浮层-->
+	<section class="layer-bj sub-close"></section>
+	<ul subscriptionID='0' class="layer-cont ovw">
+		<li class='duration' duration=1>设为每小时更新</li>
+		<li class='duration' duration=2>设为每日更新</li>
+		<li class="qxdy">取消订阅</li>
+	</ul>
+</body>
+</html>

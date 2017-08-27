@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">真实身份认证<a href="certification-list.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <ul class="ld-card-ula ovw" style="margin-top:1.2rem;">
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>姓名：</label>
+		    		<input class="ld-lia-in ld-lia-i ld-name" type="text" style="width:6.8rem;"/>
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>身份证号码：</label>
+		    		<input class="ld-lia-in iphone-lia-la ld-card" type="text" maxlength="18" style="width: 5.5rem;"/>
+		    	</li>
+		    	<li class="ld-lic"><span class="must-fill-in">*&nbsp;</span>身份证正面：</li>
+		    	<li class="ld-lid pic-front"><img src="images/id.png" pic-num="0"/></li>
+		    	<li class="ld-lic"><span class="must-fill-in">*&nbsp;</span>身份证反面：</li>
+		    	<li class="ld-lid pic-back"><img src="images/id.png" pic-num="0"/></li>
+		    </ul>
+		    <a class="over-order ovw" href="javascript:void(0);">保存</a>
+	    </section>
+	    <input type="hidden" class="authorizationID" value="0" />
+<script type="text/javascript">
+$(function(){
+        var pass = GetQueryParam("pass");
+        if(pass==1){
+            $('.over-order').hide();
+        }
+	/**********************获取实名认证信息接口*******************************/
+	function getTrueNameAuthInfo(userid){
+		var cmd = 'getTrueNameAuthInfo';
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+        	'userid':userid
+        };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	// console.info(data);
+            	if(isNull(data['body'])){
+            		$('.ld-name').val(data['body']['trueName']);
+            		$('.ld-card').val(data['body']['identification']);
+                        var idImageFront = data['body']['idImageFront'];
+                        var idImageBack = data['body']['idImageBack'];
+                        if(isNull(idImageFront)){
+                            $('.pic-front img').attr('src',data['body']['idImageFront']);
+                        }
+            		if(isNull(idImageBack)){
+                            $('.pic-back img').attr('src',data['body']['idImageBack']);
+                        }
+            		$('.authorizationID').val(data['body']['authorizationID']);
+            		$('.pic-front img').attr('pic-num',2);
+            		$('.pic-back img').attr('pic-num',2);
+                        if(pass==1){
+                            $('input').attr('readonly',true);
+                            $(".pic-front").unbind("click");
+                            $('.pic-back').unbind("click");
+                        }
+            	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    setTimeout(function(){
+    	getTrueNameAuthInfo(userid);
+    },100);
+	/**********************实名认证接口命令*******************************/
+	function verifyTrueName(params){
+		var cmd = 'verifyTrueName';//实名认证接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(data['resultCode']==1){
+	        		layer.msg('实名认证提交成功，请等待审核!');
+//                                sign=1;
+		            setTimeout(function(){
+		            	window.location.href = 'certification-list.html';
+		            },1000);
+	        	}else{
+	        		layer.msg(data['resultMessage']);
+	        	}   
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+
+	
+	//点击上传图片
+	$('.pic-front').on('click',function(){
+		$('.pic-front img').attr('pic-num','1');
+		$('.pic-back img').attr('pic-num','0');
+		uploadImage(1);
+	});
+	$('.pic-back').on('click',function(){
+		$('.pic-back img').attr('pic-num','1');
+		$('.pic-front img').attr('pic-num','0');
+		uploadImage(1);
+	});
+
+	// $('.ld-name').on('blur',function(){
+	// 	var land_user = $.trim($('.ld-name').val());
+	// 	if(!isNull(land_user)){
+	// 		layer.msg('请正确填写姓名');
+	// 	}
+	// })
+	// $('.ld-card').on('blur',function(){
+	// 	var land_num = $.trim($('.ld-card').val());
+	// 	if(!isNull(land_num)){
+	// 		layer.msg('请正确填写证件编号栏目');
+	// 	}else{
+	// 		var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+	// 		if(!cardReg.test(land_num)){
+	// 			layer.msg('请正确填写证件号码');
+	// 		}
+	// 	}
+	// })
+	//保存实名认证消息
+
+//	$('.over-order').click(function(){
+        $(document).on('click','.over-order',function(){
+            if(sign==1){
+                sign=0;
+		var authorizationID = $('.authorizationID').val();
+		var land_user = $.trim($('.ld-name').val());
+                var land_num = $.trim($('.ld-card').val());
+                var images_card1 = $('.pic-front img').attr('src');//证件正面
+                var images_card2 = $('.pic-back img').attr('src');//证件反面
+                var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+                if(land_user==''){
+                    layer.msg('请正确填写姓名');
+                    sign=1;
+                    return false;
+                }
+                if(land_num==''||!cardReg.test(land_num)){
+                    layer.msg('请正确填写身份证号码');
+                    sign=1;
+                    return false;
+                }
+                if(images_card1=="images/id.png"){
+                    layer.msg('请上传身份证正面照片');
+                    sign=1;
+                    return false;
+                }if(images_card2=="images/id.png"){
+                    layer.msg('请上传身份证反面照片');
+                    sign=1;
+                    return false;
+                }
+                if(authorizationID==0){	//新增
+                    var params = {
+                                        'userid':userid,
+                                        'trueName':land_user,//姓名
+                                        'identification' : land_num,//证件号码
+                                        'idImageFront': images_card1,//证件正面
+                                        'idImageBack' : images_card2,//证件反面
+                                };
+                    }else{
+                            var params = {
+                                            'authorizationID' : authorizationID,//认证ID（修改的时候需要传ID，否则就是新增）
+                                        'userid':userid,
+                                        'trueName':land_user,//姓名
+                                        'identification' : land_num,//证件号码
+                                        'idImageFront': images_card1,//证件正面
+                                        'idImageBack' : images_card2,//证件反面
+                                };
+                    }
+                verifyTrueName(params);
+            }
+	    
+	})
+	
+})
+
+	/**
+	*   图片上传成功回调
+	*   imageUrl         图片url地址
+    **/
+    function imageUploaded(imageUrl){
+    	imageUrl_arr = handleAppValue(imageUrl);
+        if($('.pic-front img').attr('pic-num')==1&&($('.pic-back img').attr('pic-num')==0)){
+        	$('.pic-front img').attr('src',imageUrl_arr[0]);
+        	$('.pic-front').addClass('front');
+        }else{
+        	$('.pic-back img').attr('src',imageUrl_arr[0]);
+        	$('.pic-back').addClass('back');
+        }
+    }
+    //图片预览
+    $('.front').click(function(){
+		var idImages = [];
+        idImages.push($('.front img').attr('src'));
+        idImages.push($('.back img').attr('src'));
+        imagePreview(idImages, 0);
+    });
+    $('.front').click(function(){
+		var idImages = [];
+        idImages.push($('.front img').attr('src'));
+        idImages.push($('.back img').attr('src'));
+        imagePreview(idImages, 1);
+    });
+</script>
+</body>
+</html>

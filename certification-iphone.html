@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script src="src/lib/public/public.js" type="text/javascript"></script>
+<style type="text/css">
+	.ld-lia-code{width:80px;display:inline-block;text-align:center;}
+</style>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">手机认证<a href="certification-list.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <ul class="ld-card-ula ovw" style="padding-top: 1.333rem;">
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>手机号码：</label>
+		    		<input class="ld-lia-in iphone-lia-la" type="number" oninput="if(value.length>11)value=value.slice(0,11)" />
+		    	</li>
+		    	<li class="ld-lia phone-code">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>验证码：</label>
+		    		<input class="ld-lia-in ld-lia-d" type="text" />
+		    		<span class="iphone-get-m ovw"><font>|</font><sp class="ld-lia-code">获取验证码</sp></span>
+		    	</li>
+		    </ul>
+		    <a class="over-order ovw" href="#">保存</a>
+	    </section>
+<script type="text/javascript">
+$(function(){
+     var pass = GetQueryParam("pass");
+            if(pass==1){
+                setTimeout(function(){
+                    $('.iphone-lia-la').val(telephone);
+                },500);
+                $('input').attr('readonly',true);
+                $('.over-order').hide();
+                $('.phone-code').hide();
+            }
+	var is_send = 0;
+	//获取验证码
+	var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+	$('.iphone-get-m').click(function(){
+		if(is_send==0){
+			phone = $('.iphone-lia-la').val();
+			if(!phoneReg.test(phone)){
+				layer.alert('手机号码格式不正确',{icon:0,time:5000});
+				return false;
+			}
+			is_send = 1;
+			getMsgVerify(phone,0);
+			$(this).css({color:'#919191'});
+			//倒计时
+			timer =60;
+			timeCountdown();
+		}else{
+			return false;
+		}
+	})
+	//60s倒计时
+	var timer=20;
+	function timeCountdown() {
+		if (timer >= 1) {
+		    timer -= 1;
+		    $('sp').text(timer);
+		    setTimeout(function() {
+		        timeCountdown();
+		    }, 1000);
+		}else{
+		    $('sp').text('重发验证码');
+		    $('.iphone-get-m').css({color:'#ff612f'});
+		    is_send=0;
+		}
+	}
+	//保存手机认证消息
+	function verifyMobile(params){
+		var cmd = 'verifyMobile';//土地认证接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(data['resultCode']==1){
+	        		layer.msg('手机认证提交成功，请等待审核!');
+	        		setTimeout(function(){
+			            window.location.href = 'certification-list.html';
+			        },1000);
+	        	}else{
+	        		layer.msg(data['resultMessage']);
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	$('.over-order').click(function(){
+		var phone = $('.iphone-lia-la').val();
+		var fill_code = $('.ld-lia-d').val();
+		if(phone==''||!phoneReg.test(phone)){
+			layer.msg('请正确填写手机号码');
+		}else{
+			if(fill_code!=''&&is_send==1){//验证码已发送
+				var params = {
+					'userid':userid,//用户ID
+					'phone':phone,
+					'code':fill_code,
+				}
+				verifyMobile(params);
+			}else{
+				layer.msg('请正确填写验证码');
+			}
+		}
+	})
+})
+</script>
+</body>
+</html>

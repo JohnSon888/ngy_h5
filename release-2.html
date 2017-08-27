@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>发布话题</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+	    <section class="body-bj ovw">
+	    	<section class="header ovw posin"  style="position: fixed;  z-index: 500;">发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    	<ul class="rele-img-ula ovw" style="margin-top: 1.333rem;">
+	    		<li class='ld-pic'><img src="images/id.png"/></li>
+	    	</ul>
+		     <section class="release-near-content ovw">
+		     	<ul class="ld-card-ula rele-work-persoal ovw">
+		     		<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">话题分类：</label>
+			    			<select class="add-state htfl">
+			    			<!-- <option>小麦种植 </option> -->
+			    			</select>
+			    		</aside>
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">话题标题：</label>
+			    		<input class="ld-lia-in mers-lia-a topic_title" type="text" placeholder="请输入5～20字" maxlength="20" onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+			    	</li>
+			    	<li class="ld-lia ld-lie">
+			    		<label class="ld-lia-la ovw">描述：</label>
+			    		<textarea class="merchants-text ovw description"></textarea>
+			    	</li>
+		     	</ul>
+		     </section>
+		    <a class="over-order ovw topic_tj" href="javascript:;">提交</a>
+	    </section>
+</body>
+</html>
+<script>
+var idImages = [];
+$(function(){
+        /**********************验证是否登录*******************************/
+	if(userid==0){//未登录状态
+		gotoLogin();
+	}
+	$('.header-back').on('click',function(){
+		if(from=="h5"){
+			window.location.href="my-circle.html?circle_title="+circle_title+"";
+		}else if(from=="myCircle"){
+			window.location.href="my-circle-2.html";
+		}else if(from=="edit"){
+			window.location.href="my-topic-2.html?from=h5&topicID="+topicID;
+		}else{
+			backtoNative();
+		}
+	})
+	function get_toppicType(typeID){//获取话题分类
+        var cmd = 'toppicType';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params ={};
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	var search_html = '';
+                $.each(data['body']['list'],function(i,val){
+                	var crtime = getLocalTime(val['topicTime'],1);
+                    search_html += '<option value='+val['typeID']+'>'+val['typeName']+'</option>';
+               });
+	    		$('.htfl').append(search_html);
+	    		$('.htfl').val(circlesID);
+                        if(isNull(typeID)){
+                            $('.htfl').val(typeID);
+                        }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	var topicID = GetQueryParam('topicID');
+	var circlesID = GetQueryString("circlesID");
+	var from = GetQueryParam('from');
+	var circle_title = GetQueryParam('circle_title');
+	function toppicRelease(params){//发表话题
+        var cmd = 'toppicRelease';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid' : userid,
+                'circlesID' : circlesID,
+                'topicType' : topicType,
+                'title' : title,
+                'content' : content,
+                'images' : images,
+        }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+            	if(data['resultCode']==1){
+                                if(from=="edit"){
+                                    layer.msg('话题编辑成功！');
+                                }else{
+                                    layer.msg('话题发布成功！');
+                                }
+	        		setTimeout(function(){
+	        			if(from=="h5"){
+	        				window.location.href="my-circle.html?circleID="+circlesID+"&circle_title="+circle_title+"";
+	        			}else if(from=="edit"){
+                                                window.location.href="my-topic-2.html?from=h5&topicID="+topicID;
+                                        }else{
+	        				backtoNative();
+	        			}
+		    			},1000); 
+	        	}else{
+	        		layer.msg('话题发布失败，系统错误！');
+	        	}
+            	//window.location.href = "my-circle.html";
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+function get_toppicDetail(params){//获取话题详情
+        var cmd = 'toppicDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){console.info(data);
+               if(isNull(data['body'])){
+                   $('.ld-pic img').attr('src',data['body']['poster']);
+                   $('.ld-pic').addClass('pic');
+                   $('.topic_title').val(data['body']['topicTitle']);
+                   $('.description').val(data['body']['content']);
+                   get_toppicType(data['body']['CircleID']);//话题类型
+               }else{
+                   get_toppicType();
+               }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+//	if(isNull(topicID)){        //话题编辑
+            setTimeout(function(){
+                var params = {
+                        'userid': userid,
+                        'topicID' : topicID,
+                        };
+                get_toppicDetail(params);
+            },100); 
+//        }else{
+//            get_toppicDetail(params);
+//        }
+	
+	
+	//点击上传图片
+	$('.ld-pic').click(function(){
+		var pic_index = $('.ld-pic img');
+		var num = $('.pic').length;
+		if(num==1){
+			layer.open({
+			    content: '您确定要删除图片吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+				    layer.close(index);
+                                    $('.ld-pic').removeClass('pic');
+				    $('.ld-pic').html('<img src="images/id.png"/>');
+			   	}
+			});
+		}else{
+			var pic_num_left = 1-num;
+			uploadImage(pic_num_left);
+		}  
+/* 		var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+		imageUploaded(imageUrl);  */
+	});
+	
+	$('.topic_tj').click(function(){
+		var circlesID = GetQueryString("circlesID");
+		var topicType = parseInt($('.htfl').val());
+		var description = $('.description').val();
+		var topic_title = $('.topic_title').val();
+                var imgs = $('.pic img').attr('src');
+		if(isNull(circlesID)){
+			circlesID1 = circlesID;
+		}else{
+			circlesID1 = topicType;
+		}
+		if(topic_title==''){
+			layer.msg("请输入标题！");
+			return false;
+		}
+		if(topic_title.length<5 ||topic_title.length>20){
+			layer.msg("标题长度为5-20字！");
+			return false;
+		}
+		if(description==''){
+			layer.msg("请输入描述内容！");
+			return false;
+		}
+                if(isNull(topicID)){
+                    var params ={
+	                'userid' : userid,
+                        'topicID':topicID,
+	                'circlesID' : topicType,
+	                'topicType' : topicType,
+	                'title' : topic_title,
+	                'content' : description,
+	                'images' : imgs,
+                    };
+                }else{
+                    var params ={
+	                'userid' : userid,
+	                'circlesID' : topicType,
+	                'topicType' : topicType,
+	                'title' : topic_title,
+	                'content' : description,
+	                'images' : imgs,
+                    };
+                }
+//		console.info(params);
+		toppicRelease(params);
+	});
+
+});
+
+/**
+*   图片上传成功回调
+*   imageUrl         图片url地址
+**/
+function imageUploaded(imageUrl){
+	imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+	var img_html = '';
+	for(i=0;i<imageUrl_arr.length;i++){
+		img_html += '<img src="'+imageUrl_arr[i]+'"/>';
+
+	}
+	$('.ld-pic').html(img_html);
+	//idImages.push(imageUrl);
+	idImages = imageUrl_arr;
+    //$('.ld-pic img').attr('src',imageUrl_arr[0]);
+    $('.ld-pic').addClass('pic');
+}
+//图片预览
+$('.pic').click(function(){
+    imagePreview(idImages, 0);
+});
+
+</script>

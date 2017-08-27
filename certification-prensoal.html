@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">农机手认证<a href="certification-prensoal-2.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <ul class="ld-card-ula land-ula ovw" style="padding-top: 1.333rem;">
+		    	<li class="mers-lia-c mers-lia-d">
+		    		<aside class="add-plant-as add-plant-ad ovw">
+		    			<label class="fl ovw"><span class="must-fill-in">*&nbsp;</span>农机：</label>
+                                        <select class="add-state" style="width: 6.7rem;">
+		    				
+		    			</select>
+		    		</aside>
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw">牌照：</label>
+                                <input class="ld-lia-in ld-lia-f" type="text" style="width: 6.7rem;">
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>驾驶人：</label>
+		    		<input class="ld-lia-in ld-lia-c" type="text" style="width: 6.7rem;"/>
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>身份证号码：</label>
+                                <input class="ld-lia-in iphone-lia-lf" type="text" style="width: 5.7rem;"/>
+		    	</li>
+		    	<li class="add-pic-ld" style="border: 1px solid #ddd;border-radius: 0.12rem;height: 3.2rem;width:99%;">
+		    		<!-- <aside class="add-plant-as add-plant-af ovw"> -->
+		    			<label class="fl ovw" style="line-height: 1.04rem;text-indent: 0.2666rem;"><span class="must-fill-in">*&nbsp;</span>农机照片:</label>
+		    			<span class="fl plant-imgb ovw mac-pic mac-pic-add" mac-pic-num="0"><img src="images/plant_2.png"></span>
+		    			<!-- <span class="fl plant-imgb ovw"><img src="images/plant_3.png"></span> -->
+		    		<!-- </aside> -->
+		    	</li>
+		    	<li class="add-pic-ld" style="border: 1px solid #ddd;border-radius: 0.12rem;height: 3.2rem;width:99%;">
+		    		<!-- <aside class="add-plant-as add-plant-af ovw"> -->
+		    			<label class="fl ovw" style="line-height: 1.04rem;text-indent: 0.2666rem;"> <span class="must-fill-in">*&nbsp;</span>农机行驶证或身份证正反面照片:</label>
+		    			<span class="fl plant-imgb ovw mac-card mac-card-add" mac-card-num="0"><img src="images/plant_2.png"></span>
+		    			<!-- <span class="fl plant-imgb ovw"><img src="images/plant_3.png"></span> -->
+		    		<!-- </aside> -->
+		    	</li>
+		    </ul>
+		    <a class="over-order ovw" href="javascript:void(0);">保存</a>
+	    </section>
+<script type="text/javascript">
+$(function(){
+	var authorizationID = GetQueryParam("authorizationID");
+	function machAuthList(params){
+		var cmd = 'machAuthList';//技能认证列表接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(isNull(data['body']['list'])){
+	            	$.each(data['body']['list'],function(i,val){
+	            		if(authorizationID==val['authorizationID']){
+	            			$('.ld-lia-f').val(val['license']);
+	            			$('.ld-lia-c').val(val['trueName']);
+							$('.iphone-lia-lf').val(val['licenseNumber']);
+							var images ='';
+							for(var i=0;i<val['machineImages'].length;i++){
+					            images += '<span class="fl plant-imgb ovw mac-pic pic"><img src="'+val['machineImages'][i]+'"></span>';
+					        }
+					        $('.mac-pic').before(images);
+					        var imgs = '';
+					        for(var i=0;i<val['licenseImages'].length;i++){
+					            imgs += '<span class="fl plant-imgb ovw mac-card picture"><img src="'+val['licenseImages'][i]+'"></span>';
+					        }
+					       $('.mac-card').before(imgs);
+	            		}else{
+	            			params.page++;
+	            			machAuthList(params);
+	            		}
+	            	})
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	setTimeout(function(){
+		var machAuthList_params = {
+			'userid':userid,
+			'page':PAGE,
+			'num':PAGE_NUM,
+		}
+		machAuthList(machAuthList_params);
+	},100)
+	// 获取农机类型接口
+	function machineTypeList(){
+		var cmd = 'machineTypeList';//获取农机类型接口
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    var params = {};
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(isNull(data['body']['list'])){
+	            	var njHtml = '';
+	            	$.each(data['body']['list'],function(i,val){
+	            		njHtml += '<option typeID="'+val['typeID']+'">'+val['typeName']+' </option>';
+	            	})
+	            	$('.add-state').append(njHtml);
+	            }else{//增加写死测试数据，，，，正式版去掉！！！！
+	            	njHtml = '<option typeID="1">测试收割机</option><option typeID="2">测试拖拉机</option><option typeID="3">测试农药机</option>';
+	            	$('.add-state').append(njHtml);
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}	
+	machineTypeList();//加载农机类型
+	// 农机手认证
+	function modifyMach(params){
+		var cmd = 'modifyMach';//技能认证列表接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(data['resultCode']==1){
+	            	layer.msg('农机手认证提交成功，请等待审核!');
+//                        sign=1;
+	            	setTimeout(function(){
+		            	window.location.href = 'certification-list.html';
+		            },1000);
+	            }else{
+	            	layer.msg('农机手认证提交失败，系统出错!');
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}	
+	//点击上传图片
+	$(document).on('click','.mac-pic',function(){
+		var pic_index = $(this);
+		$('.mac-pic').attr('mac-pic-num',1);
+		$('.mac-card').attr('mac-card-num',0);
+		var num = $('.pic').length;
+		var pic_num_left = 4-num;
+		if($(this).siblings('.mac-pic-add').length>0){
+			layer.open({
+			    content: '您确定要删除图片吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+				    layer.close(index);
+				    pic_index.remove();
+				    if(num==3&&$('.mac-pic-add img').attr('src')!='images/plant_2.png'){
+				    	$('.mac-pic-add').before('<span class="fl plant-imgb ovw pic mac-pic"><img src="'+$('.mac-pic-add img').attr('src')+'"></span>');
+						$('.mac-pic-add img').attr('src','images/plant_2.png')
+					}
+					// else{
+					// 	uploadImage(pic_num_left);
+					// }
+			   	}
+			});
+		}else{
+			if(num==3&&$('.mac-pic-add img').attr('src')!='images/plant_2.png'){
+				layer.msg('最多添加4张图片');
+			}else{
+				uploadImage(pic_num_left);
+			}
+		}
+	});
+	$(document).on('click','.mac-card',function(){
+		var pic_index = $(this);
+		$('.mac-card').attr('mac-card-num',1);
+		$('.mac-pic').attr('mac-pic-num',0);
+		var num = $('.picture').length;
+		var pic_num_left = 4-num;
+		if($(this).siblings('.mac-card-add').length>0){
+			layer.open({
+			    content: '您确定要删除图片吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+				    layer.close(index);
+				    pic_index.remove();
+				    if(num==3&&$('.mac-card-add img').attr('src')!='images/plant_2.png'){
+				    	$('.mac-card-add').before('<span class="fl plant-imgb ovw picture mac-card"><img src="'+$('.mac-card-add img').attr('src')+'"></span>');
+						$('.mac-card-add img').attr('src','images/plant_2.png')
+					}
+					// else{
+					// 	uploadImage(pic_num_left);
+					// }
+			   	}
+			});
+		}else{
+			if(num==3&&$('.mac-card-add img').attr('src')!='images/plant_2.png'){
+				layer.msg('最多添加4张图片');
+			}else{
+				uploadImage(pic_num_left);
+			}
+		}
+	});
+	//保存农机手认证消息
+	$('.over-order').click(function(){
+            if(sign==1){
+                sign=0;
+		var machineType = $('.add-state option:selected').attr('typeID');//农机类型
+	    var license = $('.ld-lia-f').val();//牌照 
+	    var trueName = $('.ld-lia-c').val();//驾驶人姓名 
+	    var licenseNumber = $('.iphone-lia-lf').val();//驾驶证号 
+	    var machineImages = [];//农机照片数组
+	    var licenseImages = [];//行驶证照片数组
+            var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+	    $.each($('.pic img'),function(i){
+	    	machineImages.push($($('.pic img')[i]).attr('src'));
+	    });
+	    if($('.mac-pic-add img').attr('src')!='images/plant_2.png'){
+		    machineImages.push($('.mac-pic-add img').attr('src'));
+		}
+	    $.each($('.picture img'),function(i){
+	    	licenseImages.push($($('.picture img')[i]).attr('src'));
+	    });
+	    if($('.mac-card-add img').attr('src')!='images/plant_2.png'){
+		    licenseImages.push($('.mac-card-add img').attr('src'));
+		}
+	    if(!isNull(machineType)){
+	    	layer.msg('请选择农机类型');
+                sign=1;
+	    	return false;
+	    }
+//	    if(!isNull(license)){
+//	    	layer.msg('请正确填写牌照');
+//	    	return false;
+//	    }
+	    if(!isNull(trueName)){
+	    	layer.msg('请正确填写驾驶人姓名');
+                sign=1;
+	    	return false;
+	    }
+	    if(!isNull(licenseNumber)||!cardReg.test(licenseNumber)){
+	    	layer.msg('请正确填写身份证号码');
+                sign=1;
+	    	return false;
+	    }
+	    if(machineImages.length==0){
+	    	layer.msg('请上传农机照片');
+                sign=1;
+	    	return false;
+	    }
+	    if(licenseImages.length==0){
+	    	layer.msg('请上传农机行驶证或身份证正反面照片');
+                sign=1;
+	    	return false;
+	    }
+	    if(authorizationID==0){	//新增
+		    var params = {
+		    	'userid':userid,
+			    // 'authorizationID' : 123,//认证ID（修改的时候需要传ID，否则就是新增）
+			    'machineType' : machineType,//农机类型
+				'trueName':trueName,//姓名
+				'license' : license,//牌照 
+				'licenseNumber': licenseNumber,//驾驶证号 
+				'machineImages' : machineImages,//农机照片数组
+				'licenseImages' : licenseImages,//行驶证照片数组
+		    };
+		}else{
+			var params = {
+		    	'userid':userid,
+			    'authorizationID' : authorizationID,//认证ID（修改的时候需要传ID，否则就是新增）
+			    'machineType' : machineType,//农机类型
+				'trueName':trueName,//姓名
+				'license' : license,//牌照 
+				'licenseNumber': licenseNumber,//驾驶证号 
+				'machineImages' : machineImages,//农机照片数组
+				'licenseImages' : licenseImages,//行驶证照片数组
+		    };
+		}
+	   	modifyMach(params);
+            }
+	})
+})
+
+	/**
+	*   图片上传成功回调
+	*   imageUrl         图片url地址
+    **/
+    function imageUploaded(imageUrl){
+    	imageUrl_arr = handleAppValue(imageUrl);
+    	var images = '';
+    	if(($('.mac-pic').attr('mac-pic-num')=='1')&&($('.mac-card').attr('mac-card-num')=='0')){//农机照片
+	    	for(var i=0;i<imageUrl_arr.length;i++){
+	            images += '<span class="fl plant-imgb ovw pic mac-pic"><img src="'+imageUrl_arr[i]+'"></span>';
+	        }
+	        if($('.pic').length==3){
+	        	$('.mac-pic-add img').attr('src',imageUrl_arr[0]);
+	        	// $('.mac-pic-add').addClass('pic')
+	        }else{
+	        	$('.mac-pic-add').before(images);
+	        }
+	    }else{//驾驶证照片
+	    	for(var i=0;i<imageUrl_arr.length;i++){
+	            images += '<span class="fl plant-imgb ovw picture mac-card"><img src="'+imageUrl_arr[i]+'"></span>';
+	        }
+	        if($('.picture').length==3){
+	        	$('.mac-card-add img').attr('src',imageUrl_arr[0]);
+	        	// $('.mac-card-add').addClass('picture')
+	        }else{
+	        	$('.mac-card-add').before(images);
+	        }
+	    }
+    }
+
+</script>
+</body>
+</html>

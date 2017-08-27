@@ -1,0 +1,1784 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+        <title>我的收藏</title>
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/demo.css">
+        <link rel="stylesheet" type="text/css" href="css/ownCollect.css" />
+        <link rel="stylesheet" type="text/css" href="css/swiper.css" />
+        <link rel="stylesheet" href="css/public.css">
+        <script type="text/javascript" src="js/jquery.min.js" ></script>
+        <script type="text/javascript" src="js/flexible.js" ></script>
+        <!-- dropload -->
+        <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+        <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+     <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!--swiper-->
+     <script type="text/javascript" src="js/swiper.min.js"></script>
+        <!-- layer -->
+     <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+     <style type="text/css">
+            .none-more-content{
+                color: #868686;
+                font-size: 14px;
+                height: 200px;
+                line-height: 200px;
+                text-align: center;
+            }
+            .myConcernlist{
+                margin-top:0;
+            }
+            .topic_css{
+                background: #ececec none repeat scroll 0 0;
+                /*margin-top: 2.233rem;*/
+            }
+
+            .dropload-down{
+                background: #fff none repeat scroll 0 0;
+            }
+
+            .mr-look-sa{
+                height: 1.5rem;
+                line-height: 2.5rem;
+            }
+            .mr-look-tx img{
+                border-radius: 0;
+            }
+            .subscription-ula li {
+                width: 14.2%;
+            }
+            .look-ywc{
+                color:#6ec895;
+            }
+        </style>
+        <script type="text/javascript">
+             $(function(){
+        // userid = '129';
+
+             /**************获取我的农机**********************/
+             /* 	function get_myConcern(params){//获取我的接单
+             var cmd = 'myConcern';//接口命令
+             var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+             var jsonp = 1;
+             var params = {
+             'userid':userid,
+             'type':type,
+             'page' :PAGE,
+             'num' : PAGE_NUM,
+             }; 
+             params = objKeySort(params);//按照属性名升序排列
+             var params_str = objChangeStr(params);//拼接params参数的属性值
+             params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+             $.ajax({
+             url : apiURL,//接口地址
+             data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+             dataType : 'jsonp',
+             success: function(data){ 
+             console.info(data);
+             if(isNull(data)){
+             var search_html = '';
+             var orderStatus = '';
+             $.each(data['body']['list'],function(i,val){
+             var time = getLocalTime(val['topicTime']);
+             var pr_type = parseInt(val['type']);
+             var orderStatus = parseInt(val['orderStatus']);
+             switch(orderStatus){
+             case 1:
+             var orderStatus = '待接单';
+             break;
+             case 2:
+             var orderStatus = '进行中';
+             break;
+             case 3:
+             var orderStatus = '等待确认';
+             break;
+             case 4:
+             var orderStatus = '已完成';
+             break;
+             case 5:
+             var orderStatus = '已关闭';
+             break;
+             }
+     
+             switch(pr_type){
+             case 1://农机
+             search_html += '<article class="ms-works-art mr-look-art posin ovw">'+
+             '<a href="'+val['paramID']+'"><figure class="mr-look-tx ovw">'+
+             '<img src="'+val['userAvatar']+'">'+
+             '<figcaption>'+val['username']+'</figcaption></figure>'+
+             '<p><font>种类:</font>'+val['paramType']+'</p>'+
+             '<p><font>说明:</font>'+val['paramInfro']+'</p>'+
+             '<p><font>地区:</font>'+val['paramAddress']+'</p></a>'+
+             '<span class="mr-look-time mr-look-sa ovw">取消关注</span></article>';
+             $('.ms-contents').append(search_html);
+             break;
+             case 2:// 农活
+             search_html += '<article class="ms-works-art mr-look-art posin ovw">'+
+             '<a href="#"><figure class="mr-look-tx ovw">'+
+             '<img src="'+val['userAvatar']+'">'+
+             '<figcaption>'+val['username']+'</figcaption></figure>'+
+             '<p><font>种类:</font>'+val['paramType']+'</p>'+
+             '<p><font>说明:</font>'+val['paramInfro']+'</p>'+
+             '<p><font>地区:</font>'+val['paramAddress']+'</p></a>'+
+             '<span class="mr-look-state mr-look-sa look-ing ovw">'+orderStatus+'</span>'+
+             '<span class="mr-look-time mr-look-sa ovw">取消关注</span></article>';
+             $('.ms-contents').append(search_html);
+             break;
+             case 3://零活
+             search_html += '<article class="ms-works-art mr-look-art posin ovw">'+
+             '<a href="#"><figure class="mr-look-tx ovw">'+
+             '<img src="'+val['userAvatar']+'">'+
+             '<figcaption>'+val['username']+'</figcaption></figure>'+
+             '<p><font>种类:</font>'+val['paramType']+'</p>'+
+             '<p><font>说明:</font>'+val['paramInfro']+'</p>'+
+             '<p><font>地区:</font>'+val['paramAddress']+'</p></a>'+
+             '<span class="mr-look-state mr-look-sa look-ing ovw">'+orderStatus+'</span>'+
+             '<span class="mr-look-time mr-look-sa ovw">取消关注</span></article>';
+             $('.ms-contents').append(search_html);
+             break;
+             case 4://话题
+             search_html += '<section class="my-topic-cont ovw">'+
+             '<cite class="topic-title ovw"><span class="fl"><a href="#">'+val['topicTitle']+'</a></span><font class="fr"><i>人参与</i><samp>'+val['members']+'</samp></font></cite>'+
+             '<p class="topic-pa ovw"></p>'+
+             '<ul class="topic-ula ovw"><li class="topic-lia">'+time+'</li>'+
+             '<li class="topic-lib"></li>'+
+             '<li class="topic-lic topic-lif">'+val['comments']+'</li>'+
+             <!--topic-lie-->
+             '<li class="topic-lid topic-lie topic-lif">'+val['favor']+'</li></ul></section>';
+             $('.gz_topic').append(search_html);
+             break;
+             }
+             });
+             }
+             else{
+             search_html = '<div class="none-more-content">暂无内容</div>';
+             $('.ms-contents').append(search_html);
+             }
+             },
+             error: function(XMLHttpRequest, textStatus, errorThrown){
+             layer.msg('网络请求延迟！');
+             console.info(XMLHttpRequest.status);
+             console.info(XMLHttpRequest.readyState);
+             console.info(textStatus);
+             },
+             });
+             }
+             */
+
+
+
+            var count = 0;
+                    function get_myConcern_nj(params){//获取我的关注（农机）
+                    var cmd = 'myConcern'; //接口命令
+                            var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                            var jsonp = 1;
+                            /*        
+                             var params = {
+                             'userid':userid,
+                             'type':type,
+                             'page' :1,
+                             'num' : 2,
+                             };
+                             */
+                            var up = 1; //默认是上拉
+                            if (params.page == 0){
+                    up = 0;
+                            count = 0;
+                            params.page = 1;
+                    }
+                    params = objKeySort(params); //按照属性名升序排列
+                            var params_str = objChangeStr(params); //拼接params参数的属性值
+                            params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                            $.ajax({
+                            url : apiURL, //接口地址
+                                    data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                                    dataType : 'jsonp',
+                                    success: function(data){
+                                    console.info(data);
+                                            $('.ms-contents').removeClass('topic_css');
+                                            if (isNull(data['body']['list'])){
+                                    var search_html = '';
+                                            $.each(data['body']['list'], function(i, val){
+                                            var time = getLocalTime(val['topicTime']);
+                                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                                    '<a href="work-details.html?machineID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                                    '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                                    '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                                    '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                                    '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                                    '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                                    '<span class="mr-look-time mr-look-sa ovw qxgz_button" id="' + val['paramID'] + '" type=1>取消收藏</span></article>';
+                                                    count++;
+                                            });
+                                    }
+                                    else{
+                                    if ((count != 0)) {//上拉加载无内容锁定无数据
+                                    dropload.resetload();
+                                            dropload.lock();
+                                            dropload.noData();
+                                            $('.dropload-down').hide();
+                                    } else {
+                                    html = '<div class="none-more-content">暂无内容</div>';
+                                            $('.dropload-down').siblings().remove();
+                                            $('.dropload-down').before(html);
+                                            dropload.resetload();
+                                            dropload.lock();
+                                            dropload.noData();
+                                            $('.dropload-down').hide();
+                                            return false;
+                                    }
+        //    	        		if((count!=0)){//上拉加载无内容锁定无数据
+        //    	            		dropload.resetload();
+        //                            dropload.lock();
+        //                            dropload.noData();
+        //                            $('.dropload-down').hide();
+        //    	            	}else{
+        //    	            		html = '<div class="none-more-content">暂无内容</div>';
+        //    						$('.myConcernlist').html(html);
+        //    						return false;
+        //    	            	}
+                                    }
+                                    // 为了测试，延迟1秒加载
+                                    setTimeout(function(){
+                                    $('.none-more-content').remove();
+                                            if (up == 0){//下拉加载
+                                    /*                     	if(count<((params.page)*params.num)&&count!=0){
+                                     search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                                     }
+                                     $('.myConcernlist').html(search_html);	 */
+                                    if (count < ((params.page) * params.num) && count != 0){
+                                    search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                            $('.myConcernlist').html(search_html);
+                                    } else{
+                                    $('.myConcernlist').html(search_html);
+                                            dropload_machineList(params, 1);
+                                    }
+                                    dropload.resetload();
+                                            dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                            // dropload.noData(false);
+                                            $('.dropload-down').hide();
+                                            params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                            //  dropload_machineList(params,1);
+                                    } else{
+                                    if (count < ((params.page) * params.num)){
+                                    dropload.lock(); // 锁定
+                                            dropload.noData(); // 无数据
+                                            $('.dropload-down').hide();
+                                    }
+                                    $('.dropload-down').before(search_html);
+                                            dropload.resetload(); // 每次数据加载完，必须重置
+                                    }
+                                    }, 500);
+                                    },
+                                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                    layer.msg('网络请求延迟！');
+                                            console.info(XMLHttpRequest.status);
+                                            console.info(XMLHttpRequest.readyState);
+                                            console.info(textStatus);
+                                    },
+                            });
+                    }
+            //get_myConcern_nj(1,1,1,2);
+
+            function get_myConcern_nh(params){//获取我的关注（农活）
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var time = toLocalTime(ts, 6); //下拉时间定义
+                    var jsonp = 1;
+                    /*   
+                     var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     };
+                     */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    //console.info(data);
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    $.each(data['body']['list'], function(i, val){
+                                    var time = getLocalTime(val['topicTime']);
+                                            var pr_type = parseInt(val['type']);
+                                            var orderStatus = parseInt(val['orderStatus']);
+                                            switch (orderStatus){
+                                    case 1:
+                                            var orderStatus = '待接单';
+                                            break;
+                                            case 2:
+                                            var orderStatus = '进行中';
+                                            break;
+                                            case 3:
+                                            var orderStatus = '已完成';
+                                            break;
+                                            case 4:
+                                            var orderStatus = '已完成';
+                                            break;
+                                            case 5:
+                                            var orderStatus = '已关闭';
+                                            break;
+                                    }
+
+                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="farm-work-details.html?farmWorkID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                            '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                            '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                            '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                            '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                            '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-state mr-look-sa look-ing ovw">' + orderStatus + '</span>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button"id="' + val['paramID'] + '" type=2>取消收藏</span></article>';
+                                            count++;
+                                    });
+                                    //  $('.ms-contents').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 2);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    // dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+
+            function get_myConcern_lh(params){//获取我零活
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*         var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     }; */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    //console.info(data);
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    var orderStatus = '';
+                                    var css_type = ''
+                                    $.each(data['body']['list'], function(i, val){
+                                    var time = getLocalTime(val['topicTime']);
+                                            var pr_type = parseInt(val['type']);
+                                            var orderStatus = parseInt(val['orderStatus']);
+                                            switch (orderStatus){
+                                    case 1:
+                                            var orderStatus = '待接单';
+                                            css_type = 'look-ok';
+                                            break;
+                                            case 2:
+                                            var orderStatus = '进行中';
+                                            css_type = 'look-ing';
+                                            break;
+                                            case 3:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 4:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 5:
+                                            var orderStatus = '已关闭';
+                                            css_type = 'look-sa';
+                                            break;
+                                    }
+                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="find-job-details.html?findJobID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                            '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                            '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                            '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                            '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                            '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-state mr-look-sa ' + css_type + ' ovw">' + orderStatus + '</span>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button"id="' + val['paramID'] + '" type=3>取消收藏</span></article>';
+                                            count++;
+                                    });
+                                    //$('.ms-contents').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            /*                     	if(count<((params.page)*params.num)&&count!=0){
+                             search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                             }
+                             $('.myConcernlist').html(search_html);	 */
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 3);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    //dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    // dropload_machineList(params);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+
+            function get_myConcern_topic(params){//获取我的关注-话题
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*         var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     }; */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').addClass('topic_css');
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    var orderStatus = '';
+                                    $.each(data['body']['list'], function(i, val){
+                                    if (isNull(val['poster'])){
+                                    var content = '<img src="' + val['poster'] + '" style="width:100%;">';
+                                            var height_val = "180px";
+                                    } else{
+                                    var content = val['content'];
+                                            var height_val = "auto;max-height:180px";
+                                    }
+                                    search_html += '<section class="my-topic-cont ovw">' +
+                                            '<cite class="topic-title ovw"><span class="fl"><a href="my-topic - 2.html?topicID=' + val['topicID'] + '&from=concern">' + val['topicTitle'] + '</a></span><font class="fr"><i>人参与</i><samp>' + val['members'] + '</samp></font></cite>' +
+                                            '<p class="topic-pa ovw" style="height:' + height_val + ';">' + content + '</p>' +
+                                            '<ul class="topic-ula ovw"><li class="topic-lia">' + val['topicTime'] + '</li>' +
+                                            '<li class="topic-lib"></li>' +
+                                            '<li class="topic-lic topic-lif">' + val['comments'] + '</li>' +
+                                            '<li class="topic-lid topic-lie topic-lif" topicID=' + val['topicID'] + '>' + val['favor'] + '</li></ul></section>';
+                                            count++;
+                                    });
+                                    //$('.gz_topic').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 4);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    // dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    // dropload_machineList(params,4);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+
+            function get_myConcern_lg(params){//获取零工
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*         var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     }; */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    //console.info(data);
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    var orderStatus = '';
+                                    var css_type = ''
+                                    $.each(data['body']['list'], function(i, val){
+                                    var time = getLocalTime(val['topicTime']);
+                                            var pr_type = parseInt(val['type']);
+                                            var orderStatus = parseInt(val['orderStatus']);
+                                            switch (orderStatus){
+                                    case 1:
+                                            var orderStatus = '待接单';
+                                            css_type = 'look-ok';
+                                            break;
+                                            case 2:
+                                            var orderStatus = '进行中';
+                                            css_type = 'look-ing';
+                                            break;
+                                            case 3:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 4:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 5:
+                                            var orderStatus = '已关闭';
+                                            css_type = 'look-sa';
+                                            break;
+                                    }
+                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="recruit-job-details.html?recruitJobID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                            '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                            '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                            '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                            '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                            '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-state mr-look-sa ' + css_type + ' ovw">' + orderStatus + '</span>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button"id="' + val['paramID'] + '" type=6>取消收藏</span></article>';
+                                            count++;
+                                    });
+                                    //$('.ms-contents').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            /*                     	if(count<((params.page)*params.num)&&count!=0){
+                             search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                             }
+                             $('.myConcernlist').html(search_html);	 */
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 5);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    //dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    //dropload_machineList(params);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+            /************************二手****************************/
+            function get_myConcern_es(params){//获取二手
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*         var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     }; */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    //console.info(data);
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    var orderStatus = '';
+                                    var css_type = ''
+                                    $.each(data['body']['list'], function(i, val){
+                                    var time = getLocalTime(val['topicTime']);
+                                            var pr_type = parseInt(val['type']);
+                                            var orderStatus = parseInt(val['orderStatus']);
+                                            switch (orderStatus){
+                                    case 1:
+                                            var orderStatus = '待接单';
+                                            css_type = 'look-ok';
+                                            break;
+                                            case 2:
+                                            var orderStatus = '进行中';
+                                            css_type = 'look-ing';
+                                            break;
+                                            case 3:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 4:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 5:
+                                            var orderStatus = '已关闭';
+                                            css_type = 'look-sa';
+                                            break;
+                                    }
+                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="details-second-goods.html?secondGoodsID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                            '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                            '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                            '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                            '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                            '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-state mr-look-sa ' + css_type + ' ovw">' + orderStatus + '</span>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button"id="' + val['paramID'] + '" type=7>取消收藏</span></article>';
+                                            count++;
+                                    });
+                                    //$('.ms-contents').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            /*                     	if(count<((params.page)*params.num)&&count!=0){
+                             search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                             }
+                             $('.myConcernlist').html(search_html);	 */
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 6);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    //  dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    //   dropload_machineList(params);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+            /************************商品****************************/
+            function get_myConcern_sp(params){//获取商品
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*         var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :PAGE,
+                     'num' : PAGE_NUM,
+                     }; */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    //console.info(data);
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    var orderStatus = '';
+                                    var css_type = ''
+                                    $.each(data['body']['list'], function(i, val){
+                                    var time = getLocalTime(val['topicTime']);
+                                            var pr_type = parseInt(val['type']);
+                                            var orderStatus = parseInt(val['orderStatus']);
+                                            switch (orderStatus){
+                                    case 1:
+                                            var orderStatus = '待接单';
+                                            css_type = 'look-ok';
+                                            break;
+                                            case 2:
+                                            var orderStatus = '进行中';
+                                            css_type = 'look-ing';
+                                            break;
+                                            case 3:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 4:
+                                            var orderStatus = '已完成';
+                                            css_type = 'look-ywc';
+                                            break;
+                                            case 5:
+                                            var orderStatus = '已关闭';
+                                            css_type = 'look-sa';
+                                            break;
+                                    }
+                                    search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="goods-details.html?goodsID=' + val['paramID'] + '&from=concern"><figure class="mr-look-tx ovw">' +
+                                            '<span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="' + val['userAvatar'] + '"/></span>' +
+                                            '<figcaption style="line-height: 0.8333rem;height: 0.8333rem;">' + val['username'] + '</figcaption></figure>' +
+                                            '<p><font>种类:</font>' + val['paramType'] + '</p>' +
+                                            '<p><font>说明:</font>' + val['paramInfro'] + '</p>' +
+                                            '<p><font>地区:</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-state mr-look-sa ' + css_type + ' ovw">' + orderStatus + '</span>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button"id="' + val['paramID'] + '" type=4>取消收藏</span></article>';
+                                            count++;
+                                    });
+                                    //$('.ms-contents').append(search_html);
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            /*     	            		html = '<div class="none-more-content">暂无内容</div>';
+                             $('.myConcernlist').html(html);
+                             return false; */
+                            html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').before(html);
+                                    dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            /*                     	if(count<((params.page)*params.num)&&count!=0){
+                             search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                             }
+                             $('.myConcernlist').html(search_html);	 */
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 7);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    // dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    //  dropload_machineList(params);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+            /********************商户*********************************************/
+            function get_myConcern_sh(params){//获取我的关注（商户）
+            var cmd = 'myConcern'; //接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    /*        
+                     var params = {
+                     'userid':userid,
+                     'type':type,
+                     'page' :1,
+                     'num' : 2,
+                     };
+                     */
+                    var up = 1; //默认是上拉
+                    if (params.page == 0){
+            up = 0;
+                    count = 0;
+                    params.page = 1;
+            }
+            params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                    url : apiURL, //接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){
+                            console.info(data);
+                                    $('.ms-contents').removeClass('topic_css');
+                                    if (isNull(data['body']['list'])){
+                            var search_html = '';
+                                    $.each(data['body']['list'], function(i, val){
+                                        if(isNull(val['poster'])){
+                                            var poster = val['poster'];
+                                        }else{
+                                            var poster = "images/info-1.jpg";
+                                        }
+                                    var time = getLocalTime(val['topicTime']);
+                                            search_html += '<article class="ms-works-art mr-look-art posin ovw">' +
+                                            '<a href="merchant-detail.html?merchantID=' + val['paramID'] + '&from=concern">' + 
+                                            '<div class="fl_picture" style="overflow:hidden;    padding: 0 0.3rem;width: 2.5rem;height: 1.76rem;float: left;position: relative;"><img style="width:2.56rem;" src="'+poster+'" alt=""><div class="pic"></div></div>' +
+                                            '<p style="padding-left:0;"><font>商户名称：</font>' + val['merchantName'] + '</p>' +
+                                            '<p style="padding-left:0;"><font>商户类型：</font>' + val['paramType'] + '</p>' +
+                                            '<p style="padding-left:0;"><font>商户地址：</font>' + val['paramAddress'] + '</p></a>' +
+                                            '<span class="mr-look-time mr-look-sa ovw qxgz_button" id="' + val['paramID'] + '" type=9>取消收藏</span></article>';
+                                            count++;
+                                    });
+                            }
+                            else{
+
+                            if ((count != 0)){//上拉加载无内容锁定无数据
+                            dropload.resetload();
+                                    dropload.lock();
+                                    dropload.noData();
+                                    $('.dropload-down').hide();
+                            } else{
+                            html = '<div class="none-more-content">暂无内容</div>';
+                                    $('.myConcernlist').html(html);
+                                    return false;
+                            }
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                            $('.none-more-content').remove();
+                                    if (up == 0){//下拉加载
+                            /*                     	if(count<((params.page)*params.num)&&count!=0){
+                             search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                             }
+                             $('.myConcernlist').html(search_html);	 */
+                            if (count < ((params.page) * params.num) && count != 0){
+                            search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.myConcernlist').html(search_html);
+                            } else{
+                            $('.myConcernlist').html(search_html);
+                                    dropload_machineList(params, 1);
+                            }
+                            dropload.resetload();
+                                    dropload.unlock(); // 解锁loadDownFn里锁定的情况
+                                    // dropload.noData(false);
+                                    $('.dropload-down').hide();
+                                    params.page = 2; // 重置页数，重新获取loadDownFn的数据
+                                    //  dropload_machineList(params,1);
+                            } else{
+                            if (count < ((params.page) * params.num)){
+                            dropload.lock(); // 锁定
+                                    dropload.noData(); // 无数据
+                                    $('.dropload-down').hide();
+                            }
+                            $('.dropload-down').before(search_html);
+                                    dropload.resetload(); // 每次数据加载完，必须重置
+                            }
+                            }, 500);
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                            },
+                    });
+            }
+
+            //从搜索提供参数
+            /**************ios匹配，延时获取userid*******************/
+            setTimeout(function(){
+            var params = {	//农机搜索列表接口提供参数
+            'userid':userid,
+                    'type':1,
+                    'page' :PAGE,
+                    'num' : PAGE_NUM,
+            };
+                    dropload_machineList(params, 1);
+                    }, 100);
+            $('.subscription-ula div a').on('click', function(e){
+                    $('#listCon .tagul').hide('slow');
+                    $(this).parent('.swiper-slide').siblings().find('a').removeClass('choosed');
+                    $('.none-more-content').remove();
+                    $(this).addClass('choosed');
+                    var index = $(this).attr('index');
+                    $('.tagul').find('li').find('a').css({'color':'#444444',});
+                    $.each('.tagul li a',function(i){
+                        if($($('.tagul li a')[i]).attr('index')==index){
+                            $($('.tagul li a')[i]).css({'color':'red',});
+                        }
+                    })
+                    switchTab(index)
+                    e.preventDefault();
+            });
+           $(document).on('click', '.tagul li a', function(){
+                    var index = $(this).attr('index');
+                    $('.tagul').find('li').find('a').css({'color':'#444444',});
+                    $(this).css({'color':'red',});
+                    $('.subscription-ula div a').parent('.swiper-slide').siblings().find('a').removeClass('choosed');
+                    $.each('.subscription-ula div a',function(i){
+                        if($($('.subscription-ula div a')[i]).attr('index')==index){
+                            $($('.subscription-ula div a')[i]).addClass('choosed');
+                        }
+                    })
+                    switchTab(index)
+            })
+                    /**
+                     *类型Tab切换  index下标
+                     **/
+                            function switchTab(index){
+                            switch (parseInt(index)){
+                            case 0://农机    
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':1,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    //	$('.ms-works-art').remove();
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 1);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 1://农活
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':2,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 2);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 2://零工
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':3,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 3);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 3://话题
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':4,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 4);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 4://话题
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':5,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 5);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 5://零活
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':6,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 6);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                                    case 6://二手
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':7,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 7);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    case 7://商铺
+                                    var params = {	//提供参数
+                                    'userid':userid,
+                                            'type':9,
+                                            'page' :PAGE,
+                                            'num' : PAGE_NUM,
+                                    };
+                                    dropload.lock();
+                                    dropload.resetload();
+                                    // $('.machineList').html('');
+                                    delete dropload.opts.domUp;
+                                    //$('.ms-contents').html('');
+                                    $('.dropload-down').siblings().remove();
+                                    $('.dropload-down').show();
+                                    $('.my-topic-cont').remove();
+                                    count = 0;
+                                    dropload_machineList(params, 9);
+                                    $.each($('.dropload-down'), function(i){
+                                    if (i != 0) $($('.dropload-down')[i]).remove();
+                                    })
+                                    break;
+                            }
+                            }
+
+
+                    //*********************************我的关注列表上拉加载*****************
+                    function dropload_machineList(params, type){
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                            var time = toLocalTime(ts, 6); //下拉时间定义
+                            dropload = $('.myConcernlist').dropload({
+                    scrollArea : window,
+                            /*  domUp : {
+                             domClass   : 'dropload-up',
+                             domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+                             domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+                             domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+                             },
+                             domDown : {
+                             domClass   : 'dropload-down',
+                             domRefresh : '<div class="dropload-refresh"></div>',
+                             domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                             domNoData  : '<div class="dropload-noData">加载完成</div>'
+                             }, */
+                            domUp : {
+                            domClass   : 'dropload-up',
+                                    domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                                    domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                                    domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                            },
+                            domDown : {
+                            domClass   : 'dropload-down',
+                                    domRefresh : '<div class="dropload-refresh"></div>',
+                                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                                    domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+                                    },
+                            loadUpFn : function(me){
+                            //下拉刷新
+                            params.page = 0;
+                                    if (type == 1){//农机
+                            get_myConcern_nj(params);
+                            }
+                            if (type == 2){//农活或零活
+                            get_myConcern_nh(params);
+                            }
+                            if (type == 3){//零活
+                            get_myConcern_lh(params);
+                            }
+                            if (type == 5){//话题
+                            console.info(params);
+                                    get_myConcern_topic(params);
+                            }
+                            if (type == 6){//零工
+                            get_myConcern_lg(params);
+                            }
+                            if (type == 7){//二手
+                            get_myConcern_es(params);
+                            }
+                            if (type == 4){//商品
+                            console.info(params);
+                                    get_myConcern_sp(params);
+                            }
+                            if (type == 9){//商户
+                            console.info(params);
+                                    get_myConcern_sp(params);
+                            }
+                            params.page = 1;
+                            },
+                            loadDownFn : function(me){
+                            //上拉加载
+                            if (type == 1){//农机
+                            get_myConcern_nj(params);
+                            }
+                            if (type == 2){//农活或零活
+                            get_myConcern_nh(params);
+                            }
+                            if (type == 3){//零活
+                            get_myConcern_lh(params);
+                            }
+                            if (type == 5){//话题
+                            console.info(params);
+                                    get_myConcern_topic(params);
+                            }
+                            if (type == 6){//零工
+                            get_myConcern_lg(params);
+                            }
+                            if (type == 7){//二手
+                            get_myConcern_es(params);
+                            }
+                            if (type == 4){//商品
+                            console.info(params);
+                                    get_myConcern_sp(params);
+                            }
+                            if (type == 9){//商户
+                            get_myConcern_sh(params);
+                            }
+                            params.page++;
+                            },
+                            threshold : 50
+                    });
+                    }
+
+
+                    /************************话题取消收藏***********************************/
+                    function toppicUnMark(params){//话题收藏    类型：1农机，2农活，3零活，4话题，5零工，6二手 
+                    var cmd = 'UnMark'; //接口命令
+                            var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                            var jsonp = 1;
+                            /*         var params = {
+                             'sort':sort,
+                             'type' : type,
+                             'page' :PAGE,
+                             'num' : PAGE_NUM,
+                             }; */
+                            params = objKeySort(params); //按照属性名升序排列
+                            var params_str = objChangeStr(params); //拼接params参数的属性值
+                            params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                            $.ajax({
+                            url : apiURL, //接口地址
+                                    data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                                    dataType : 'jsonp',
+                                    success: function(data){
+                                    console.info(data);
+                                            if (data['resultCode'] == 1){
+                                    layer.msg('已取消收藏!');
+                                            // window.location.href = "";
+                                    } else{
+                                    layer.msg('取消收藏失败，系统出错!');
+                                    }
+                                    },
+                                    error: function(XMLHttpRequest, textStatus, errorThrown){
+                                    layer.msg('网络请求延迟！');
+                                            console.info(XMLHttpRequest.status);
+                                            console.info(XMLHttpRequest.readyState);
+                                            console.info(textStatus);
+                                    },
+                            });
+                    }
+                    $(document).on('touchend', '.topic-lid', function(e){
+                    var topicID = $(this).attr('topicID');
+                            $(this).removeClass('topic-lie');
+                            var params = {
+                            'userid':userid,
+                                    'id':topicID,
+                                    'type':5,
+                            }
+                    console.info(params);
+                            toppicUnMark(params);
+                            //从搜索提供参数
+                            setTimeout(function(){
+                            var params1 = {	//农机搜索列表接口提供参数
+                                'userid':userid,
+                                'type':5,
+                                        'page' :PAGE,
+                                        'num' : PAGE_NUM,
+                        };
+                        count = 0;
+                        $('.ms-contents').html('');
+                         dropload_machineList(params1,5); 
+                                e.preventDefault();
+                                        },100);  
+                    })
+	     	
+        /************************************取消关注**********************************/
+                        $(document).on('touchend','.qxgz_button',function(e){
+                                var type = parseInt($(this).attr('type'));
+                                var id = $(this).attr('id');
+                                var _this = $(this);
+                                var params = {
+                                                'userid':userid,
+                                                'id':id,
+                                                'type':type,
+                                }		 
+                                var params1 = {	//农机搜索列表接口提供参数
+                                    'userid':userid,
+                                    'type':type,
+                                                'page' :1,
+                                                'num' : 10,
+                                };
+                            layer.open({
+                                content: '您确定要取消该收藏吗？'
+                                ,btn: ['是', '否']
+                                ,yes: function(index){
+                                    layer.close(index);
+                                switch(type){ 
+                                case 1://农机  
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				count = 0;
+        //				$('.subscription-ula li').find('li').eq(0).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+        //				UnMark(params);
+        //				dropload_machineList(params1,1);
+                                        break;
+                                case 2://农活  
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				count = 0;
+        //				$('.subscription-ula li').find('li').eq(1).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+        //				UnMark(params);
+        //				dropload_machineList(params1,2);
+                                        break;
+                                case 3://零活  
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				count = 0;
+        //				$('.subscription-ula').find('li').eq(2).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+        //				UnMark(params);
+        //				dropload_machineList(params1,3);
+                                        break;
+                                case 4://商品
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				count = 0;
+        //				$('.subscription-ula li').find('li').eq(3).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+        //				UnMark(params);
+        //				dropload_machineList(params1,4);
+                                        break;
+        /* 			case 5://圈子  待确定！
+
+                                        count = 0;
+                                        $('.subscription-ula').find('li').eq(4).addClass('hover');
+                                        $('.ms-contents').html('');
+                                        $('.my-topic-cont').remove();
+                                        UnMark(params);
+                                        dropload_machineList(params1,5);
+                                        break; */
+                                case 6://零工  
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				count = 0;
+        //				$('.subscription-ula').find('li').eq(5).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+        //				UnMark(params);
+        //				dropload_machineList(params1,6);
+                                        break;
+                                case 7://二手  
+
+        //				count = 0;
+        //				$('.subscription-ula').find('li').eq(6).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+        //				dropload_machineList(params1,7);
+                                        break;
+                                case 9://商铺
+
+        //				count = 0;
+        //				$('.subscription-ula').find('li').eq(6).addClass('hover');
+        //				$('.ms-contents').html('');
+        //				$('.my-topic-cont').remove();
+                                        UnMark(params);
+                                        _this.parent('article').remove();
+                                        break;
+                        } 
+                        }
+                        });
+                        e.preventDefault();
+                        });	
+
+                    /*********************返回路径配置************************/
+                    $(document).on('touchstart click','.header-back',function(){
+                                backtoNative();	
+                    })
+            
+                //				轮播滑动添加样式
+                    var mySwiper = new Swiper('.swiper-container', {
+                        slidesPerView: 'auto',
+                        spaceBetween: 28,
+                        // onSlideChangeStart: function() {
+                        // 	$('#loop .swiper-slide a').removeClass();
+                        // 	$('#loop .swiper-slide a').eq(mySwiper.activeIndex).addClass('choosed');
+                        // }
+                    });
+        //            $('.righta').click(function() {
+                    $(".righta").bind("click", function() {
+        //		$(this).toggleClass('rotate');
+                        $('#listCon .tagul').slideToggle('slow');
+                    });
+                    $(".tagul").bind("click", function() {
+        //		$(this).toggleClass('rotate');
+                        $('#listCon .tagul').slideToggle('slow');
+                    });
+
+		
+        });
+        </script>
+    </head>
+    <body id="listCon">
+        <section class="body-bj ovw gz_topic" id="my_sub">
+            <section class="header ovw posin" style=" position: fixed;   z-index: 500;">我的关注
+                <a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a>
+            </section>
+            <!--	    <ul class="eval-all-ula subscription-ula ovw" style="margin-top: 1.2333rem; position: fixed;z-index: 500;">
+                            <li class="hover"><a href="javascript:;">农机</a></li>
+                            <li><a href="javascript:;">农活</a></li>
+                            <li><a href="javascript:;">零工</a></li>
+                            <li><a href="javascript:;">商品</a></li>
+                            <li><a href="javascript:;">话题</a></li>
+                            <li><a href="javascript:;">零活</a></li>
+                            <li><a href="javascript:;">二手</a></li>
+            
+                        </ul>-->
+            <section class="body-bj ovw" id="loop">
+                <div id="headTop">
+                    <div id="body-c">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper subscription-ula">
+                                <div class="swiper-slide">
+                                    <a class="choosed" index="0">农机</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="1">农活</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="2">零工</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="3">商品</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="4">话题</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="5">零活</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="6">二手</a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a index="7">商户</a>
+                                </div>
+
+                            </div>
+                            <span class="slideL"><img src="images/liner.png"></span>
+                            <span class="slideR"><img src="images/liner.png"></span>
+                        </div>
+                        <div class="righta">
+                            <img src="images/dot.png">
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <ul class="tagul" style="top: 2.316rem;z-index: 5;">
+                <li>
+                    <a index="0">农机</a>
+                </li>
+                <li>
+                    <a index="1">农活</a>
+                </li>
+                <li>
+                    <a index="2">零工</a>
+                </li>
+                <li class="two">
+                    <a index="3">商品</a>
+                </li>
+                <li>
+                    <a index="4">话题</a>
+                </li>
+                <li>
+                    <a index="5">零活</a>
+                </li>
+                <li>
+                    <a index="6">二手</a>
+                </li>
+                <li class="two">
+                    <a index="7">商户</a>
+                </li>
+            </ul>
+            <section class="ms-contents ovw myConcernlist">
+                <!--    	<article class="ms-works-art mr-look-art posin ovw">
+                               <a href="#">
+                                       <figure class="mr-look-tx ovw">
+                                               <img src="images/order_1.png">
+                                               <figcaption>Sunny</figcaption>
+                                       </figure>
+                                       <p><font>种类:</font>二手摩托车</p>
+                                       <p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+                                       <p><font>地区:</font>上海市嘉定区</p>
+                               </a>
+                               <span class="mr-look-time mr-look-sa ovw">取消关注</span>
+                       </article> -->
+                <!---->
+                <!--   	<article class="ms-works-art mr-look-art posin ovw">
+                              <a href="#">
+                                      <figure class="mr-look-tx ovw">
+                                              <img src="images/order_1.png">
+                                              <figcaption>Sunny</figcaption>
+                                      </figure>
+                                      <p><font>种类:</font>二手摩托车</p>
+                                      <p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+                                      <p><font>地区:</font>上海市嘉定区</p>
+                              </a>
+                              <span class="mr-look-time mr-look-sa ovw">取消关注</span>
+                      </article> -->
+                <!---->
+                <!-- 	<article class="ms-works-art mr-look-art posin ovw">
+                            <a href="#">
+                                    <figure class="mr-look-tx ovw">
+                                            <img src="images/order_1.png">
+                                            <figcaption>Sunny</figcaption>
+                                    </figure>
+                                    <p><font>种类:</font>二手摩托车</p>
+                                    <p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+                                    <p><font>地区:</font>上海市嘉定区</p>
+                            </a>
+                            <span class="mr-look-time mr-look-sa ovw">取消关注</span>
+                    </article> -->
+            </section>
+        </section>
+    </body>
+</html>

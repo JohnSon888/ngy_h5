@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- 经纬度 -->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder"></script>
+<style type="text/css">
+.mach-type{ background: #ffffb8;
+    left: 90px;
+    position: absolute;
+    top: 166px;
+    width: 6.7rem;
+    z-index: 900;
+display:none}
+.mach-type ul{text-align: center;}
+.mach-type ul li{height: 0.66rem; line-height: 0.66rem; padding: 0.2rem 0;}
+</style>
+<script type="text/javascript">
+requestMylocation();
+var lng;
+var lat;
+var idImages = [];
+$(function(){
+//	userid = 83;
+	var from = GetQueryParam('from');
+	var p_c_a = GetQueryParam("address");
+	var secondGoodsID = GetQueryParam("secondGoodsID");
+	$('.header-back').on('click',function(){
+                $.delStorage('pca');
+            	$.delStorage('temp_params');
+		if(from=="app"){
+			window.location.href="second-hand-list.html";
+		}else if(from=="h5"){
+			window.location.href="my-work-5.html";
+		}else{
+			backtoNative();
+		}
+	})
+	
+	var province;
+	var city;
+	var area;
+	var town;
+	var village; 
+	/*****************************默认地点*****************************/
+	setTimeout(function(){
+		if(!isNull(secondGoodsID)&&!isNull(p_c_a)){
+	        var arr_areaID = current_location_areaIDs.split(",");
+	        $('.psqy').val(current_location_address);
+	        province = arr_areaID[0];
+			city = arr_areaID[1]==''?0:arr_areaID[1];
+			area = arr_areaID[2]==''?0:arr_areaID[2];
+			town = arr_areaID[3]==''?0:arr_areaID[3];
+			village = arr_areaID[4]==''?0:arr_areaID[4];
+		}
+    },500);
+	if(isNull(p_c_a)){
+		var get_temp_params =  eval('('+$.getStorage('temp_params')+')');//由JSON字符串转换为JSON对象
+		$('.spmc').val(get_temp_params.goodsName);
+		// $('.goods-type').attr('goodsType',get_temp_params.goodsType);
+		// $('.splx').val(get_temp_params.goodsTypeName);//
+		$('.spjg').val(get_temp_params.originalPrice);//
+		$('.jyjg').val(get_temp_params.price);//
+		$('.xjcd').val(get_temp_params.depreciation);//
+		$('.sfps').val(get_temp_params.delivery);
+		$('.spjs').val(get_temp_params.intro);//详细介绍
+		$('.xxdz').val(get_temp_params.address);
+		$('.allArea').val(get_temp_params.allarea);
+		goodsTypeList(get_temp_params.goodsType);
+        if(get_temp_params.delivery==1){//配送
+			$('.se-hand-sa').removeClass('se-hand-sb')
+        	$('.delivery_yes').addClass('se-hand-sb');
+			$('.delivery_address').show();
+        }else{
+			$('.se-hand-sa').removeClass('se-hand-sb')
+        	$('.delivery_no').addClass('se-hand-sb');
+			$('.delivery_address').hide();
+        }
+		if(p_c_a!="empty"){
+			$('.psqy').val(p_c_a);
+			geocoder(p_c_a);
+		}
+		from = get_temp_params.from;
+		var img_htmls = '';
+		for(i=0;i<(get_temp_params.images).length;i++){
+		// $('.old_pic').remove();
+			if(i==3){
+				img_htmls += '<span class="fl plant-imgb old_pic old-pic-add ovw"><img src="'+(get_temp_params.images)[i]+'"/></span>';
+			}else{
+				img_htmls += '<span class="fl plant-imgb old_pic pic ovw"><img src="'+(get_temp_params.images)[i]+'"/></span>';
+			}
+		}
+		if((get_temp_params.images).length==4){
+			$('.old-pic-add').remove();
+			$('.add-pic-ld').append(img_htmls);
+		}else{
+			$('.old-pic-add').before(img_htmls);
+		}
+		// setTimeout(function(i){
+		// 	console.info(get_temp_params.goodsType);
+		// 	$.each($('.splx option'),function(i){
+		// 		if($($('.splx option')[i]).attr('goodsType')==get_temp_params.goodsType){
+		// 			$(this).selected = 'selected';
+		// 		}else{
+		// 			$($('.splx option')[i]).selected = false;
+		// 		}
+		// 	});
+		// },1000)
+	}
+	/************************是否配送********************************/
+			$('.se-hand-sa').on('click',function(){//1是，2否
+				var delivery = $(this).attr('delivery');
+			if(delivery==1){
+				$('.delivery_address').show();
+				//$('.re-work-address').show();
+			}else{
+				$('.delivery_address').hide();
+				//$('.re-work-address').hide();
+			}
+			$('.se-hand-sa').removeClass('se-hand-sb')
+			$(this).addClass('se-hand-sb');
+		})
+	
+	//***********************************获取商品类型*********************
+	function goodsTypeList(typeid){
+        var cmd = 'secondGoodsTypeList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+                
+                };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+                if(isNull(data['body']['list'])){
+                    var machineTypeListHtml = '';
+                    $.each(data['body']['list'],function(i,val){
+                       // machineTypeListHtml += '<option goodsType="'+val['typeID']+'">'+val['typeName']+'</option>';
+	        			if(isNull(p_c_a)){
+	        				var get_temp_params =  eval('('+$.getStorage('temp_params')+')');
+	        				if(val['typeID']==get_temp_params.goodsType){
+	        					machineTypeListHtml += '<option selected="selected" value='+val['typeID']+' goodsType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        				}else{
+	        					machineTypeListHtml += '<option value='+val['typeID']+' goodsType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        				}
+	        			}else{
+	        				machineTypeListHtml += '<option value='+val['typeID']+' goodsType='+val['typeID']+'>'+val['typeName']+'</option>';	
+	        			}
+                    });
+                    $('.splx').append(machineTypeListHtml);
+	        		if(isNull(typeid)){
+	        			$('.splx').val(typeid);
+	        		}
+                }else{
+                	machineTypeListHtml = '';
+                    $('.splx').append(machineTypeListHtml);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+//	goodsTypeList();
+	
+			 //*************************** 商户认证信息接口*****************************
+			function merchantAuthInfo(params){
+		            var cmd = 'merchantAuthInfo';//
+			    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+			    var jsonp = 1;
+			    params = objKeySort(params);//按照属性名升序排列
+			    var params_str = objChangeStr(params);//拼接params参数的属性值
+			    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+			    $.ajax({
+			        url : apiURL,//接口地址
+			        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+			        dataType : 'jsonp',
+			        success: function(data){
+			            if(isNull(data['body'])){
+			            	if(!isNull(p_c_a)){
+			            	$('.allArea').val(data['body']['allArea']);
+		                    }
+			            }
+			        },
+			        error: function(XMLHttpRequest, textStatus, errorThrown) {
+			            layer.msg('网络请求延迟！');
+			            console.info(XMLHttpRequest.status);
+			            console.info(XMLHttpRequest.readyState);
+			            console.info(textStatus);
+			        },
+			    });
+			}	
+
+
+
+		setTimeout(function(){
+		                        var merchantAuthInfo_params = {
+		                                'userid':userid,
+		                        }
+		                        merchantAuthInfo(merchantAuthInfo_params);
+		                },100);
+	
+	/*****************************二手详情*****************************/
+	function secondGoodsDetail(params){//二手详情
+        var cmd = 'secondGoodsDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+    			if(!isNull(p_c_a)){
+                $('.spmc').val(data['body']['goodsName']);
+	            $('.spjg').val(data['body']['originalPrice']);
+	            $('.jyjg').val(data['body']['price']);
+	            $('.xjcd').val(data['body']['depreciation']);
+	            $('.spjs').val(data['body']['intro']);
+	            $('.xxdz').val(data['body']['detailAddress']);
+	            $('.psqy').val(data['body']['deliverAddress']);
+	    		$('.allArea').val(data['body']['AllArea']);
+	            goodsTypeList(data['body']['typeID']);
+                var images_content = '';
+                $.each(data['body']['images'],function(i,val){
+                    if(i==3){
+                        $('.old-pic-add img').attr('src',val);
+                    }else{
+                    	images_content += '<span class="fl plant-imgb ovw pic old_pic"><img src="'+val+'"></span>';
+                        //images_content += '<span class="fl plant-imgb old_pic old-pic-add ovw"><img src="'+val+'"></span>';
+                    }
+                })
+                $('.old-pic-add').before(images_content);
+                var pca = {
+                        'sf':data['body']['addressArea']['province']['areaID'],
+                        'cs':data['body']['addressArea']['city']['areaID'],
+                        'qx':data['body']['addressArea']['area']['areaID'],
+                        'xz':data['body']['addressArea']['town']['areaID'],
+                        'cz':data['body']['addressArea']['village']['areaID'], 
+                    }
+                $.setStorage('pca',pca);
+                console.info()
+                if(data['body']['isDeli']==1){//配送
+        			$('.se-hand-sa').removeClass('se-hand-sb')
+                	$('.delivery_yes').addClass('se-hand-sb');
+    				$('.delivery_address').show();
+                }else{
+        			$('.se-hand-sa').removeClass('se-hand-sb')
+                	$('.delivery_no').addClass('se-hand-sb');
+    				$('.delivery_address').hide();
+                }
+    			}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    
+	function secondGoodsRelease(params){//发布二手商品
+        var cmd = 'secondGoodsRelease';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+            	if(data['resultCode']==1){
+                            if(!isNull(secondGoodsID)){
+	        		layer.msg('二手商品发布内容已提交！');
+                            }else{
+                                layer.msg('二手商品发布内容已保存！');
+                            }
+	        		setTimeout(function(){
+	        		if(from=="app"){
+	        			window.location.href="second-hand-list.html";
+	        		}else if(from=="h5"){
+	        			window.location.href="my-work-5.html";
+	        		}else if(from=="details"){
+	        			window.location.href="details-second-goods.html?secondGoodsID="+secondGoodsID+"";
+	        		}else{
+	        			backtoNative();
+	        		}
+	    			},1000); 
+	        	}else{
+                            sign = 1;
+	        		layer.msg('二手商品发布失败，系统错误！');
+	        	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	$('.psqy').on('click',function(){//作业地点
+		var goodsName = $.trim($('.spmc').val());
+		var goodsType =  $('.splx option:selected').attr('goodsType');
+		var originalPrice = $.trim($('.spjg').val());
+		var price = $.trim($('.jyjg').val());
+		var depreciation = $.trim($('.xjcd').val());
+		var intro = $.trim($('.spjs').val());
+		var delivery = $('.sfps').find('.se-hand-sb').attr('delivery');//是否配送
+		var address = $.trim($('.xxdz').val());
+		var allarea = $('.allArea').val();//配送区域
+		var images = [];
+			$.each($('.pic'),function(i){
+		    	images.push($($('.pic img')[i]).attr('src'));
+		    })
+		    if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
+		    	images.push($('.old-pic-add img').attr('src'));
+		    }
+		var temp_params = {
+			'goodsName':goodsName,
+			'goodsType':goodsType,
+			'originalPrice':originalPrice,
+			'price':price,
+			'depreciation':depreciation,
+			'intro':intro,
+			'delivery':delivery,
+			'from':from,
+			'images':images,
+			'address':address,
+			'allarea':allarea,
+		};
+		$.setStorage('temp_params',temp_params);
+		console.info(temp_params);
+		if(isNull(secondGoodsID)){
+			window.location.href = "place.html?type=4&detailsID="+secondGoodsID+"";	
+		}else{
+			window.location.href = "place.html?type=4";
+		}
+	})
+
+	if(isNull(secondGoodsID)){
+            $('.over-order').html("保存");
+		var details_params = {
+				 'userid':userid,
+				'secondGoodsID':secondGoodsID,
+			}
+			//console.info(params);
+		secondGoodsDetail(details_params);
+}else if(!isNull(p_c_a)){
+goodsTypeList();
+}
+	
+	//点击上传图片
+	$(document).on('click','.old_pic',function(){
+		var pic_index = $(this);
+		var num = $('.pic').length;
+		var pic_num_left = 4-num;
+		if($(this).siblings('.old-pic-add').length>0){
+				layer.open({
+				    content: '您确定要删除图片吗？'
+				    ,btn: ['是', '否']
+				    ,yes: function(index){
+					    layer.close(index);
+					    pic_index.remove();
+					    if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+					    	$('.old-pic-add').before('<span class="fl plant-imgb ovw pic old_pic"><img src="'+$('.old-pic-add img').attr('src')+'"></span>');
+							$('.old-pic-add img').attr('src','images/plant_2.png')
+						}
+						// else{
+						// 	uploadImage(pic_num_left);
+						// }
+				   	}
+				});
+			}else{
+				if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+					layer.msg('最多添加4张图片');
+				}else{
+					uploadImage(pic_num_left);
+				}
+			}
+/*   		var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+		imageUploaded(imageUrl);   */
+	});
+	
+
+	//点击确定商品农活
+	$('.over-order').on('click touched',function(){
+		if(sign==1){
+			var goodsName = $.trim($('.spmc').val());
+			var goodsType =  $('.splx option:selected').attr('goodsType');
+			var originalPrice = $.trim($('.spjg').val());
+			var price = $.trim($('.jyjg').val());
+			var depreciation = $.trim($('.xjcd').val());
+			var intro = $.trim($('.spjs').val());
+			var delivery = $('.sfps').find('.se-hand-sb').attr('delivery');//是否配送
+			var psqy = $('.psqy').val();
+			var allarea = $('.allArea').val();//配送区域
+			var images = [];
+			$.each($('.pic'),function(i){
+		    	images.push($($('.pic img')[i]).attr('src'));
+		    })
+		    if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
+		    	images.push($('.old-pic-add img').attr('src'));
+		    }
+			if(isNull(p_c_a)||isNull(secondGoodsID)){
+				var ssq = eval('('+$.getStorage('pca')+')')?eval('('+$.getStorage('pca')+')'):'';
+			}else{
+				var ssq = '';
+			}
+			province = ssq.sf==undefined?province:ssq.sf;
+			city = ssq.cs==undefined?city:ssq.cs;
+			area = ssq.qx==undefined?area:ssq.qx;
+			town = ssq.xz==undefined?town:ssq.xz;
+			village = ssq.cz==undefined?village:ssq.cz;
+			var address = $.trim($('.xxdz').val());
+			if(goodsType==0){
+				layer.msg('请选择商品类型');
+		    	return false;
+			}
+			if(!isNull(goodsName)){
+				layer.msg('请填写商品名称');
+		    	return false;
+			}
+			if(!isNull(originalPrice)){
+				layer.msg('请正确填写商品原价');
+		    	return false;
+			}
+	/* 		if(isNaN(originalPrice)){
+				layer.msg('请正确填写商品价格');
+		    	return false;
+			} */
+			if(!isNull(price)){
+				layer.msg('请正确填写期望售价');
+		    	return false;
+			}
+                        if(!isNull(depreciation)){
+				layer.msg('请填写新旧程度');
+		    	return false;
+			}
+ 			if(!isNull(psqy)){
+				layer.msg('请填写商品地址');
+		    	return false;
+			}
+ 			if(!isNull(address)){
+				layer.msg('请填写门牌号码');
+		    	return false;
+			} 
+			/*if(delivery==1){
+				layer.msg('请填写是否配送');
+		    	return false;
+                        }*/
+			if(!isNull(intro)){
+				layer.msg('请填写商品介绍');
+		    	return false;
+			}
+			 if(images.length==0){
+				layer.msg('请上传商品图片');
+		    	return false;
+			} 
+                        sign = 0;
+			if(isNull(secondGoodsID)){
+				var goodsRelease_params = {
+						'secondGoodsID':secondGoodsID,
+						'userid' : userid,
+		                'goodsName':goodsName,
+						'goodsType':goodsType,
+						'originalPrice':originalPrice,
+						'depreciation':depreciation,
+						'delivery':delivery,
+						'price':price,
+						'intro':intro,
+						'images':images,
+		                'province' : province,
+		                'city' : city,
+		                'area':area,
+		                'town':town,
+		                'village':village,
+		                'address':address,
+		                'allArea':allarea,//配送区域
+		                'lng':$('.lng').val(),
+						'lat':$('.lat').val(),
+				}
+			}else{
+				var goodsRelease_params = {
+						'userid' : userid,
+		                'goodsName':goodsName,
+						'goodsType':goodsType,
+						'originalPrice':originalPrice,
+						'depreciation':depreciation,
+						'delivery':delivery,
+						'price':price,
+						'intro':intro,
+						'images':images,
+		                'province' : province,
+		                'city' : city,
+		                'area':area,
+		                'town':town,
+		                'village':village,
+		                'address':address,
+		                'allArea':allarea,//配送区域
+		                'lng':$('.lng').val(),
+						'lat':$('.lat').val(),
+				}
+			}
+
+			 console.info(goodsRelease_params);
+			secondGoodsRelease(goodsRelease_params);
+		}
+	}) 
+	
+
+	// var params = {
+ //                'userid' : userid,
+ //                'starttime' : starttime,
+ //                'endtime' : endtime,
+ //                'typeID' : typeID,
+ //                'count' : count,
+ //                'price' : price,
+ //                'province' : province,
+ //                'city' : city,
+ //                'area':area,
+ //                'town':town,
+ //                'village':village,
+ //                'address':address,
+ //                'intro':intro,
+ //                };
+});
+
+/**
+*   图片上传成功回调
+*   imageUrl         图片url地址
+**/
+function imageUploaded(imageUrl){
+	imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+	var img_html = '';
+	for(i=0;i<imageUrl_arr.length;i++){
+		// $('.old_pic').remove();
+		img_html += '<span class="fl plant-imgb old_pic pic ovw"><img src="'+imageUrl_arr[i]+'"/></span>';
+	}
+	if($('.pic').length==3){
+        $('.old-pic-add img').attr('src',imageUrl_arr[0]);
+        	// $('.pic').addClass('picture');
+    }else{
+        $('.old-pic-add').before(img_html);
+    }
+}
+//图片预览
+$('.pic').click(function(){
+    imagePreview(idImages, 0);
+});
+
+function didUpdateLocation(longitude, latitude){
+    lng = longitude;
+    lat = latitude;
+}
+</script>
+</head>
+<body>
+	    <section class="body-bj ovw">
+	    	<section class="header ovw posin" style="position: fixed;  z-index: 500;">二手发布<a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+		     <section class="release-near-content ovw" style="margin-top: 1.3333rem;">
+		     	<ul class="ld-card-ula rele-work-persoal ovw">
+		     		<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">商品类型：</label>
+			    			<select class="add-state splx"><option goodsType="0">请选择类型 </option></select>
+			    		<!-- <input id='start_time' class="ld-lia-in mers-lia-a" type="text"/> -->
+			    		</aside>
+			    	</li>
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">商品名称：</label>
+			    		<input class="ld-lia-in mers-lia-a spmc" type="text" placeholder="请输入商品名称" maxlength=30/>
+			    	</li>
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">商品原价：</label>
+			    		<input class="ld-lia-in mers-lia-a spjg" type="text" placeholder="请输入商品原价"/>
+			    	</li>
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">期望售价：</label>
+			    		<input class="ld-lia-in mers-lia-a jyjg" type="text" placeholder="请输入期望售价"/>
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">新旧程度：</label>
+			    		<input class="ld-lia-in mers-lia-a xjcd" type="text" placeholder="请输入新旧程度"/>
+			    	</li>
+			    	<li class="ld-lia ld-lie">
+			    		<label class="ld-lia-la ovw">商品介绍：</label>
+			    		<textarea class="merchants-text ovw spjs"></textarea>
+			    	</li>
+<!-- 			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">是否配送：</label>
+			    		<input class="ld-lia-in mers-lia-a sfps" type="text" placeholder="详细地址"/>
+			    	</li> -->
+			    				    				    	<li class="ld-lia re-work-address">
+			    		<label class="ld-lia-la ovw">商品地址：</label>
+			    		<input class="ld-lia-in psqy" type="text" placeholder="请输入商品地址"/>
+			    		<img src="images/add_1.png" class="address-s"/>
+			    	</li>
+			    				    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">门牌号码：</label>
+			    		<input class="ld-lia-in mers-lia-a xxdz" type="text" placeholder="请输入门牌号码"/>
+			    	</li>
+			    				    	<style>
+			    		.se-hand-sa{display: block;padding-left: 0.466rem;line-height: 1.06rem;background: url(images/se_n.png) no-repeat left center;background-size: 0.34rem auto;}
+			    		.se-hand-sb{background: url(images/se_y.png) no-repeat left center;background-size: 0.34rem auto;}
+			    	</style>
+			    	<li class='sfps'><label class="ld-lia-la ovw fl"style="padding-left: 0;min-width: 2.2rem;">是否配送：</label>
+			    	<span class="fl se-hand-sa ovw se-hand-sb delivery_yes" delivery='1'>是</span>
+			    	<span class="fl se-hand-sa ovw delivery_no" delivery='2' style="margin-left: 0.4rem;">否</span></li>
+			    			     		<li class="mers-lia-c mers-lia-d delivery_address">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">配送区域：</label>
+			    			<select class="add-state allArea"><option value="1">全国</option><option value="0">周边</option></select>
+			    		<!-- <input id='start_time' class="ld-lia-in mers-lia-a" type="text"/> -->
+			    		</aside>
+			    	</li>
+			    	<li class="add-pic-ld" style="border: 1px solid #ddd;border-radius: 0.12rem;height: auto;padding-bottom: 0.8rem;width:99%;">
+		    	<!-- 	<aside class="add-plant-as add-plant-af ovw"> -->
+		    			<label class="fl ovw"style="line-height: 1.04rem;text-indent: 0.2666rem;">图片:</label>
+		    			<span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
+		    			<!-- <span class="fl plant-imgb ovw more_pic"><img src="images/plant_3.png"></span> -->
+		    	<!-- 	</aside> -->
+		    	</li>
+		     	</ul>
+		     </section>
+		<!--      <section class="mach-type" style="">
+		     	<ul>
+		     		<li typeid="1">测试1农机类型</li>
+		     		<li typeid="2">测试2农机类型</li>
+		     		<li typeid="3">测试3农机类型</li>
+		     		<li typeid="4">测试4农机类型</li>
+		     	</ul>
+		     </section>
+		      -->
+		      		     <!--  隐藏域存经纬度 -->
+		     <input type="hidden" class="lng" value="">
+    		 <input type="hidden" class="lat" value="">
+		    <a class="over-order ovw" href="javascript:;">发布</a>
+	    </section>
+
+</body>
+</html>

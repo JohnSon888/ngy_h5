@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>订阅消息</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+<script type="text/javascript">
+$(function(){
+//	userid = 120;
+	var typeID = 5;
+	var count = 0;
+	function get_subMessageList(params){//获取订阅消息列表
+        var cmd = 'subMessageList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid':userid,
+                'typeID':typeID,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+                if(isNull(data['body']['list'])){	
+                    var search_html = '';
+                    var tz_href = '';
+                    $.each(data['body']['list'],function(i,val){
+                		switch(parseInt(val['subscribe_type'])){//根据订单类型，跳转对应详情页，订单类型：订阅类型：1农机，2农活，3零活，4商品，5话题；6零工，7二手
+            			case 1:
+            				tz_href = 'mac-list.html?from=infor&messageID='+val['messageID']+'&type='+val['machine_type']+'&search_txt='+val['keyword']+'';
+            			       break;
+            			case 2:
+            				tz_href = 'farm-work-list.html?from=infor&messageID='+val['messageID']+'&type='+val['plant_type']+'&work_type='+val['work_type']+'&start_time='+val['start_time']+'&end_time='+val['end_time']+'&search_txt='+val['keyword']+'';
+            			       break;
+            			case 3:
+            				tz_href = 'find-job-list.html?from=infor&messageID='+val['messageID']+'&start_time='+val['start_time']+'&end_time='+val['end_time']+'&search_txt='+val['keyword']+'';
+            			       break;
+            			case 4:
+            				tz_href = 'shop-list.html?from=infor&messageID='+val['messageID']+'&type='+val['goods_type']+'&search_txt='+val['keyword']+'';
+            			       break;
+            			case 5:
+            				tz_href = 'my-circle.html?from=infor&messageID='+val['messageID']+'&circleID='+val['circle_id']+'';
+            			       break;
+            			case 6:
+            				tz_href = 'recruit-job-list.html?from=infor&messageID='+val['messageID']+'&start_time='+val['start_time']+'&end_time='+val['end_time']+'&search_txt='+val['keyword']+'';
+            			       break;
+            			case 7:
+            				tz_href = 'second-hand-list.html?from=infor&messageID='+val['messageID']+'&type='+val['goods_type']+'&search_txt='+val['keyword']+'';
+            			       break;
+            		}
+                    	if(val['isRead']=='0'){
+                            search_html += '<li><a href="'+tz_href+'" messageID='+val['messageID']+'><label class="sys-content ovw fl" style="width:4.8rem">'+val['messageTitle']+'</label>'+
+            	    		'<samp class="sys-time ovw fr">'+val['messageTime']+'</samp>'+
+            	    		'<samp class="sys-no ovw"></samp>'+
+            	    	'</a></li>';
+                    	}else{
+                    		search_html += '<li><a href="'+tz_href+'"  messageID='+val['messageID']+'><label class="sys-content ovw fl" style="width:4.8rem">'+val['messageTitle']+'</label>'+
+            	    		'<samp class="sys-time ovw fr">'+val['messageTime']+'</samp>'+
+            	    	'</a></li>';
+                    	}
+						count++;
+                   });
+                  // $('.dyxx').append(search_html);
+                }else{
+                /* 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.dyxx').append(search_html); */
+                	if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+	            	}else{
+	            		search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.dyxx').html(search_html);
+						return false;
+	            	}
+                }	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.dyxx').html(search_html);	
+                         }else{
+                         	$('.dyxx').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                    $('.dropload-down').hide();
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	//*********************************系统消息列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义		
+		dropload = $('.dyxx').dropload({
+		    scrollArea : window,
+/* 		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_subMessageList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_subMessageList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	 var params ={
+             'userid':userid,
+             'typeID':typeID,
+             'page':PAGE,
+             'num':PAGE_NUM,
+             };
+	 dropload_machineList(params)
+	},100);  
+	 	/*********************忽略未读消息************************/
+    $('.header-reg').on('touchend',function(){
+    	var params1 = {
+    			'userid':userid,
+    	           'typeID':5,//圈子通知
+    	};
+    	ignoreMessage(params1);
+    });
+	/********************点击跳转详情页*************************/
+/*     $(document).on('touchstart','.notice_con',function(){
+    	var messageID = $(this).attr('messageID');
+    	var params2 = {
+    			'userid':userid,
+    	           'messageID':messageID,//圈子通知
+    	};
+   		window.location.reload();
+    	readMessage(params2);
+    }); */
+	 	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+	
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;">订阅消息<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg">忽略未读</a></section>
+	    <ul class="release-near-content sys-ula or-in-ula ovw dyxx"style="margin-top:1.333rem;">
+	    <!--  	<li><a href="#">
+	    		<label class="sys-content ovw fl">您发的订单已通过审核</label>
+	    		<samp class="sys-time ovw fr">2017-01-20</samp>
+	    		<samp class="sys-no ovw"></samp>
+	    	</a></li>
+	    	<li><a href="#">
+	    		<label class="sys-content ovw fl">您发的订单已通过审核</label>
+	    		<samp class="sys-time ovw fr">2017-01-20</samp>
+	    		<samp class="sys-no ovw"></samp>
+	    	</a></li>
+	    	<li><a href="#">
+	    		<label class="sys-content ovw fl">您发的订单已通过审核</label>
+	    		<samp class="sys-time ovw fr">2017-01-20</samp>
+	    		<samp class="sys-no ovw"></samp>
+	    	</a></li>
+	    	<li><a href="#">
+	    		<label class="sys-content ovw fl">您发的订单已通过审核</label>
+	    		<samp class="sys-time ovw fr">2017-01-20</samp>
+	    	</a></li>
+	    </ul>-->
+	</section>
+</body>
+</html>

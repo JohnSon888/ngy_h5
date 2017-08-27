@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+        <title></title>
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/demo.css">
+        <link rel="stylesheet" href="css/public.css">
+        <script type="text/javascript" src="js/jquery.min.js" ></script>
+        <script type="text/javascript" src="js/flexible.js" ></script>
+        <script type="text/javascript" src="js/jquery.min.js" ></script>
+        <!-- dropload -->
+        <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+        <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js" ></script>
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+        <script type="text/javascript" src="src/lib/common/public.js"></script>
+        <!--<script type="text/javascript" src="src/lib/common/ajaxPrefilter.js"></script>-->
+        <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!-- layer -->
+        <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+        <style>
+            .merchant-type{width:92%;margin:10px auto;line-height:39px;}
+            .merchant-type li{width:100%;}
+            .merchant-type li select{
+                padding: 0 20%;
+                text-align: center；
+                /*将默认的select选择框样式清除*/
+                appearance:none;
+                -moz-appearance:none;
+                -webkit-appearance:none;}
+            .layer-type li{border: 1px solid #ececec;margin-top: 5px;}
+            .shop_nationwide{margin-top: 0.13rem;}
+            .shop_list{margin-top: 0;}
+          .rele-near-dete{padding-bottom: 0;height: auto;}
+        </style>
+        <script>
+            $(function () {
+                $('.visa-in').on("focus", function (e) {
+                    $(this).parent('form').prev('aside').children().hide();
+                    $(this).parent('form').prev('aside').css('textIndent', '9999px');
+                });
+                $('.visa-in').on("blur", function (e) {
+                    var val = $(this).val();
+                    if (val != '') {
+                        $(this).parent('form').prev('aside').children().hide()
+                        $(this).parent('form').prev('aside').css('textIndent', '9999px')
+
+                    } else {
+                        $(this).parent('form').prev('aside').children().show()
+                        $(this).parent('form').prev('aside').css('textIndent', '0.1333rem')
+                    }
+                });
+
+        //  隐藏
+                $('.layer-rele-s').on('touchstart', function () {
+                    $('.rele-bj').hide()
+                    $('.layer-rele-cont').hide();
+                })
+                //弹出层隐藏
+                $('.layer-map-bj').on('touchstart', function (e) {
+                    $('.layer-map-bj').toggle()
+                    // $('.layer-sorting').hide()
+                    // $('.layer-type').hide()
+                    // $('.layer-time').hide()
+                    $('.layer-up-some').hide();
+                    document.activeElement.blur();
+                    e.preventDefault();
+                });
+                $('.pick-work-ula li').on('click', function (e) {
+                    var index = $(this).index();
+                    switch (index) {
+                        case 0:
+                            if ($('.sort-first0').length > 0) {
+                                $('.layer-type').hide();
+                                $('.layer-sorting').hide();
+                                // $('.layer-map-bj').toggle();
+                                $('.layer-area').toggle();
+                                if ($('.layer-area').css('display') == 'block') {
+                                    $('.layer-map-bj').show();
+                                } else {
+                                    $('.layer-map-bj').hide();
+                                }
+                                e.preventDefault();
+                            } else if ($('.sort-first2').length > 0) {
+                                $('.layer-type').hide();
+                                $('.layer-sorting').hide();
+                                // $('.layer-map-bj').toggle();
+                                $('.layer-area').toggle();
+                                if ($('.layer-area').css('display') == 'block') {
+                                    $('.layer-map-bj').show();
+                                } else {
+                                    $('.layer-map-bj').hide();
+                                }
+                                e.preventDefault();
+                            } else {
+                                $('.layer-type').hide();
+                                $('.layer-sorting').hide();
+                                // $('.layer-map-bj').toggle();
+                                $('.layer-near').toggle();
+                                if ($('.layer-near').css('display') == 'block') {
+                                    $('.layer-map-bj').show();
+                                } else {
+                                    $('.layer-map-bj').hide();
+                                }
+                                e.preventDefault();
+                            }
+                            break;
+                        case 1:
+                            // $('.layer-map-bj').toggle();
+                            $('.layer-area').hide();
+                            $('.layer-near').hide();
+                            $('.layer-sorting').hide();
+                            $('.layer-type').toggle();
+                            if ($('.layer-type').css('display') == 'block') {
+                                $('.layer-map-bj').show();
+                            } else {
+                                $('.layer-map-bj').hide();
+                            }
+                            e.preventDefault();
+                            break;
+                        case 2:
+                            // $('.layer-map-bj').toggle();
+                            $('.layer-type').hide();
+                            $('.layer-near').hide();
+                            $('.layer-area').hide();
+                            $('.layer-sorting').toggle();
+                            if ($('.layer-sorting').css('display') == 'block') {
+                                $('.layer-map-bj').show();
+                            } else {
+                                $('.layer-map-bj').hide();
+                            }
+                            e.preventDefault();
+
+                            break;
+
+                    }
+                });
+                $.each($('.three-ula li'), function (i) {
+                    $($('.three-ula li')[i]).on('touchend', function () {
+                        switch (i) {
+                            case 0:
+                                $('.three-ula li').removeClass('hover');
+                                $(this).addClass('hover');
+                                break;
+                            case 1:
+                                $('.three-ula li').removeClass('hover');
+                                $(this).addClass('hover');
+                                break;
+                            case 2:
+                                $('.three-ula li').removeClass('hover');
+                                $(this).addClass('hover');
+                                break;
+                        }
+                    })
+                })
+
+                $.each($('.base-sele-main li'), function (i) {
+                    $($('.base-sele-main li')[i]).on('click', function () {
+                        if (sign == 0) {
+                            sign=1;
+                            var areaID = 0;
+                            $('.drop-down-b a').text("全部");
+                            $('.sf').html('<option areaID="-1">省份</option>');
+                            $('.cs').html('<option areaID="0">城市</option>');
+                            $('.qx').html('<option areaID="0">区县</option>');
+                            $('.xz').html('<option areaID="0">乡镇</option>');
+                            $('.cz').html('<option areaID="0">村</option>');
+                            switch (i) {
+                                case 0:
+                                    $('.base-sele-main li').removeClass('hover');
+                                    $('.base-sele-main li').removeClass('text-color');
+                                    $('.three-ula li').removeClass('sort-first1');
+                                    $('.three-ula li').removeClass('sort-first2');
+                                    $(this).addClass('hover');
+                                    $(this).addClass('text-color');
+                                    $('.drop-down-a a').text('区域');
+                                    $('.drop-down-a').addClass('sort-first0');
+                                    $('.shop_nationwide').show();
+                                    $('#container').hide();
+                                    closeInfoWindow(map);
+                                    var arr_areaID = location_areaIDs.split(",");
+                                    var arr_areaNames = location_areaNames.split(",");
+                                    getArea(0, 1, 1);
+                                    if (arr_areaID[0] != '') {
+                                        getArea(arr_areaID[0], 2, 1);
+                                        areaID = arr_areaID[0];
+                                    }
+                                    if (arr_areaID[1] != '') {
+                                        getArea(arr_areaID[1], 3, 1);
+                                        areaID = arr_areaID[1];
+                                    }
+                                    if (arr_areaID[2] != '') {
+                                        getArea(arr_areaID[2], 4, 1);
+                                        areaID = arr_areaID[2];
+                                    }
+                                    if (arr_areaID[3] != '') {
+                                        getArea(arr_areaID[3], 5, 1);
+                                        areaID = arr_areaID[3];
+                                    }
+                                    if (arr_areaID[4] != '') {
+                                        areaID = arr_areaID[4];
+                                    }
+                                    searchContent = $.trim($('.visa-in').val());
+                                    type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                                    subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                                    sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                                    var params = {//农活搜索列表接口提供参数
+                                        'keyword': searchContent,
+                                        // 'distance' :,//距离搜索；0表示全国,false
+                                        // 'type' : type,//类型搜索,false
+                                        // 'subtype':subtype,
+                                        // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                        'area': areaID, //地区搜索,false
+                                        'page': PAGE,
+                                        'num': PAGE_NUM,
+                                        // 'lng':$('.lng_val').val(),
+                                        // 'lat':$('.lat_val').val(),
+                                    };
+                                    break;
+                                case 1:
+                                    $('.base-sele-main li').removeClass('hover');
+                                    $('.base-sele-main li').removeClass('text-color');
+                                    $('.three-ula li').removeClass('sort-first0');
+                                    $('.three-ula li').removeClass('sort-first2');
+                                    $(this).addClass('hover');
+                                    $(this).addClass('text-color');
+                                    $('.drop-down-a a').text('附近 10km');
+                                    $('.drop-down-a').addClass('sort-first1');
+                                    $('.shop_nationwide').show();
+                                    $('#container').hide();
+//                                    closeInfoWindow(map);
+                                    searchContent = $.trim($('.visa-in').val());
+                                    near_distance = $('.mac-list-sort-near .hover').children('span').text();
+                                    var params = {//农机搜索列表接口提供参数
+                                        'keyword': searchContent,
+                                        'distance': near_distance, //距离搜索；0表示全国,false
+                                        // 'type' : type,//类型搜索,false
+                                        // 'subtype':subtype,
+                                        // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                        // 'area' : 1,//地区搜索,false
+                                        'page': PAGE,
+                                        'num': PAGE_NUM,
+                                        'lng': lng,
+                                        'lat': lat,
+                                    };
+                                    break;
+                                case 2:
+                                    $('.base-sele-main li').removeClass('hover');
+                                    $('.base-sele-main li').removeClass('text-color');
+                                    $('.three-ula li').removeClass('sort-first0');
+                                    $('.three-ula li').removeClass('sort-first1');
+                                    $(this).addClass('hover');
+                                    $(this).addClass('text-color');
+                                    $('.drop-down-a a').text('区域');
+                                    $('.drop-down-a').addClass('sort-first2');
+                                    $('.shop_nationwide').hide();
+                                    $('#container').show();
+                                   map.remove(markers);
+                                // addMaker(lng_lat);
+                                // var map_detail = mapZoom();
+                                // geocoder(map_detail[1],map_detail[2]);
+                                var arr_areaID = current_location_areaIDs.split(",");
+                                var arr_areaNames = current_location_areaNames.split(",");
+                                console.info(current_location_areaNames);
+                                getArea(0, 1, 0);
+                                if (arr_areaID[0] != '') {
+                                    getArea(arr_areaID[0], 2, 0);
+                                    areaID = arr_areaID[0];
+                                }
+                                if (arr_areaID[1] != '') {
+                                    getArea(arr_areaID[1], 3, 0);
+                                    areaID = arr_areaID[1];
+                                }
+                                if (arr_areaID[2] != '') {
+                                    getArea(arr_areaID[2], 4, 0);
+                                    areaID = arr_areaID[2];
+                                }
+                                if (arr_areaID[3] != '') {
+                                    getArea(arr_areaID[3], 5, 0);
+                                    areaID = arr_areaID[3];
+                                }
+                                if (arr_areaID[4] != '') {
+                                    areaID = arr_areaID[4];
+                                }
+                                geocoder(current_location_address, 14);
+                                searchContent = $.trim($('.visa-in').val());
+                                    var params = {//农活搜索列表接口提供参数
+                                        'keyword': searchContent,
+                                        // 'distance' :,//距离搜索；0表示全国,false
+                                        // 'type' : type,//类型搜索,false
+                                        // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                        'area': areaID, //地区搜索,false
+                                        'page': PAGE,
+                                        'num': 30,
+                                        // 'lng':$('.lng_val').val(),
+                                        // 'lat':$('.lat_val').val(),
+                                    };
+                                    break;
+                            };console.info(params);
+                            count = 0;
+                            map.remove(markers);
+                            closeInfoWindow(map);//infoWindow.close();
+                            lng_lat = [];//商户的经纬度
+                            markers = [];//商户位置在地图上的点标
+                            merchantDetails = [];//商户的内容清空
+                            count = 0;
+                            dropload.lock();
+                            dropload.resetload();
+                            delete dropload.opts.domUp;
+                            $('.dropload-down').siblings().remove();
+                            $('.dropload-down').show();
+                            dropload_merchantList(params);
+                            $.each($('.dropload-down'), function (i) {
+                                if (i != 0)
+                                    $($('.dropload-down')[i]).remove();
+                            })
+                        }
+                    })
+                })
+
+                $('.sort-first0').on('click', function () {
+                    $('.layer-type').hide();
+                    $('.layer-sorting').hide();
+                    $('.layer-map-bj').toggle();
+                    $('.layer-area').toggle()
+                })
+
+                //地图高度
+                var oHa = $(window).height();
+                var header_height = $('.header-fixed-cont').height();
+                var bottom_height = $('.base-sele').height();
+                var map_height = oHa - header_height - bottom_height;
+                $('#container').height(map_height);
+                $('.mach-List').css({'bottom': bottom_height + 1, });
+
+            })
+
+        </script>
+    </head>
+    <body>
+        <section class="body-bj ovw">
+            <section class="header-fixed-cont ovw">
+                <section class="header-fixed ovw">
+                    <section class="header ovw posin">
+                        <div class="search-visa ovw posin"><aside class="serch-t"><img src="images/search.png" class="search-icon">搜索商户</aside>
+                            <form action="javascript:return true;" method="get">
+                                <input type="search" class="visa-in" style="height:0.853rem;line-height:0.853px;text-align:center;">
+                            </form>
+                        </div>
+                        <a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:void(0);" class="header-reg header-rele" style="display:none;"></a>
+                    </section>
+                    <ul class="eval-all-ula three-ula pick-work-ula ovw">
+                        <li class="drop-down-a  hover"><a href="#">附近 10km</a></li>
+                        <li class="drop-down-b"><a href="#">全部</a></li>
+                        <li class="drop-down-d"><a href="#">智能排序</a></li>
+                    </ul>
+                </section>
+            </section>
+
+            <!--商户附近列表-->
+<!--            <div class="shop_nearby">
+                <div class="shop_list">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                            <div class="pic">
+                                <img src="images/top.png" alt="" />
+                            </div>
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 <img src="images/member.png" alt="" /></div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                            <div class="pic">
+                                <img src="images/hot.png" alt="" />
+                            </div>
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top ">
+                    <div class="list_content ">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 <img src="images/member.png" alt="" /></div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
+            <!--全国列表-->
+            <div class="shop_nationwide">
+<!--                <div class="shop_list">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                            <div class="pic">
+                                <img src="images/top.png" alt="" />
+                            </div>
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 <img src="images/member.png" alt="" /></div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <div class="rele-near-dete ovw">
+                                    <div class="near-discuse ovw fl">
+                                        <p class="star-eval ovw fr">
+                                            <span class="fl star-a star"></span>
+                                            <span class="fl star-a star"></span>
+                                            <span class="fl star-a star"></span>
+                                            <span class="fl star-a"></span>
+                                            <span class="fl star-a"></span>
+                                        </p>
+                                        <cite class="fr">评价:</cite>
+                                    </div>
+                                    <div class="telephone">
+                                        <img src="images/ing_3.png" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                            <div class="pic">
+                                <img src="images/hot.png" alt="" />
+                            </div>
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list mar-top ">
+                    <div class="list_content ">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 </div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop_list">
+                    <div class="list_content">
+                        <div class="fl_picture">
+                            <img src="images/info-1.jpg" alt="" />
+                        </div>
+
+                        <div class="fr_shop_name">
+                            <div class="name_con">
+                                <div class="name">双港镇杂货铺 <img src="images/member.png" alt="" /></div>
+                                <p class="serve">生活服务</p>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="shop_site">江苏省盐城响水县双港镇</div>
+                            <div class="shop_comment">
+                                <span>评价 :</span>
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-1.png" alt="">
+                                <img src="images/star-2_03.png" alt="" />
+                                <img src="images/star-2.png" alt="">
+                                <div class="telephone">
+                                    <img src="images/ing_3.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="special">
+                                <p class="bor_col">惠</p>
+                                <p>五一促销活动 ， 全场满500享八折优惠</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+            <!-- 高德地图 容器-->
+            <div id="container" style="width:100%; display:none;"></div>  
+            <section class="base-sele ovw">
+                <ul class="eval-all-ula base-sele-main ovw">
+                    <li>全国</li>
+                    <li class="hover"><a href="#"><img src="images/rele_1.jpg" class="imga"/><img src="images/rele_3.jpg" class="imgb"/>附近</a></li>
+                    <li ><a href="#"><img src="images/rele_2.jpg" class="imga"/><img src="images/rele_4.jpg" class="imgb"/>地图 </a></li>
+                </ul>
+            </section>
+        </section>
+        <!---->
+        <section class="layer-bj rele-bj" style="display: none;"></section>
+        <section class="layer-rele-cont ovw" style="display: none;">
+            <img src="images/cer_8.jpg"  class="layer-icon-a"/>
+            <p class="layer-rele-p ovw">是否立即认证个人信息</p>
+            <p class="layer-rele-c ovw">只能<font>认证个人/商户</font>才能发布需求/商铺</p>
+            <a href="#"class="layer-rele-a ovw">立即认证</a>
+            <span class="layer-rele-s ovw">跳过此步骤</span>
+        </section>
+        <!---->
+        <section class="layer-bj layer-map-bj"></section>
+        <ul class="layer-sorting layer-up-some ovw mac-list-sort-auto">
+            <li class="hover" mac-list-auto="1">智能排序</li>
+            <li mac-list-auto="2">离我最近</li>
+<!--            <li mac-list-auto="3">最新发布</li>
+            <li mac-list-auto="4">评分由高到低</li>
+            <li mac-list-auto="5">成交单数</li>-->
+        </ul>
+        <div class="layer-type layer-up-some ovw mac-list-sort-type">
+            <ul class="merchant-type">
+                <li>
+                    <select class="type-first merchant-first">
+                        <option value="0">请选择一级分类</option>
+                    </select>
+                </li>
+                <li>
+                    <select class="type-second merchant-second">
+                        <option value="0">请选择二级分类</option>
+                    </select>
+                </li>
+                <li>
+                    <select class="type-third merchant-third">
+                        <option value="0">请选择三级分类</option>
+                    </select>
+                </li>
+                <li style="width:100%;height:36px;float:left;margin: 10px 0;line-height:36px;background:#dd1616;font-size:14px;color:white;border-radius:3px;text-align:center;" class="type-sure">确定</li>
+            </ul>
+        </div>
+        <div class="layer-area layer-up-some ovw" style="display:none;height:172px;top:2.373rem;z-index: 888;">
+            <ul class="mac-all-country" style="width:92%;margin:10px auto;line-height:39px;">
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="sf"><option areaID="-1">省份</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="cs"><option areaID="0">城市</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;"><select style="width:100%;z-index:100;" class="qx"><option areaID="0">区县</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;margin-top:8px;"><select style="width:100%;z-index:100;" class="xz"><option areaID="0">乡镇</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-top:8px;"><select style="width:100%;z-index:100;" class="cz"><option areaID="0">村</option></select></li>
+                <li style="width:100%;height:36px;float:left;margin-top:25px;line-height:36px;background:#dd1616;font-size:14px;color:white;border-radius:3px;text-align:center;" class="area-sure">确定</li>
+            </ul>
+        </div>
+        <ul class="layer-near layer-up-some ovw mac-list-sort-near" style="display:none;z-index: 888;">
+            <!-- <li  class="hover">附近 <span style="display:none;">0</span></li> -->
+            <li  class="hover">附近 <span>10</span>km</li>
+            <li>附近 <span>15</span>km</li>
+            <li>附近 <span>20</span>km</li>
+        </ul>
+        <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder,AMap.Autocomplete,AMap.PlaceSearch"></script>
+        <script type="text/javascript">
+            var type = isNull(GetQueryParam("type")) ? GetQueryParam("type") : 0;
+            var from = GetQueryParam("from");
+            var searchContent = isNull(GetQueryParam("search_txt"))?GetQueryParam("search_txt"):'';
+            $('.header-back').on('click', function () {
+                backtoNative();
+            })
+            if (isNull(searchContent)) {
+                $('.visa-in').val(searchContent);
+                $('.visa-in').parent('form').prev('aside').children().hide();
+                $('.visa-in').parent('form').prev('aside').css('textIndent', '9999px');
+            } else {
+                $('.visa-in').val('');
+            }
+            var count = 0;
+            var map;
+            var lng_lat = [];//商户的经纬度
+            var markers = [];//商户位置在地图上的点标
+            var merchantDetails = [];//商户的内容
+            setTimeout(function () {
+                map = new AMap.Map('container', {
+                    resizeEnable: true,
+                    zoom: 11,
+                    // center: [117.274802,31.872853]   
+                });
+                // requestMylocation();
+                map.setFitView();
+            }, 1000);
+            //*******************************商户搜索列表*****************************
+            function merchantList(params) {
+                var cmd = 'merchantList';//商户搜索列表接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var up = 1;//默认是上拉
+                if (params.page == 0) {
+                    up = 0;
+                    count = 0;
+                    params.page = 1;
+                }
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        console.info(data);
+                        if (isNull(data['body']['list'])) {
+                            var merchantListHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                var grade = (!isNull(val['grade'])||(val['grade']==0))?5:val['grade'];
+                                var comment_star = showStar(grade);//星标评论
+                                if (isNull(val['lng']) && isNull(['lat'])) {
+                                    var temp_lng_lat = {'lng': val['lng'], 'lat': val['lat']};
+                                    lng_lat.push(temp_lng_lat);
+                                }//farmingcloud_test/farming.html,//work-details.html?machineID='+val['machineID']+'&search_txt='+searchContent+'	 
+//                                merchantListHtml += '<article class="release-near-art ovw machine-list" machineID="'+val['machineID']+'"><a href="work-details.html?machineID='+val['machineID']+'&search_txt='+searchContent+'" machineID="'+val['machineID']+'">' +
+                                if(isNull(val['tag'])){ //商户标签
+                                    var tagImg = '<img src="images/top.png" alt="" />';
+                                }else{
+                                    var tagImg = '';
+                                }
+                                if(val['isAuthentication']==1){ //商户是否认证
+                                    var merchantImg = '<img src="images/member.png" alt="" />';
+                                }else{
+                                    var merchantImg = '';
+                                }
+                                if (isNull(val['promotion'])) {          //是否有优惠活动
+                                    var promotionHtml = '<div class="special">' +
+                                            '<p class="bor_col">惠</p>' +
+                                            '<p>'+val['promotion']+'</p>' +
+                                            '</div>';
+                                } else {
+                                    var promotionHtml = '';
+                                }
+                                if(isNull(val['poster'])){
+                                    var poster = val['poster'];
+                                }else{
+                                    var poster = "images/info-1.jpg";
+                                }
+                                var merchantTypes = val['merchantType'].split(' ');
+                                merchantListHtml += '<div class="shop_list"><a href="javascript:;" class="merchant-detail" merchantID="'+val['merchantID']+'">'+
+                                    '<div class="list_content"><div class="fl_picture" style="overflow:hidden;"><img style="width:2.56rem;" src="'+poster+'" alt="" />'+
+                                    '<div class="pic">'+tagImg+'</div>'+
+                                    '</div>'+
+                                    '<div class="fr_shop_name"><div class="name_con">'+
+                                    '<div class="name">'+val['merchantName']+merchantImg+'</div>'+
+                                    '<p class="serve">'+merchantTypes[2]+'</p></div>'+
+                                    '<div style="clear:both"></div>'+
+                                    '<div class="shop_site" style="word-wrap: break-word;width:99%;">'+val['address']+'</div>'+
+                                    '<div class="shop_comment"><div class="rele-near-dete ovw">'+
+                                    '<div class="near-discuse ovw fl">'+
+                                        '<p class="star-eval ovw fr">'+comment_star+'</p>'+
+                                        '<cite class="fr">评价:</cite>'+
+                                    '</div>'+
+                                    '<div class="telephone" phone="tel:'+val['phone']+'">'+
+                                        '<img src="images/ing_3.png" alt="" />'+
+                                    '</div></div></div>'+promotionHtml+
+                                    '</div></div></a></div>';
+                                merchantDetails.push(val);
+                                count++;
+                            })
+                            // $('.shop_nationwide').append(merchantListHtml);
+                        } else {
+                            sign=0;
+                            if ((count != 0)) {//上拉加载无内容锁定无数据
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                            } else {
+                                html = '<div class="none-more-content" style="background: white;">暂无内容</div>';
+                                $('.dropload-down').siblings().remove();
+                                $('.dropload-down').before(html);
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                                return false;
+                            }
+                        }
+                        /*********************把位置经纬度保存并展示为点标*******************/
+                        // var marke =  [{'lng':"117.274802","lat":"31.872853"},{ "lng":"117.133226",  "lat":"31.897232"},{ "lng":"117.494401",  "lat":"31.861082"},{ "lng":"117.339219",  "lat":"31.604122"}, { "lng":"117.159318",  "lat":"31.914719"}];
+                        if (params.page > 1) {
+                            markers = [];
+                        }
+                        $.each(lng_lat, function (i, marker) {	//lng_lat
+                            if (isNull(marker.lng) && isNull(marker.lat)) {
+                                marker = new AMap.Marker({
+                                    map: map,
+                                    position: [marker.lng, marker.lat],
+                                    clickable: true,
+                                });
+                                markers.push(marker);
+                            }
+                        });
+                        $.each(markers, function (i) {
+                            markers[i].on('click', function (e) {
+                                var message = openInfo(i);
+                                infoWindow = new AMap.InfoWindow({
+                                    content: message[0], //使用默认信息窗体框样式，显示信息内容
+                                    isCustom: true, //使用自定义窗体
+                                    closeWhenClickMap:true,
+                                });
+                                infoWindow.open(map,markers[i].getPosition());
+                            })
+                        });
+
+                        // 为了测试，延迟1秒加载
+                        setTimeout(function () {
+                            $('.none-more-content').remove();
+                            if (up == 0) {//下拉加载
+                                if (count < ((params.page) * params.num) && count != 0) {
+                                    merchantListHtml += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.shop_nationwide').html(merchantListHtml);
+                                } else {
+                                    $('.shop_nationwide').html(merchantListHtml);
+                                    dropload_merchantList(params);
+                                }
+                                dropload.resetload();
+                                dropload.unlock();// 解锁loadDownFn里锁定的情况
+                                // dropload.noData(false);
+                                $('.dropload-down').hide();
+                                params.page = 2;// 重置页数，重新获取loadDownFn的数据
+                            } else {
+                                if (count < ((params.page) * params.num)) {
+                                    dropload.lock();// 锁定
+                                    dropload.noData();// 无数据
+                                    $('.dropload-down').hide();
+                                }
+                                $('.dropload-down').before(merchantListHtml);
+                                dropload.resetload();// 每次数据加载完，必须重置
+                            }
+                            if($('.shop_list').length>0){
+                                sign=0;
+                            }
+                        }, 300);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            $(document).on('click','.telephone',function(e){
+                window.location.href = $(this).attr('phone');
+                return false;
+            })
+            $(document).on('click','.merchant-detail',function(){
+                var merchantID = $(this).attr('merchantID');
+                var detail_url = 'http://'+window.location.host+'/merchant-detail.html?merchantID='+merchantID;
+                openH5(detail_url);
+            })
+            //*********************************商户搜索列表上拉加载*****************
+            function dropload_merchantList(params) {
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var time = toLocalTime(ts, 6);
+                dropload = $('.shop_nationwide').dropload({
+                    scrollArea: window,
+                    domUp: {
+                        domClass: 'dropload-up',
+                        domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                    },
+                    domDown: {
+                        domClass: 'dropload-down',
+                        domRefresh: '<div class="dropload-refresh"></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                        domNoData: '<div class="dropload-noData">已加载全部数据</div>'
+                    },
+                    loadUpFn: function (me) {
+                        //下拉刷新
+                        params.page = 0;
+                        merchantList(params);
+                        params.page++;
+                    },
+                    loadDownFn: function (me) {
+                        //上拉加载
+                        merchantList(params);
+                        params.page++;
+                    },
+                    threshold: 50
+                });
+            }
+            setTimeout(function () {
+                if (current_location_address != '') {	//获取到当前位置
+                    var arr_areaID = current_location_areaIDs.split(",");
+                    var arr_areaNames = current_location_areaNames.split(",");
+                } else {								//没获取到当前位置使用用户设置的位置
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                }
+                near_distance = $('.mac-list-sort-near .hover').children('span').text();
+                merchantTypeList(0,1,type);
+                //从首页搜索跳转过来
+                if (from == 'index') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                    getArea(0, 1, 1); //用户设置的区域位置
+                    if (arr_areaID[0] != '') {
+                        getArea(arr_areaID[0], 2, 1);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (arr_areaID[1] != '') {
+                        getArea(arr_areaID[1], 3, 1);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (arr_areaID[2] != '') {
+                        getArea(arr_areaID[2], 4, 1);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (arr_areaID[3] != '') {
+                        getArea(arr_areaID[3], 5, 1);
+                        var area_id = arr_areaID[3];
+                    }
+                    var params = {//农机搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        // 'type' : type,//类型搜索,false
+                        // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': 0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                    dropload_merchantList(params);
+                }else if (from == 'infor') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    getArea(0, 1, 2); //我的订阅跳转
+                    var params = {//农机搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                         'type' : type,//类型搜索,false
+                        // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': 0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                    dropload_merchantList(params);
+                } else if (from == 'near') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[1]).addClass('hover');
+                    $($('.base-sele-main li')[1]).addClass('text-color');
+                    $('.drop-down-a a').text('附近 10km');
+                    if (lng == '') {
+                        layer.msg('抱歉，未获取到当前位置,请稍后！');
+                        setTimeout(function () {
+                            var params = {//农机搜索列表接口提供参数
+                                'keyword': isNull(searchContent) ? searchContent : '',
+                                'distance': near_distance, //距离搜索；0表示全国,false
+                                'type': type, //类型搜索,false
+                                // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                // 'area' : location_info,//地区搜索,false
+                                'page': PAGE,
+                                'num': PAGE_NUM,
+                                'lng': lng,
+                                'lat': lat,
+                            };
+                            dropload_merchantList(params);
+                        }, 400);
+                    }else{
+                        var params = {//农机搜索列表接口提供参数
+                                'keyword': isNull(searchContent) ? searchContent : '',
+                                'distance': near_distance, //距离搜索；0表示全国,false
+                                'type': type, //类型搜索,false
+                                // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                // 'area' : location_info,//地区搜索,false
+                                'page': PAGE,
+                                'num': PAGE_NUM,
+                                'lng': lng,
+                                'lat': lat,
+                            };
+                        dropload_merchantList(params);
+                    }
+                } else {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                    getArea(0, 1, 1); //用户设置的区域位置
+                    if (arr_areaID[0] != '') {
+                        getArea(arr_areaID[0], 2, 1);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (arr_areaID[1] != '') {
+                        getArea(arr_areaID[1], 3, 1);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (arr_areaID[2] != '') {
+                        getArea(arr_areaID[2], 4, 1);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (arr_areaID[3] != '') {
+                        getArea(arr_areaID[3], 5, 1);
+                        var area_id = arr_areaID[3];
+                    }
+                    if (arr_areaID[4] != '') {
+                        var area_id = arr_areaID[4];
+                    }
+                    var params = {//商户搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        // 'type' : type,//类型搜索,false
+                        // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area':isNull(area_id)?area_id:0  , //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                     dropload_merchantList(params);
+                }
+//                machineTypeList(type);//商户类型加载
+            }, 500);
+            $(document).keyup(function (event) {
+                if (event.keyCode == 13) {
+                    searchContent = $.trim($('.visa-in').val());
+                    near_distance = $('.mac-list-sort-near .hover').children('span').text();
+                    sort = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+                    type = $('.mac-list-sort-type .hover').attr('typeID') ? $('.mac-list-sort-type .hover').attr('typeID') : 0;
+                    if ($('.base-sele-main .hover').text() == "附近") {
+                        params = {//商户搜索列表接口提供参数
+                            'keyword': searchContent,
+                            'distance': near_distance, //距离搜索；0表示全国,false
+                            'type': type, //类型搜索,false
+                            'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                            // 'area' : location_info,//地区搜索,false
+                            'page': PAGE,
+                            'num': PAGE_NUM,
+                            'lng': lng,
+                            'lat': lat,
+                        };
+                    } else {
+                        var area_sort = mapZoom();
+                        params = {//商户搜索列表接口提供参数
+                            'keyword': searchContent,
+                            // 'distance' :near_distance,//距离搜索；0表示全国,false
+                            'type': type, //类型搜索,false
+                            'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                            'area': area_sort[0], //地区搜索,false
+                            'page': PAGE,
+                            'num': PAGE_NUM,
+                            // 'lng':$('.lng_val').val(),
+                            // 'lat':$('.lat_val').val(),
+                        };
+                    }
+                    if (searchContent == '') {
+                        layer.msg('搜索内容不能为空哦！');
+                        // return false;
+                    } else {
+                        count = 0;
+                        map.remove(markers);
+                        closeInfoWindow(map);//infoWindow.close();
+                        lng_lat = [];//商户的经纬度
+                        markers = [];//商户位置在地图上的点标
+                        merchantDetails = [];//商户的内容清空
+                        dropload.lock();
+                        dropload.resetload();
+                        delete dropload.opts.domUp;
+                        $('.dropload-down').siblings().remove();
+                        $('.dropload-down').show();
+                        dropload_merchantList(params);
+                    }
+                    $.each($('.dropload-down'), function (i) {
+                        if (i != 0)
+                            $($('.dropload-down')[i]).remove();
+                    })
+                }
+            });
+            /****************************加载搜索********************************/
+            //附近
+            var near_distance = '';
+            $('.mac-list-sort-near li').on('click', function () {
+                $('.drop-down-a a').html($(this).html());
+                searchContent = $.trim($('.visa-in').val());
+                $('.mac-list-sort-near li').removeClass('hover');
+                $(this).addClass('hover');
+                $('.mac-list-sort-near li').css({'color': '#666'});
+                $(this).css({'color': '#dd1616'});
+                near_distance = $(this).children('span').text();
+                sort = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+                type = $('.type-third').val();
+                params = {//农机搜索列表接口提供参数
+                    'keyword': searchContent,
+                    'distance': near_distance, //距离搜索；0表示全国,false
+                    'type': type, //类型搜索,false
+                    'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                    // 'area' : ,//地区搜索,false
+                    'page': PAGE,
+                    'num': PAGE_NUM,
+                    'lng': lng,
+                    'lat': lat,
+                    // 'lng':$('.lng_val').val(),
+                    // 'lat':$('.lat_val').val(),
+                };
+                console.info(params);
+                $('.mac-list-sort-near').toggle();
+                $('.layer-map-bj').toggle();
+                // $('.shop_nationwide').html('');
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//商户的经纬度
+                markers = [];//商户位置在地图上的点标
+                merchantDetails = [];//商户的内容清空
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_merchantList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+            //商户类型
+        $(document).on('touchend', '.type-sure', function (e) {
+                if($('.type-third').val()==0){
+                    if($('.type-second').val()!=0){
+                        type = $('.type-second').val();
+                        $('.drop-down-b a').html($('.type-second option:selected').text());
+                    }else{
+                         if($('.type-first').val()!=0){
+                            type = $('.type-first').val();
+                            $('.drop-down-b a').html($('.type-first option:selected').text());
+                        }else{
+                            type = 0;
+                            $('.drop-down-b a').html("全部");
+                        }
+                    }
+                }else{
+                    type = $('.type-third').val();
+                    $('.drop-down-b a').html($('.type-third option:selected').text());
+                }
+                searchContent = $.trim($('.visa-in').val());
+                $('.mac-list-sort-type li').removeClass('hover');
+                $(this).addClass('hover');
+                near_distance = $('.mac-list-sort-near .hover').children('span').text();
+                sort = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+                if ($('.base-sele-main .hover').text() == "附近") {
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        'distance': near_distance, //距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        // 'area' : location_info,//地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'lng': lng,
+                        'lat': lat,
+
+                    };
+                } else {
+                    var area_sort = mapZoom();
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': area_sort[0], //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':$('.lng_val').val(),
+                        // 'lat':$('.lat_val').val(),
+                    };
+                }
+                $('.mac-list-sort-type').toggle();
+                $('.layer-map-bj').toggle();
+                // $('.shop_nationwide').html('');
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//商户的经纬度
+                markers = [];//商户位置在地图上的点标
+                merchantDetails = [];//商户的内容清空
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_merchantList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+                e.preventDefault();
+        })
+            //智能排序
+            var sort = '';
+            $('.mac-list-sort-auto li').on('click', function () {
+                $('.drop-down-d a').html($(this).html());
+                searchContent = $.trim($('.visa-in').val());
+                $('.mac-list-sort-auto li').removeClass('hover');
+                $(this).addClass('hover');
+                sort = $(this).attr('mac-list-auto');
+                near_distance = $('.mac-list-sort-near .hover').children('span').text();
+                type = $('.type-third').val();
+                if ($('.base-sele-main .hover').text() == "附近") {
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        'distance': near_distance, //距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        // 'area' : location_info,//地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'lng': lng,
+                        'lat': lat,
+
+                    };
+                } else {
+                    var area_sort = mapZoom();
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': area_sort[0], //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':$('.lng_val').val(),
+                        // 'lat':$('.lat_val').val(),
+                    };
+                }
+                console.info(params);
+                $('.mac-list-sort-auto').toggle();
+                $('.layer-map-bj').toggle();
+                // $('.shop_nationwide').html('');
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//商户的经纬度
+                markers = [];//商户位置在地图上的点标
+                merchantDetails = [];//商户的内容清空
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_merchantList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+            //区域搜索
+            $(document).on('touchend', '.area-sure', function (e) {
+                var area_sort = mapZoom();
+                if (area_sort[0] == 0) {
+                    geocoder("西安", 4);
+                } else {
+                    geocoder(area_sort[1], area_sort[2]);
+                }
+                searchContent = $.trim($('.visa-in').val());
+                sort = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+                type = $('.type-third').val();
+                $('.layer-area').hide();
+                $('.layer-map-bj').hide();
+                if ($('.base-sele-main .hover').text() == "全国") {
+                    var num = PAGE_NUM;
+                } else {
+                    var num = 30;
+                }
+                var params = {//农活搜索列表接口提供参数
+                    'keyword': searchContent,
+                    // 'distance' :,//距离搜索；0表示全国,false
+                    'type': type, //类型搜索,false
+                    'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                    'area': area_sort[0], //地区搜索,false
+                    'page': PAGE,
+                    'num': num,
+                    // 'lng':$('.lng_val').val(),
+                    // 'lat':$('.lat_val').val(),
+                };
+                console.info(params);
+                map.remove(markers);
+                closeInfoWindow(map);//infoWindow.close();
+                lng_lat = [];//商户的经纬度
+                markers = [];//商户位置在地图上的点标
+                merchantDetails = [];//商户的内容清空
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+               dropload_merchantList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+                e.preventDefault();
+            })
+            /****************************获取地区信息接口********************
+             **type:1.省份；2.城市，3.区县；4.乡镇,5村庄
+             */
+            function getArea(areaID, type, when) {
+                var cmd = 'getArea';//农机投诉接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var params = {
+                    'areaID': areaID,
+                };
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        if (isNull(data['body']['list'])) {
+                            var areaHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                            })
+                            switch (parseInt(type)) {
+                                case 1:
+                                    $('.sf').append(areaHtml);
+                                    break;
+                                case 2:
+                                    $('.cs').append(areaHtml);
+                                    break;
+                                case 3:
+                                    $('.qx').append(areaHtml);
+                                    break;
+                                case 4:
+                                    $('.xz').append(areaHtml);
+                                    break;
+                                case 5:
+                                    $('.cz').append(areaHtml);
+                                    break;
+                            }
+                            if (when == 0) {        //0  当前位置
+                                if (current_location_address != '') {   //获取到当前位置
+                                    var arr_areaID = current_location_areaIDs.split(",");
+                                    var arr_areaNames = current_location_areaNames.split(",");
+                                } else {                      //没获取到当前位置使用用户设置的位置
+                                    var arr_areaID = location_areaIDs.split(",");
+                                    var arr_areaNames = location_areaNames.split(",");
+                                }
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            } else if (when == 1) {  //  首页设置位置
+                                var arr_areaID = location_areaIDs.split(",");
+                                var arr_areaNames = location_areaNames.split(",");
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            }else if (when == 2) {  //  我的订阅跳转
+                                $('.sf').val(0);
+                            }
+                        } else {
+                            // layer.msg('暂无区域内容');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+//            getArea(0,1);
+            $('.sf').on('change', function () {
+                if ($('.sf option:selected').attr('areaID') != -1) {
+                    $('.cs').html('');
+                    $('.cs').append('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    if ($('.sf option:selected').attr('areaID') != 0) {
+                        getArea($('.sf option:selected').attr('areaID'), 2);
+                    }
+                } else {
+                    $('.cs').html('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.cs').on('change', function () {
+                if ($('.cs option:selected').attr('areaID') != 0) {
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.cs option:selected').attr('areaID'), 3);
+                } else {
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.qx').on('change', function () {
+                if ($('.qx option:selected').attr('areaID') != 0) {
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.qx option:selected').attr('areaID'), 4);
+                } else {
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.xz').on('change', function () {
+                if ($('.xz option:selected').attr('areaID') != 0) {
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.xz option:selected').attr('areaID'), 5);
+                } else {
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            /*
+                 * 获取商户类型     merchantTypeList
+                 * @param {int} pid
+                 * @param {int} type
+                 */
+                function merchantTypeList(pid,type,sort) {
+                    var cmd = 'merchantTypeList'; //获取商户类型接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    var params = {
+                        'pid': pid,
+                    };
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码     
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {console.info(data);
+                            if (isNull(data['body']['list'])) {
+                                var typeHtml = '';
+                                $.each(data['body']['list'], function (i, val) {
+                                    if (val['ID'] != 0) {
+                                        typeHtml += '<option value="'+val['ID']+'">'+val['typeName']+' </option>';
+                                    }
+                                })
+                                switch (parseInt(type)) {   
+                                    case 1:         //一级
+                                        $('.merchant-first').append(typeHtml);
+                                        break;
+                                    case 2:         //二级
+                                        $('.merchant-second').append(typeHtml);
+                                        break;
+                                    case 3:         //三级
+                                        $('.merchant-third').append(typeHtml);
+                                        break;
+                                }
+                                if(isNull(sort)){
+                                    $('.merchant-first').val(sort);
+                                }
+                            } else {
+                                layer.msg('暂无分类');
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+//                merchantTypeList(0,1);
+                $('.merchant-first').on('change', function () {
+                    if ($('.merchant-first').val()!=0) {
+                        $('.merchant-second').html('');
+                        $('.merchant-second').append('<option value="0">请选择二级分类</option>');
+                        $('.merchant-third').html('');
+                        $('.merchant-third').append('<option value="0">请选择三级分类</option>');
+                        merchantTypeList($('.merchant-first').val(), 2);
+                    } else {
+                        $('.merchant-second').html('<option value="0">请选择二级分类</option>');
+                        $('.merchant-third').html('<option value="0">请选择三级分类</option>');
+                    }
+                });
+                $('.merchant-second').on('change', function () {
+                    if ($('.merchant-second').val()!=0) {
+                        $('.merchant-third').html('');
+                        $('.merchant-third').append('<option value="0">请选择三级分类</option>');
+                        merchantTypeList($('.merchant-second').val(), 3);
+                    } else {
+                        $('.merchant-third').html('<option value="0">请选择三级分类</option>');
+                    }
+                });
+/****************************在指定位置打开信息窗体*****************************/
+            function openInfo(index) {
+                var hh = $('.base-sele').height();
+                var contentHtml='';
+                var text='';
+                $.each(merchantDetails, function (i, val) {
+                    if (index == i) {
+                        var grade = (!isNull(val['grade'])||(val['grade']==0))?5:val['grade'];
+                        var comment_star = showStar(grade);//星标评论
+                                if(isNull(val['tag'])){ //商户标签
+                                    var tagImg = '<img src="images/top.png" alt="" />';
+                                }else{
+                                    var tagImg = '';
+                                }
+                                if(val['isAuthentication']==1){ //商户是否认证
+                                    var merchantImg = '<img src="images/member.png" alt="" />';
+                                }else{
+                                    var merchantImg = '';
+                                }
+                                if (isNull(val['promotion'])) {          //是否有优惠活动
+                                    var promotionHtml = '<div class="special">' +
+                                            '<p class="bor_col">惠</p>' +
+                                            '<p>'+val['promotion']+'</p>' +
+                                            '</div>';
+                                } else {
+                                    var promotionHtml = '';
+                                }
+                                if(isNull(val['poster'])){
+                                    var poster = val['poster'];
+                                }else{
+                                    var poster = "images/info-1.jpg";
+                                }
+                                contentHtml += '<div class="shop_list synthesis-main" style="overflow-y: scroll;padding-top: 0.28rem;padding-bottom: 0.28rem;height:auto;bottom:38px;"><a href="javascript:;" class="merchant-detail" merchantID="'+val['merchantID']+'">'+
+                                    '<div class="list_content" style="border-bottom:none;padding-bottom:0;"><div class="fl_picture" style="overflow:hidden;"><img style="width:2.56rem;" src="'+poster+'" alt="" />'+
+                                    '<div class="pic">'+tagImg+'</div>'+
+                                    '</div>'+
+                                    '<div class="fr_shop_name"><div class="name_con">'+
+                                    '<div class="name">'+val['merchantName']+merchantImg+'</div>'+
+                                    '<p class="serve">'+val['merchantType']+'</p></div>'+
+                                    '<div style="clear:both"></div>'+
+                                    '<div class="shop_site">'+val['detailAddress']+'</div>'+
+                                    '<div class="shop_comment"><div class="rele-near-dete ovw">'+
+                                    '<div class="near-discuse ovw fl">'+
+                                        '<p class="star-eval ovw fr">'+comment_star+'</p>'+
+                                        '<cite class="fr">评价:</cite>'+
+                                    '</div>'+
+                                    '</div></div>'+promotionHtml+
+                                    '</div></div></a></div>';
+                    }
+                });
+                return [contentHtml, text];
+            }
+        </script>
+    </body>
+</html>

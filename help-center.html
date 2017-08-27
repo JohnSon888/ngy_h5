@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .help-center li{background:none;}
+    .help-nub {
+        width: 55%;
+    }
+    .help-name {
+        width: 35%;
+    }
+</style>
+<script type="text/javascript">
+$(function(){
+	function get_help(params){//获取帮助中心信息
+        var cmd = 'help';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        //var params ='';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ //<li><label class="help-name help-ba ovw">客服电话</label><samp class="help-nub ovw">'+data['body']['telephone']+'</samp></li>
+            	var search_html = '<li>'+
+    	    		'<label class="help-name help-bb ovw">客服邮箱</label>'+
+    	    		'<samp class="help-nub ovw">'+data['body']['email']+'</samp>'+
+    	    	'</li><li>'+
+    	    		'<label class="help-name help-bc ovw">企业QQ</label>'+
+    	    		'<samp class="help-nub ovw">'+data['body']['qq']+'</samp></li>'+
+                        '<li><a href="feedback.html?from=h5"><label class="help-name ovw" style="background: url(../images/feedback_03.png) no-repeat 0.4rem center;background-size: 0.49333rem;">用户反馈</label></a></li>';
+	    		$('.help-center').append(search_html);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var params = {
+            'userid':1,
+	};
+	get_help(params);
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">帮助中心<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <ul class="help-center ovw">
+	    	<!-- <li>
+	    		<label class="help-name help-ba ovw">客服电话</label>
+	    		<samp class="help-nub ovw">400-9998-9994</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name help-bb ovw">客服邮箱</label>
+	    		<samp class="help-nub ovw">tanjei@xu-nao.com</samp>
+	    	</li>
+	    	<li>
+	    		<label class="help-name help-bc ovw">企业QQ</label>
+	    		<samp class="help-nub ovw">988276384</samp>
+	    	</li> -->
+	    </ul>
+	</section>
+</body>
+</html>

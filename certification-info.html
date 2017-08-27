@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <title></title>
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/demo.css">
+        <link rel="stylesheet" href="css/own.css">
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js"></script>
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+        <script type="text/javascript" src="src/lib/common/public.js"></script>
+        <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!-- layer -->
+        <script type="text/javascript" src="src/lib/layer/layer.js"></script>
+        <style>
+            .comlab{width:2.3rem;}
+        </style>
+    </head>
+
+    <body style="background: #ececec;">
+        <section class="all-main">
+            <section class="header ovw posin" style="position:fixed;z-index:100;">商户资料
+                <a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a>
+            </section>
+            <ul class="ld-card-ula ovw" style="padding-top: 1.333rem;">
+                <li class="ld-lia">
+                    <label class="ld-lia-la ovw"><!--<span class="must-fill-in">*&nbsp;</span>-->商户名称：</label>
+                    <input class="ld-lia-in mers-lia-a merchant-name" type="text" style="width: 6.2rem;"  placeholder="请输入商户名称"/>
+                </li>
+                <li class="ld-lia">
+                    <label class="ld-lia-la ovw"><!--<span class="must-fill-in">*&nbsp;</span>-->联系人：</label>
+                    <input class="ld-lia-in mers-lia-a merchant-userName" type="text" style="width: 6.2rem;"  placeholder="请输入联系人"/>
+                </li>
+                <li class="ld-lia">
+                    <label class="ld-lia-la ovw comlab"><!--<span class="must-fill-in">*&nbsp;</span>-->联系电话：</label>
+                    <input class="ld-lia-in mers-lia-a ovw merchant-phone" type="number" oninput="if(value.length>11)value=value.slice(0,11)" style="width: 6.2rem;" placeholder="请输入您的联系电话" />
+                </li>
+                <p class="comp">商户类型</p>
+                <!--一级分类-->
+                <li class="mers-lia-c mers-lia-d">
+                    <aside class="add-plant-as add-plant-ad ovw">
+                        <select class="add-state selfull merchant-first">
+                            <option value="0">请选择一级分类 </option>
+                        </select>
+                    </aside>
+                </li>
+                <!--二级分类-->
+                <li class="mers-lia-c mers-lia-d">
+                    <aside class="add-plant-as add-plant-ad ovw">
+                        <select class="add-state selfull merchant-second">
+                            <option value="0">请选择二级分类 </option>
+                        </select>
+                    </aside>
+                </li>
+                <!--三级分类-->
+                <li class="mers-lia-c mers-lia-d">
+                    <aside class="add-plant-as add-plant-ad ovw">
+                        <select class="add-state selfull merchant-third">
+                            <option value="0">请选择三级分类 </option>
+                        </select>
+                    </aside>
+                </li>
+                <p class="comp">商户地址：</p>
+                <li class="mers-lia-c">
+                    <aside class="add-plant-as add-plant-ad ovw fl">
+                        <label class="fl ovw">省份:</label>
+                        <select class="add-state sf">
+                            <option areaID="-1">请选择省份</option>
+                        </select>
+                    </aside>
+                    <aside class="add-plant-as add-plant-ad ovw fr">
+                        <label class="fl ovw">城市:</label>
+                        <select class="add-state cs">
+                            <option areaID="0" value="0">请选择城市 </option>
+                        </select>
+                    </aside>
+                </li>
+                <li class="mers-lia-c">
+                    <aside class="add-plant-as add-plant-ad ovw fl">
+                        <label class="fl ovw">区县:</label>
+                        <select class="add-state qx">
+                            <option areaID="0" value="0">请选择区县</option>
+                        </select>
+                    </aside>
+                    <aside class="add-plant-as add-plant-ad ovw fr">
+                        <label class="fl ovw">乡镇:</label>
+                        <select class="add-state xz">
+                            <option areaID="0" value="0">乡镇 </option>
+                        </select>
+                    </aside>
+                </li>
+                <li class="mers-lia-c mers-lia-d">
+                    <aside class="add-plant-as add-plant-ad ovw">
+                        <label class="fl ovw">村:</label>
+                        <select class="add-state cz">
+                            <option areaID="0" value="0">村 </option>
+                        </select>
+                    </aside>
+                </li>
+                <li class="ld-lia mers-lia-e">
+                    <label class="ld-lia-la ovw comlab">门牌号码：</label>
+                    <input class="ld-lia-in mers-lia-b merchant-doorplate" type="text" placeholder="请输入门牌号码"  style="width: 6.2rem;"/>
+                </li>
+                <li class="ld-lia ld-lie bz-text comli" style="height: auto;">
+                    <label class="ld-lia-la ovw comlab">营业范围：</label>
+<!--                    <div class="ld-lia-in mers-lia-b ovw  expandingArea" style="position:relative;min-height:0.6rem;height:auto;width:6.2rem;float:right;">
+                        <p class="higt-auto" style="display:block;visibility:hidden;width:6.2rem;padding: 0.2rem 0;"></p>
+                        <textarea class="ld-lia-in mers-lia-b ovw expressArea-remark merchant-range" placeholder="请输入营业范围"  style="position:absolute;top:0;height:100%;width: 5.9rem;"></textarea>
+                    <select class="add-state express-range" style="width: 100%;"><option  value="1">全国</option><option  value="0">周边</option></select>
+                    </div>-->
+
+                    <textarea class="ld-lia-in mers-lia-b ovw merchant-range" placeholder="请输入营业范围"  style="width: 6.2rem;"></textarea>
+                </li>
+                <li class="ld-lia ld-lie bz-text comli" style="height: auto;">
+                    <label class="ld-lia-la ovw comlab">优惠活动：</label>
+                    <div class="ld-lia-in mers-lia-b ovw  expandingActivity" style="position:relative;min-height:0.6rem;height:auto;width:6.2rem;float:right;">
+                        <p class="activity-higt-auto" style="display:block;visibility:hidden;width:6.2rem;padding: 0.2rem 0;"></p>
+                        <textarea class="ld-lia-in mers-lia-b ovw  activity merchant-activity" placeholder="请输入优惠活动"  style="position:absolute;top:0;height:100%;width: 5.9rem;"></textarea>
+                    </div>
+                </li>
+                <!--                <li class="ld-lia ld-lie bz-text comli">
+                                    <label class="ld-lia-la ovw comlab">优惠活动：</label>
+                                    <textarea class="ld-lia-in mers-lia-b  ovw  merchant-activity" placeholder="请输入优惠活动"  style="width: 6.2rem;"></textarea>
+                                </li>-->
+
+
+                <li class="add-pic-ld pic-shop" style="border: 1px solid #ddd;border-radius: 0.12rem;height:auto;width:99%;">
+                    <!-- <aside class="add-plant-as add-plant-af ovw"> -->
+                    <label class="fl ovw" style="line-height: 1.04rem;text-indent: 0.2666rem;">商户照片:</label>
+                    <!-- <span class="fl plant-imgb ovw shop-pic picture" shop-pic-num="0"><img src="http://ngy.innke.net/Uploads/file/2017-03-17/58cab836cf7bb.jpg"></span> -->
+                    <!--<span class="fl plant-imgb ovw shop-pic shop-pic-add comspan" shop-pic-num="0"><img src="images/addimg1.png"></span>-->
+                    <span class="fl plant-imgb ovw shop-pic shop-pic-add comspan" style="width:2rem;margin-left: 0.2rem;height:1.83rem;"><img src="images/addimg.png"></span>
+                    <!--<span class="fl plant-imgb ovw"><img src="images/plant_3.png"></span>--> 
+                    <!-- </aside> -->
+                </li>
+
+
+            </ul>
+
+        </section>
+        <a class="over-order ovw" href="javascript:void(0);" style="margin: 0.4rem auto;">保存</a>
+        <input type="hidden" value="0" class="merchantID"/>
+        <script type="text/javascript">
+            $(function () {
+                //textarea高度自增自减
+                $('.expressArea-remark').on('keyup', function () {
+                    $('.higt-auto').html($(this).val());
+                });
+                $('.activity').on('keyup', function () {
+                    $('.activity-higt-auto').html($(this).val());
+                });
+                $('.header-back').on('click', function () {
+                    backtoNative();
+                })
+
+                //*********************************获取商户编辑信息***********************************
+                var province = 0;
+                var city = 0;
+                var area = 0;
+                var town = 0;
+                var village = 0;
+                var merchantTypeFirst = 0;
+                var merchantTypeSecond = 0;
+                var merchantTypeThird = 0;
+                function merchantDetail(params) {
+                    var cmd = 'myMerchant'; //商户详情接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            console.info(data);
+                            if (isNull(data['body'])) {
+                                $('.merchantID').val(data['body']['merchantID']);
+                                $('.merchant-name').val(data['body']['merchantName']); //商户名称 
+                                $('.merchant-userName').val(data['body']['contact']); //商户名称
+                                $('.merchant-phone').val(data['body']['phone']); //商户电话
+                                $('.merchant-doorplate').val(data['body']['detailAddress']); //商户门牌号码
+                                $('.merchant-range').val(data['body']['businessScope']); //商户营业范围
+                                $('.merchant-activity').val(data['body']['promotion']); //优惠活动
+                                var shop_pic = "";
+                                if (isNull(data['body']['images'])) {
+                                    $.each(data['body']['images'], function (i, val) {
+                                        shop_pic += '<span class="fl plant-imgb ovw shop-pic-view shop-pic picture"><img src="' + val + '"></span>';
+                                    })
+                                    $('.shop-pic-add').before(shop_pic);
+                                }
+                                var addressArea = data['body']['addressArea'];
+                                province = addressArea['province']['areaID'];
+                                city = addressArea['city']['areaID'];
+                                area = addressArea['area']['areaID'];
+                                town = addressArea['town']['areaID'];
+                                village = addressArea['village']['areaID'];
+                                getArea(0, 1, 0); //用户设置的区域位置
+                                if (province != 0) {
+                                    getArea(province, 2, 0);
+                                }
+                                if (city != 0) {
+                                    getArea(city, 3, 0);
+                                }
+                                if (area != 0) {
+                                    getArea(area, 4, 0);
+                                }
+                                if (town != 0) {
+                                    getArea(town, 5, 0);
+                                }
+                                merchantTypeFirst = data['body']['merchantTypeFirst'];
+                                merchantTypeSecond = data['body']['merchantTypeSecond'];
+                                merchantTypeThird = data['body']['merchantTypeThird'];
+                                merchantTypeList(0, 1, 0);
+                                merchantTypeList(merchantTypeFirst, 2, 0);
+                                merchantTypeList(merchantTypeSecond, 3, 0);
+                            } else {      //添加
+                                merchantTypeList(0, 1);
+                                $('.merchant-userName').val(username);//默认用户姓名
+                                $('.merchant-phone').val(telephone);//默认用户手机号
+                                var merchantAuthInfo_params = {
+                                    'userid': userid,
+                                }
+                                merchantAuthInfo(merchantAuthInfo_params);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+                setTimeout(function () {
+                    var merchantAuthInfo_params = {
+                        'userid': userid,
+                    }
+                    console.info(merchantAuthInfo_params);
+                    merchantDetail(merchantAuthInfo_params);
+                }, 100);
+                //*************************** 商户认证信息接口*****************************
+                function merchantAuthInfo(params) {
+                    var cmd = 'merchantAuthInfo';//
+                    var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                    var jsonp = 1;
+                    params = objKeySort(params);//按照属性名升序排列
+                    var params_str = objChangeStr(params);//拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                        dataType: 'jsonp',
+                        success: function (data) {console.info(data);
+                            if (isNull(data['body']['storeAddress']['province']['areaName'])) {
+                                var addressArea = data['body']['storeAddress'];
+                                province = addressArea['province']['areaID'];
+                                city = addressArea['city']['areaID'];
+                                area = addressArea['area']['areaID'];
+                                town = addressArea['town']['areaID'];
+                                village = addressArea['village']['areaID'];
+                                getArea(0, 1, 0); //用户设置的区域位置
+                                if (province != 0) {
+                                    getArea(province, 2, 0);
+                                }
+                                if (city != 0) {
+                                    getArea(city, 3, 0);
+                                }
+                                if (area != 0) {
+                                    getArea(area, 4, 0);
+                                }
+                                if (town != 0) {
+                                    getArea(town, 5, 0);
+                                }
+                            }else{
+                                setTimeout(function(){
+                                    var arr_areaID = current_location_areaIDs.split(",");
+                                    province = arr_areaID[0];
+                                    city = arr_areaID[1]==''?0:arr_areaID[1];
+                                    area = arr_areaID[2]==''?0:arr_areaID[2];
+                                    town = arr_areaID[3]==''?0:arr_areaID[3];
+                                    village = arr_areaID[4]==''?0:arr_areaID[4];
+                                    getArea(0, 1, 1); //用户设置的区域位置
+                                        if (province != '') {
+                                            getArea(province, 2, 1);
+                                            var area_id = arr_areaID[0];
+                                        }
+                                        if (city != '') {
+                                            getArea(city, 3, 1);
+                                            var area_id = arr_areaID[1];
+                                        }
+                                        if (area != '') {
+                                            getArea(area, 4, 1);
+                                            var area_id = arr_areaID[2];
+                                        }
+                                        if (town != '') {
+                                            getArea(town, 5, 1);
+                                            var area_id = arr_areaID[3];
+                                        }if (village != '') {
+                                            var area_id = arr_areaID[4];
+                                        }
+                                },1000);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+                //*************************** 商户编辑*****************************
+                function merchantModify(params) {
+                    var cmd = 'merchantModify'; //商户编辑接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            if (data['resultCode'] == 1) {
+                                layer.msg('商户资料提交成功!');
+                                setTimeout(function () {
+                                    backtoNative();
+                                }, 1000);
+                            } else {
+                                layer.msg(data['resultMessage']);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+                /*
+                 * 获取商户类型     merchantTypeList
+                 * @param {int} pid
+                 * @param {int} type
+                 * * @param {int} when  修改
+                 */
+                function merchantTypeList(pid, type, when) {
+                    var cmd = 'merchantTypeList'; //获取商户类型接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    var params = {
+                        'pid': pid,
+                    };
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码     
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            if (isNull(data['body']['list'])) {
+                                var typeHtml = '';
+                                $.each(data['body']['list'], function (i, val) {
+                                    if (val['typeID'] != 0) {
+                                        typeHtml += '<option value="' + val['ID'] + '">' + val['typeName'] + ' </option>';
+                                    }
+                                })
+                                switch (parseInt(type)) {
+                                    case 1:         //一级
+                                        $('.merchant-first').append(typeHtml);
+                                        break;
+                                    case 2:         //二级
+                                        $('.merchant-second').append(typeHtml);
+                                        break;
+                                    case 3:         //三级
+                                        $('.merchant-third').append(typeHtml);
+                                        break;
+                                }
+                                if (when == 0) {
+                                    $('.merchant-first').val(merchantTypeFirst);
+                                    $('.merchant-second').val(merchantTypeSecond);
+                                    $('.merchant-third').val(merchantTypeThird);
+                                }
+                            } else {
+                                layer.msg('暂无分类');
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+//                merchantTypeList(0,1);
+                $('.merchant-first').on('change', function () {
+                    if ($('.merchant-first').val() != 0) {
+                        $('.merchant-second').html('');
+                        $('.merchant-second').append('<option value="0">请选择二级分类</option>');
+                        $('.merchant-third').html('');
+                        $('.merchant-third').append('<option value="0">请选择三级分类</option>');
+                        merchantTypeList($('.merchant-first').val(), 2);
+                    } else {
+                        $('.merchant-second').html('<option value="0">请选择二级分类</option>');
+                        $('.merchant-third').html('<option value="0">请选择三级分类</option>');
+                    }
+                });
+                $('.merchant-second').on('change', function () {
+                    if ($('.merchant-second').val() != 0) {
+                        $('.merchant-third').html('');
+                        $('.merchant-third').append('<option value="0">请选择三级分类</option>');
+                        merchantTypeList($('.merchant-second').val(), 3);
+                    } else {
+                        $('.merchant-third').html('<option value="0">请选择三级分类</option>');
+                    }
+                });
+                /****************************获取地区信息接口********************
+                 **type:1.省份；2.城市，3.区县；4.乡镇
+                 */
+                function getArea(areaID, type, when) {
+                    var cmd = 'getArea'; //农机投诉接口命令
+                    var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+                    var jsonp = 1;
+                    var params = {
+                        'areaID': areaID,
+                    };
+                    params = objKeySort(params); //按照属性名升序排列
+                    var params_str = objChangeStr(params); //拼接params参数的属性值
+                    params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+                    $.ajax({
+                        url: apiURL, //接口地址
+                        data: {
+                            'cmd': cmd,
+                            'ts': ts,
+                            'params': params,
+                            'jsonp': jsonp
+                        },
+                        dataType: 'jsonp',
+                        success: function (data) {
+                            if (isNull(data['body']['list'])) {
+                                var areaHtml = '';
+                                $.each(data['body']['list'], function (i, val) {
+                                    if (val['areaID'] != 0) {
+                                        areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                                    }
+                                })
+                                switch (type) {
+                                    case 1:
+                                        $('.sf').append(areaHtml);
+                                        break;
+                                    case 2:
+                                        $('.cs').append(areaHtml);
+                                        break;
+                                    case 3:
+                                        $('.qx').append(areaHtml);
+                                        break;
+                                    case 4:
+                                        $('.xz').append(areaHtml);
+                                        break;
+                                    case 5:
+                                        $('.cz').append(areaHtml);
+                                        break;
+                                }
+                                if (when == 0) {        //0  带默认值
+                                    $('.sf').val(province);
+                                    $('.cs').val(city);
+                                    $('.qx').val(area);
+                                    $('.xz').val(town);
+                                    $('.cz').val(village);
+                                }else if (when == 1) {    
+                                    $('.sf').val(province);
+                                    $('.cs').val(city);
+                                    $('.qx').val(area);
+                                    $('.xz').val(town);
+                                    $('.cz').val(village);
+                                }
+                            } else {
+                                layer.msg('暂无区域内容');
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            layer.msg('网络请求延迟！');
+                            console.info(XMLHttpRequest.status);
+                            console.info(XMLHttpRequest.readyState);
+                            console.info(textStatus);
+                        },
+                    });
+                }
+//                getArea(0, 1);
+                $('.sf').on('change', function () {
+                    if ($('.sf option:selected').attr('areaID') != -1) {
+                        $('.cs').html('');
+                        $('.cs').append('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        if ($('.sf option:selected').attr('areaID') != 0) {
+                            getArea($('.sf option:selected').attr('areaID'), 2);
+                        }
+                    } else {
+                        $('.cs').html('<option areaID="0" value="0">请选择城市</option>');
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.cs').on('change', function () {
+                    if ($('.cs option:selected').attr('areaID') != 0) {
+                        $('.qx').html('');
+                        $('.qx').append('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.cs option:selected').attr('areaID'), 3);
+                    } else {
+                        $('.qx').html('<option areaID="0" value="0">请选择区县</option>');
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.qx').on('change', function () {
+                    if ($('.qx option:selected').attr('areaID') != 0) {
+                        $('.xz').html('');
+                        $('.xz').append('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.qx option:selected').attr('areaID'), 4);
+                    } else {
+                        $('.xz').html('<option areaID="0" value="0">请选择乡镇</option>');
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                $('.xz').on('change', function () {
+                    if ($('.xz option:selected').attr('areaID') != 0) {
+                        $('.cz').html('');
+                        $('.cz').append('<option areaID="0" value="0">请选择村庄</option>');
+                        getArea($('.xz option:selected').attr('areaID'), 5);
+                    } else {
+                        $('.cz').html('<option areaID="0" value="0">请选择村庄</option>');
+                    }
+                })
+                //点击上传图片
+                $(document).on('click', '.shop-pic', function () {
+                    var pic_index = $(this);
+                    $('.shop-pic').attr('shop-pic-num', 1);
+                    $('.run-pic').attr('run-pic-num', 0);
+                    var num = $('.picture').length;
+                    var pic_num_left = 4 - num;
+                    if ($(this).siblings('.shop-pic-add').length > 0) {
+                        layer.open({
+                            content: '您确定要删除图片吗？',
+                            btn: ['是', '否'],
+                            yes: function (index) {
+                                layer.close(index);
+                                pic_index.remove();
+                                if (num == 3 && $('.shop-pic-add img').attr('src') != 'images/addimg.png') {
+                                    $('.shop-pic-add').before('<span class="fl plant-imgb ovw shop-pic picture"><img src="' + $('.shop-pic-add img').attr('src') + '"></span>');
+                                    $('.shop-pic-add img').attr('src', 'images/addimg.png')
+                                }
+                                // else{
+                                // 	uploadImage(pic_num_left);
+                                // }
+                            }
+                        });
+                    } else {
+                        if (num == 3 && $('.shop-pic-add img').attr('src') != 'images/addimg.png') {
+                            layer.msg('最多添加4张图片');
+                        } else {
+                            uploadImage(pic_num_left);
+                        }
+                    }
+                });
+                //保存商户信息
+                $('.over-order').click(function () {
+                    if (sign == 1) {        //防止多次点击
+                        var merchantID = $('.merchantID').val();
+                        var merchantName = $.trim($('.merchant-name').val()); //商户名称 
+                        var username = $.trim($('.merchant-userName').val()); //联系人名称 
+                        var merchant_phone = $.trim($('.merchant-phone').val()); //商户电话
+                        var address = $.trim($('.merchant-doorplate').val()); //商户门牌号码
+//                        var businessScope = $('.express-range').find("option:selected").text(); //商户营业范围
+                        var businessScope = $.trim($('.merchant-range').val());
+                        var promotion = $.trim($('.merchant-activity').val()); //优惠活动
+                        var storeImages = []; //商户图片数组 
+                        var province = $('.sf').val();
+                        var city = $('.cs').val();
+                        var area = $('.qx').val();
+                        var town = $('.xz').val();
+                        var village = $('.cz').val();
+                        var merchantTypeFirst = $('.merchant-first').val();
+                        var merchantTypeSecond = $('.merchant-second').val();
+                        var merchantTypeThird = $('.merchant-third').val();
+                        var images = new Array();
+                        $.each($('.picture'), function (i) {
+                            images.push($($('.picture img')[i]).attr('src'));
+                        })
+                        if ($('.shop-pic-add img').attr('src') != 'images/addimg.png') {
+                            images.push($('.shop-pic-add img').attr('src'));
+                        }
+                        if (!isNull(merchantName)) {
+                            layer.msg('请正确填写商户名称');
+                            return false;
+                        }
+                        if (!isNull(username)) {
+                            layer.msg('请填写联系人名称');
+                            return false;
+                        }
+                        //获取验证码
+                        var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+                        if (!isNull(merchant_phone) || !phoneReg.test(merchant_phone)) {
+                            layer.msg('请填写联系电话');
+                            return false;
+                        }
+                        if (merchantTypeThird == 0) {
+                            layer.msg('请完整填写商户类型');
+                            return false;
+                        }
+//                        if (province == -1) {
+//                            layer.msg('请完整填写商户地址');
+//                            return false;
+//                        }
+//                        if (city == 0) {
+//                            layer.msg('请完整填写商户地址');
+//                            return false;
+//                        }
+//                        if (area == 0) {
+//                            layer.msg('请完整填写商户地址');
+//                            return false;
+//                        }
+                        if (town == 0) {
+                            layer.msg('请完整填写商户地址');
+                            return false;
+                        }
+//                        if (village == 0) {
+//                            layer.msg('请完整填写商户地址');
+//                            return false;
+//                        }
+                        if (!isNull(address)) {
+                            layer.msg('请正确填写门牌号码');
+                            return false;
+                        }
+//                        if (!isNull(businessScope)) {
+//                            layer.msg('请正确填写营业范围');
+//                            return false;
+//                        }
+//                        if (!isNull(promotion)) {
+//                            layer.msg('请正确填写优惠活动');
+//                            return false;
+//                        }
+                        if (images.length == 0) {
+                            layer.msg('请上传商户照片');
+                            return false;
+                        }
+                        sign = 0;       //保存按钮不可点击
+                        if (merchantID == 0) {          //新增
+                            var params = {
+                                'userid': userid,
+                                'merchantName': merchantName,
+                                'contact': username,
+                                'phone': merchant_phone,
+                                'address': address,
+                                'images': images,
+                                'businessScope': businessScope,
+                                'promotion': promotion,
+                                'province': province,
+                                'city': city,
+                                'area': area,
+                                'town': town,
+                                'village': village,
+                                'merchantTypeThird': merchantTypeThird,
+                                'merchantTypeSecond': merchantTypeSecond,
+                                'merchantTypeFirst': merchantTypeFirst,
+                            };
+                        } else {                        //修改
+                            var params = {
+                                'merchantID': merchantID,
+                                'userid': userid,
+                                'merchantName': merchantName,
+                                'contact': username,
+                                'phone': merchant_phone,
+                                'address': address,
+                                'images': images,
+                                'businessScope': businessScope,
+                                'promotion': promotion,
+                                'province': province,
+                                'city': city,
+                                'area': area,
+                                'town': town,
+                                'village': village,
+                                'merchantTypeThird': merchantTypeThird,
+                                'merchantTypeSecond': merchantTypeSecond,
+                                'merchantTypeFirst': merchantTypeFirst,
+                            };
+                        }
+//                        console.info(params);
+                        merchantModify(params);
+                    }
+                })
+
+            })
+
+            /**
+             *   图片上传成功回调
+             *   imageUrl         图片url地址
+             **/
+            function imageUploaded(imageUrl) {
+                imageUrl_arr = handleAppValue(imageUrl);
+                var images = '';
+                for (var i = 0; i < imageUrl_arr.length; i++) {
+                    images += '<span class="fl plant-imgb ovw shop-pic picture"><img src="' + imageUrl_arr[i] + '"></span>';
+                }
+                if ($('.picture').length == 3) {
+                    $('.shop-pic-add img').attr('src', imageUrl_arr[0]);
+                } else {
+                    $('.shop-pic-add').before(images);
+                }
+            }
+        </script>
+    </body>
+</html>

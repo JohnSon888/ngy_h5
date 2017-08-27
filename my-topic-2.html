@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="css/public.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .topic-deta-lic{
+        color: #444;
+    font-size: 14px;
+    line-height: 0.8rem;
+    padding: 0.2666rem 0;
+    overflow: hidden;
+    }
+    .my-order-discuss dt img{border-radius: 0;}
+    .posin span{width: 50%;overflow: hidden;display: block;margin-left: 25%;}
+</style>
+<script>
+	$(function(){
+//		$('.import-a').on('focus',function(){
+//			$(this).parent().next().css('background','#dd1616')
+//		})
+//		$('.import-a').on('blur',function(){
+//			$(this).parent().next().css('background','#bbb')
+//		})
+                document.getElementById('import-a').addEventListener('input', function(e){
+                    if($.trim($(this).val()).length>0){
+			$(this).parent().next().css('background','#dd1616');
+                        $(this).parent().next().removeClass('bb');
+                        $(this).parent().next().addClass('aa');
+                    }else{
+                        $(this).parent().next().css('background','#bbb');
+                        $(this).parent().next().removeClass('aa');
+                        $(this).parent().next().addClass('bb');
+                    }
+                }); 
+//		$('.import-a').on('keyup',function(){
+//                    
+//		})
+                
+		$('.topic-lid').on('touchstart',function(){
+			if($(this).hasClass('topic-lie')){
+				$(this).removeClass('topic-lie')
+			}else{
+				$(this).addClass('topic-lie')
+			}
+		})
+	})
+</script>
+<script type="text/javascript">
+$(function(){
+	var topicID = GetQueryParam('topicID');
+	var from = GetQueryParam('from');
+	var circle_title = GetQueryParam('circle_title');
+	var circlesID = GetQueryParam('circlesID');
+        var share_params = GetQueryParam('share');
+//        if(share_params==1){
+//            var share_name = GetQueryParam('username');
+//            var share_userid = GetQueryParam('userid');
+//            var phoneID = GetQueryParam('imei');
+//            var phoneModel = GetQueryParam('phoneModel');
+//            var addressIDs = GetQueryParam('address');
+//            $('.info_btn').attr('href','register.html?username='+share_name+'&userid='+share_userid+"&imei="+phoneID+"&phoneModel="+phoneModel+"&address="+addressIDs);
+//            $('.info_btn').show();
+//        }
+	/*************消息通知消息状态处理****************/
+	var messageID = GetQueryParam('messageID');
+	if(from=='notice'){
+		setTimeout(function(){
+		var notice_params = {
+				'messageID':messageID,
+				'userid':userid,
+		}
+		console.info(notice_params);
+    	readMessage(notice_params);
+		},100);  
+	}
+	
+//	 userid = 108;
+	var count = 0;
+	function get_toppicDetail(params){//获取话题详情
+        var cmd = 'toppicDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                'userid':userid,
+                'topicID' : topicID,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){console.info(data);
+                if(data['body']['userid']==userid){
+                    $('.topic-dele').show();
+                    $('.topic-edit').show();
+                }
+                $('.posin span').html(data['body']['CircleName']);
+            	var htm = '<cite class="topic-deta-title ovw">'+data["body"]["topicTitle"]+'</cite>'+
+        	'<ul class="eval-content-ula ovw">'+
+	    		'<li class="eval-content-lia">'+
+	    			'<img src="'+data["body"]["userAvatar"]+'" class="eval-tx fl">'+
+	    			'<span class="fl eval-content-name ovw">'+data["body"]["username"]+'</span>'+
+	    			'<span class="fr ovw eval-content-time">'+data["body"]["topicTime"]+'</span>'+
+	    		'</li><li class="topic-deta-lib"><img src="'+data["body"]["poster"]+'"/></li>'+
+	    		'<li class="topic-deta-lic" style="line-height:0.6rem;color:#333333;">'+data["body"]["content"]+'</li></ul>';
+	    		$('.htxq').append(htm);
+                        var params_pl = {
+				'topicID':topicID,
+	    		'page' :PAGE,
+	    		'num' : PAGE_NUM,
+	            };console.info(params_pl);
+		dropload_machineList(params_pl);//获取我的话题评论列表
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+    var params = {
+            'userid':userid,
+            'topicID' : topicID,
+            };
+	 get_toppicDetail(params);
+	},100); 
+        var params1 = {
+		'topicID':topicID,
+		'page' :PAGE,
+		'num' : PAGE_NUM,
+	};
+		function get_toppicCommentList(params){//获取话题评论
+	        var cmd = 'toppicCommentList';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+/* 	        var params = {
+	                'topicID' : topicID,
+	                'page' : 1,
+	                'num' : num,
+	                }; */
+		    var up = 1;//默认是上拉
+		    if(params.page==0){
+		    	up = 0;
+		    	count = 0;
+		    	params.page=1;
+		    }
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ console.info(data);
+	                if(isNull(data['body']['list'])){
+	                    var search_html = '';
+	                    $.each(data['body']['list'],function(i,val){
+	                    	var crtime = getLocalTime(val['commentTime']);
+	                        search_html += '<dl class="my-order-discuss dis-dete-no ovw">'+
+	                	    	'<dt><span style="height: 1.12rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="'+val['userAvatar']+'"></span></dt>'+
+	                	    	'<dd><span class="my-or-spa ovw">'+val['username']+'</span>'+
+	                	    		'<p class="my-or-pa ovw" style="color:#444;">'+val['content']+'</p>'+
+	                	    		'<samp class="my-or-sap ovw">'+val['commentTime']+'</samp></dd></dl>';
+	                	    		count++;
+	                   });
+//                           search_html ='<cite class="total-tile ovw">评论</cite><section class="topic-deta-discuss ovw htpl">'+search_html+'</section>';
+                                if(count<=10){
+                                    search_html = '<cite class="my-order-sate ovw" style="text-indent: 0.5rem;font-weight:bolder;color:#333333;margin-top:0;">评论</cite>'+search_html;
+                                }else{
+                                    search_html = search_html;
+                                }
+	                }else{
+/* 	                	search_html = '<div class="none-more-content">暂无内容</div>';
+	                    $('.htpl').append(search_html); */
+	                    
+
+		        		if((count!=0)){//上拉加载无内容锁定无数据
+		            		dropload.resetload();
+	                        dropload.lock();
+	                        dropload.noData();
+                            $('.dropload-down').hide();
+		            	}else{
+		            		/* search_html = '<div class="none-more-content">暂无内容</div>';
+							$('.htpl').html(search_html);
+							return false; */
+//		            		html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+//	                        $('.dropload-down').siblings().remove();
+//							$('.dropload-down').before(html);
+	                        dropload.resetload();
+	                        dropload.lock();
+	                        dropload.noData();
+	                        $('.dropload-down').hide();
+		            	}
+	                }
+		        	// 为了测试，延迟1秒加载
+	                setTimeout(function(){
+	                	$('.none-more-content').remove();
+	                    if(up==0){//下拉加载
+//	                    	if(count<((params.page)*params.num)&&count!=0){
+//	                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+//	                            $('.topic-deta-discuss').html(search_html);	
+//	                         }else{
+//                                     console.info(params1);
+                                        count=0;
+	                         	$('.topic-deta-discuss').html('');
+//                                        $('.dropload-down').siblings().remove();
+//                                        $('.dropload-down').before(search_html);
+	                         	dropload_machineList(params1);
+//	                         }
+//	                    	dropload.resetload();
+//	                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+//	                        dropload.noData(false);
+//                            $('.dropload-down').hide();
+//	                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+						}else{
+	                    	if(count<((params.page)*params.num)){
+	                                dropload.lock();// 锁定
+	                                dropload.noData();// 无数据
+	                                $('.dropload-down').hide();
+	                        }
+//	                    	$('.topic-deta-discuss').append(search_html);	
+                                $('.dropload-down').before(search_html);
+	                    	dropload.resetload();// 每次数据加载完，必须重置
+                                $('.dropload-down').hide();
+	                    }
+	                },500);
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown){
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+    
+		//*********************************我的话题评论列表上拉加载*****************
+		function dropload_machineList(params){
+		    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+		    var time = toLocalTime(ts,6);//下拉时间定义
+			dropload = $('.topic-deta-discuss').dropload({
+			    scrollArea : window,
+			    /* domUp : {
+			        domClass   : 'dropload-up',
+			        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+			    },
+			    domDown : {
+			        domClass   : 'dropload-down',
+			        domRefresh : '<div class="dropload-refresh"></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+			        domNoData  : '<div class="dropload-noData">加载完成</div>'
+			    }, */
+			    domUp : {
+			        domClass   : 'dropload-up',
+			        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+			        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+			    },
+	domDown : {
+			        domClass   : 'dropload-down',
+			        domRefresh : '<div class="dropload-refresh"></div>',
+			        domLoad    : '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+			        domNoData  : '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+	},
+			    loadUpFn : function(me){
+			    	//下拉刷新
+			    	params.page=0;
+			    	get_toppicCommentList(params);
+			    	params.page = 1;
+			    },
+			    loadDownFn : function(me){
+			    	//上拉加载
+			    	get_toppicCommentList(params);
+			        params.page++;
+			    },
+			    threshold : 50
+			});
+		}
+//		var params_pl = {
+//				'topicID':topicID,
+//	    		'page' :PAGE,
+//	    		'num' : PAGE_NUM,
+//	            };console.info(params_pl);
+//		dropload_machineList(params_pl);//获取我的话题评论列表
+		
+		/**********************话题评论**********************************/
+	    function toppicComment(params){//话题评论
+	        var cmd = 'toppicComment';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	 /*        var params ={
+	                'userid':userid,
+	                'topicID':topicID,
+	                'content':content,
+	                }; */
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){console.info(data);
+	            	if(data['resultCode']==1){
+				layer.msg("话题评论成功！");
+ 				count = 0;
+                                var params1 = {
+                                        'topicID':topicID,
+                                        'page' :PAGE,
+                                         'num' : PAGE_NUM,
+                                };
+                                dropload.lock();
+                                dropload.resetload();
+                                delete dropload.opts.domUp;
+                                $('.dropload-down').siblings().remove();
+                                $('.dropload-down').show();
+                                $('.import-a').val('');
+				dropload_machineList(params1); 
+				 $.each($('.dropload-down'),function(i){
+			             if(i!=0) $($('.dropload-down')[i]).remove();
+			        })
+	            	}else{
+	            		layer.msg("话题评论失败，系统错误！");
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    };
+            $(document).on('touchend','.bb',function(){
+                    if(userid==0){ 
+                            gotoLogin();
+                    }else{
+                        layer.msg('留言内容不能为空');
+                        return false;
+                    }	
+            })
+		$(document).on('touchend','.aa',function(){
+			var content = $.trim($('.import-a').val());
+			if(userid==0){
+                            gotoLogin();
+                        }else{
+                            if(content==''){
+                                    layer.msg("评论不能为空！");
+                                    return false;
+                            }else{
+                            dropload.unlock();
+                            var pl_params ={
+                            'userid':userid,
+                            'topicID':topicID,
+                            'content':content,
+	                };
+			toppicComment(pl_params);
+			$('.import-a').val('');
+                        $('.import-a').parent().next().css('background','#bbb');
+			}
+	    	}
+		})
+ 
+	    /*********************返回路径配置************************/
+	    $(document).on('click','.header-back',function(){
+	    if(from=='h5'){//从my-topic.html进入的
+//	    	window.location.href="my-topic.html";
+                
+                backtoPrev(0);
+	    }else if(from=='app'){//从my-circle.html进入的
+//	    	window.location.href="my-circle.html?circle_title="+circle_title+"&circleID="+circlesID+"";
+                backtoPrev(0);
+	    }else if(from=='notice'){//从my-circle.html进入的
+	    	window.location.href="notice-circle.html";
+	    }
+	    })
+             var u = navigator.userAgent;
+            var isIOS =  !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);    //ios终端 
+            var useragent = navigator.userAgent;
+            if(isIOS){          
+//                if (useragent.indexOf("farmingcloud")>0) {
+//                    if (useragent.indexOf("farmingcloud/ios")>0) {
+//                        var agent = navigator.userAgent.toLowerCase() ;
+//                        var version;
+//                        if(agent.indexOf("like mac os x") > 0){
+//                            //ios
+//                            var regStr_saf = /os [\d._]*/gi ;
+//                            var verinfo = agent.match(regStr_saf) ;
+//                            version = (verinfo+"").replace(/[^0-9|_.]/ig,"").replace(/_/ig,".");
+//                        }
+//                        var version_arr = version.split('.');
+//                        if((version_arr[0]>=10&&version_arr[1]<=2)||version_arr[0]<10){
+//                            $('.div-content').css({'margin-top':'1.8333rem',});
+//                        }else if(version_arr[0]>=10&&version_arr[1]>=3){
+//                            $('..my-import').css({'bottom':'20px',});
+//                        }
+//                    }
+//                }
+                $('.topic-deta-discuss').css({'padding-bottom':'0.6rem',});
+                $('.my-import-ula').css({'bottom':'20px',});
+                $('.import-a').on('focus',function(){
+                    $('.my-import-ula').css({'bottom':'0',});
+                    dropload.lock();
+                    $('.dropload-down').hide();
+                    $('.import-a').scrollIntoView(true);
+                })
+                $('.import-a').on('blur',function(){
+                    $('.my-import-ula').css({'bottom':'20px',});
+                    dropload.unlock();
+                })
+            }
+         
+        /**************************话题编辑*******************************************/
+        $(document).on('touchend','.topic-edit',function(){
+                    if(userid==0){ 
+                            gotoLogin();
+                    }else{
+                        window.location.href = "release-2.html?from=edit&topicID="+topicID;
+                    }	
+            })
+        /**************************话题删除*******************************************/
+        function toppicDel(topicID){
+	        var cmd = 'toppicDelete';//接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+                var params = {'topicID':topicID,'userid':userid};
+                console.info(params);
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+                    url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){
+	            	if(data['resultCode']==1){
+				layer.msg("该话题已删除！");
+ 				setTimeout(function(){
+                                    window.location.href = "my-topic.html";
+                                },1000);
+	            	}else{
+	            		layer.msg("话题删除失败，系统错误！");
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    };
+            $(document).on('touchend','.topic-dele',function(){
+                    if(userid==0){ 
+                            gotoLogin();
+                    }else{
+                        layer.open({
+			    content: '您确定要删除该话题吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+                                    toppicDel(topicID);
+			   	}
+			});
+                    }	
+            })
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;  z-index: 500;"><span></span>
+                <a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a>
+                <a href="javascript:void(0);" class="header-reg topic-dele" style="right:1.3rem;display:none;"><img style="width:22px;" src="images/top-dele.png"/></a><!--  关注-->
+                <a href="javascript:void(0);" class="header-reg topic-edit" style="display:none;"><img style="width: 22px;" src="images/top-edit.png" /></a>
+            </section>
+        <section class="topic-deta-cont ovw htxq" style="margin-top:1.233rem;">
+            
+        </section>	 
+            <section class="topic-deta-discuss ovw" style="padding-bottom:0;">
+        	
+ 
+        </section>
+        	    <section class="my-import ovw">
+	    	<ul class="my-import-ula ovw" id="getchange">
+	    		<li><input placeholder="输入评论内容..." class="import-a" id="import-a"/></li>
+	    		<li style="background: #bbb none repeat scroll 0 0;" class="bb">提交</li>
+	    	</ul>
+	    </section>
+	</section>
+    <a class="info_btn" href="javascript:;" style="display:none;">
+		<span>欢迎注册下载，惊喜等着你哦！&nbsp;&nbsp;马上注册</span>
+		<img src="images/ret.png" alt="">
+	</a>
+</body>
+</html>

@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script>
+	$(function(){
+		$('.work-ok').on('touchstart',function(){
+			$('.layer-work').show()
+			$('.layer-work-cont').show()
+			
+		})
+		$('.layer-work').on('touchstart',function(){
+			$('.layer-work').hide()
+			$('.layer-work-cont').hide()
+			
+		})
+	})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">喜洋洋杂货铺<a href="#" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <section class="work-deta-content ovw">
+	    	<dl class="work-deta-dla ovw">
+	    		<dt><img src="images/default.jpg"/></dt>
+	    		<dd>
+	    			<p>张三</p>
+	    			<span>131****0222</span>
+	    			<a href="#" class="work-tel"><img src="images/ing_3.png"/></a>
+	    		</dd>
+	    	</dl>
+	    	<ul class="work-deta-ul ovw">
+	    		<li><label class="fl ovw">认证信息：</label><span class="fl ovw">
+	    			<img src="images/cer-icon-2.png" class="cer-icon-a" />
+	    			<img src="images/cer-icon-3.png" class="cer-icon-b" />
+	    			<img src="images/cer-icon-4.png" class="cer-icon-c" />
+	    			<img src="images/cer-icon-5.png" class="cer-icon-d" />
+	    			<img src="images/cer-icon-1.png" class="cer-icon-e" />
+	    			<img src="images/cer_6.png" class="cer-icon-f" />
+	    			<img src="images/cer_7.png" class="cer-icon-g" />
+	    		</span></li>
+	    		<li><label class="fl ovw">店铺地点：</label><span class="fl ovw">小麦收割，拖拉机</span></li>
+	    		<li><label class="fl ovw">配送区域：</label><span class="fl ovw">2台</span></li>
+	    		<li><label class="fl ovw">商品种类：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">商品名称：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">价<font style="opacity: 0;">空格</font>格：</label><span class="fl ovw">88元/亩</span></li>
+	    	</ul>
+	    </section>
+	    <a class="over-order work-ok ovw" href="javascript:;">预定</a>
+	    <section class="synthesis-cont">
+	    	<article class="synthesis-main ovw">
+	    		<cite class="synthesis-cite ovw">
+	    			<label class="fl ovw">综合评分</label>
+	    			<p class="star-eval syn-t ovw fl">
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a star"></span>
+		    			<span class="fl star-a"></span>
+		    			<span class="fl star-a"></span>
+		    		</p>
+	    		</cite>
+	    		<dl class="synthesis-dla ovw">
+	    			<dt><img src="images/order_1.png"/></dt>
+	    			<dd>
+	    				<div class="syn-personal ovw">
+	    					<p class="star-eval ovw fl">
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a star"></span>
+				    			<span class="fl star-a"></span>
+				    			<span class="fl star-a"></span>
+				    		</p>
+				    		<label class="fr">2017-01-05</label>
+	    				</div>
+	    				<p class="syn-pa ovw">如果你无法简介的表达你的想法，那智能说明你还不够了解她...</p>
+	    			</dd>
+	    		</dl>
+	    	</article>
+	    </section>
+	    <!---->
+	    <section class="layer-bj layer-work"></section>
+	    <section class="layer-work-cont ovw">
+	    	<ul class="layer-work-mian ovw">
+	    		<li class="layer-work-lia">预定商品：</li>
+	    		<li class="layer-work-lie"><input/></li>
+	    		<li class="layer-work-lia">数量：</li>
+	    		<li class="layer-work-lie"><input/></li>
+	    		<li class="layer-work-lia">配送区域：</li>
+	    		<li class="layer-work-lic">
+	    			<p class="layer-work-pc ovw fl"><select class="layer-work-ce ovw"><option>省</option></select></p>
+	    			<p class="layer-work-pc layer-work-pd ovw fl"><select class="layer-work-ce ovw"><option>市</option></select></p>
+	    			<p class="layer-work-pc ovw fr"><select class="layer-work-ce ovw"><option>区县</option></select></p>
+	    		</li>
+	    		<li class="layer-work-lia">详细地址：</li>
+	    		<li class="layer-work-lie"><input/></li>
+	    		<li class="layer-work-lif"><a href="#">确认</a></li>
+	    	</ul>
+	    </section>
+	</section>
+</body>
+</html>

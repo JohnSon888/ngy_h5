@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>好友分享</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="js/jquery.qrcode.min.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style>
+    
+</style>
+<script type="text/javascript">
+$(function(){
+//	userid = 35;
+    setTimeout(function(){
+        var host = window.location.host;
+        $('.sidebar_qrcode_img').qrcode({
+                text: 'http://'+host+'/register.html?username='+username+'&userid='+userid+"&imei="+phoneIMEI+"&phoneModel="+phoneModels+"&address="+current_location_areaIDs,
+                height: 180,
+                width: 180,
+                //src: 'images/ngy.png',
+        })
+	var shareImage = 'http://'+host+'/images/ewm.png';
+	var shareText = '农民公社致力于为农村用户提供“本地、真实、免费、高效”的生活服务平台';
+	var shareTitle = '农民公社';
+//	var shareURL = 'http://'+host+'/register.html?username='+username+'&userid='+userid;
+	var shareURL = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.xunao.farmingcloud';
+	function get_invites(params){
+        var cmd = 'invites';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+     //   var params = '';
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url :apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	var body = data['body']['shareInfo'];
+            	console.info(data);
+/*             	shareImage = body['shareImage'];
+            	shareText = body['shareText'];
+            	shareTitle = body['shareTitle'];
+            	shareURL = body['shareURL']; */
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var params = {
+			'userid':userid,
+	}
+	get_invites(params);
+	
+	$('.header-rele').on('click',function(){
+            shareURL += "&imei="+phoneIMEI+"&phoneModel="+phoneModels+"&address="+current_location_areaIDs;
+		share(shareImage, shareText, shareTitle, shareURL);
+	});
+	
+    /*********************返回路径配置************************/
+    $(document).on('touchstart click','.header-back',function(){
+		backtoNative();	
+    })
+    },800);
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">好友分享<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><b class="header-reg header-rele"><img style="height: 0.42rem;" src="images/share-button.png"/></b></section>
+<!-- 	    <ul class="eval-all-ula share-ula ovw">
+	    	<li><a href="#"><img src="images/share-3.png" class="imga"><img src="images/share-6.png" class="imgb">iOS 下载</a></li>
+	    	<li><a href="#"><img src="images/share-4.png" class="imga"><img src="images/share-7.png" class="imgb">Android下载</a></li>
+	    	<li class="hover"><a class='share_pyq' href="javascript:;"><img src="images/share-5.png" class="imga"><img src="images/share-8.png" class="imgb">朋友圈</a></li>
+	    </ul> -->
+	<!--     <section class="share-friend-cont ovw">
+	    	<article class="share-friend-main ovw">
+	    		<cite class="share-title ovw">分享到</cite>
+	    		<ul class="share-layer-ula ovw">
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-1.png" />
+	    					<span>QQ</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-2.png" />
+	    					<span>微信</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-3.png" />
+	    					<span>新浪微博</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-4.png" />
+	    					<span>腾讯微博</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-5.png" />
+	    					<span>Facebook</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-6.png" />
+	    					<span>Facebook</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-7.png" />
+	    					<span>Twitter</span>
+	    				</a>
+	    			</li>
+	    			<li>
+	    				<a href="#">
+	    					<img src="images/friend-8.png" />
+	    					<span>人人网</span>
+	    				</a>
+	    			</li>
+	    		</ul>
+	    	</article>
+	    </section> -->
+	    	    <dl class="share-ma ovw">
+	    	<dt>
+                    <!--<div class="sidebar_qrcode_img"></div>-->
+                    <img src="images/ewm.png"/>
+                </dt>
+	    	<dd>将农民公社分享给好友</dd>
+	    </dl>
+	</section>
+</body>
+</html>

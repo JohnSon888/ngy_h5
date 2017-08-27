@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>我的发布-商品</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+.lx_dva{
+background: #ffffff none repeat scroll 0 0;
+width:100%;
+z-index:5;
+border-bottom :1px solid #ccc;
+border-left :1px solid #ccc;
+border-right :1px solid #ccc;
+}
+.lx_dva p{
+width:100%;
+float:left;
+color:#333;
+}
+.mr-look-art {
+    padding-bottom: 0.41rem;
+    padding-top: 0.35rem;
+}
+    .mr-look-tx img{
+        border-radius: 0;
+    }
+    .look-ywc{
+    color:#6ec895;
+}
+  .look-ygb{
+    color:#666;
+}
+.posin p font{width: 58px; display: block; float: left;}
+</style>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+
+//  隐藏
+    $('.layer-rele-s').on('click',function(){
+    	$('.rele-bj').hide()
+    	$('.layer-rele-cont').hide()
+    })
+    //
+    $('.layer-map-bj').on('click',function(){
+    	$('.layer-map-bj').hide()
+    	$('.layer-sorting').hide()
+    	$('.layer-type').hide()
+    	$('.layer-time1').hide()
+    });
+    //
+    $('.pick-work-ula li').on('touchend',function(){
+    	var index = $(this).index();
+    		switch(index){
+    			case 0:
+  			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+			       $('.layer-time1').show()
+     			   $('.layer-type1').hide()
+    			       break;
+    			case 1:
+ 			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+			       $('.layer-sorting').show()
+    			   $('.layer-time1').hide()
+     			   $('.layer-type1').hide()
+    			break;
+    			case 2:
+  			       $('.layer-map-bj').show()
+ 			       $('.layer-up-some').hide()
+ 			       $('.layer-sorting').hide()
+     			   $('.layer-time1').hide()
+     			   $('.layer-type1').show()
+     			break;
+    		}
+    		$(this).addClass('hover');
+    		$(this).siblings().removeClass('hover');
+    });
+
+    })
+
+</script>
+<script>
+	$(function(){
+		$('.topic-lid').on('touchend',function(){
+			if($(this).hasClass('topic-lie')){
+				$(this).removeClass('topic-lie')
+			}else{
+				$(this).addClass('topic-lie')
+			}
+		})
+	})
+</script>
+<script type="text/javascript">
+/**********************quan xian********************************/
+function getReleaseAuth(params){
+    var cmd = 'getReleaseAuth';//接口命令
+    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+    var jsonp = 1;
+/* 	        var params = {
+            
+            }; */
+    params = objKeySort(params);//按照属性名升序排列
+    var params_str = objChangeStr(params);//拼接params参数的属性值
+    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+    $.ajax({
+        url : apiURL,//接口地址
+        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+        dataType : 'jsonp',
+        success: function(data){console.info(data); 
+        var str = '';
+        var body = data['body'];
+        if(parseInt(body['contractor'])==0&&parseInt(body['land'])==0&&parseInt(body['machine'])==0&&parseInt(body['merchants'])==0
+        		&&parseInt(body['phone'])==0&&parseInt(body['realname'])==0&&parseInt(body['skill'])==0){
+            $('.header-rele').attr('qxrz','1');
+    		window.location.href = 'goods-release.html?from=h5';
+        }else{
+            if(parseInt(body['contractor'])!=0){
+	            str +='大户';
+	            	}
+	            if(parseInt(body['land'])!=0){
+		            str +='/土地';
+		            }
+	            if(parseInt(body['machine'])!=0){
+		            str +='/农机';
+		            }
+	            if(parseInt(body['merchants'])!=0){
+		            str +='/商户';
+		            }
+	            if(parseInt(body['phone'])!=0){
+		            str +='/手机';
+		            }
+	            if(parseInt(body['realname'])!=0){
+		            str +='/个人';
+		            }
+	            if(parseInt(body['skill'])!=0){
+		            str +='/技能';
+		            }
+	            console.info(str);
+	            $('.ReleaseAuth').html(str);
+	            $('.header-rele').attr('qxrz','2');
+	    		$('.certification').toggle();
+	    		$('.layer-rele-cont').toggle();
+        }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.msg('网络请求延迟！');
+            console.info(XMLHttpRequest.status);
+            console.info(XMLHttpRequest.readyState);
+            console.info(textStatus);
+        },
+    });
+}
+$(function(){
+//	userid = 83;
+	
+
+
+	
+    //*******************发布认证********************
+/*     $('.header-rele').on('click',function(){
+    	if(userid==0){
+    		gotoLogin();
+    	}else{
+        	var qxrz = $(this).attr('qxrz');
+        	if(qxrz==1){
+        		window.location.href = 'goods-release.html?from=h5';
+        	}else{
+        		$('.certification').toggle();
+        		$('.layer-rele-cont').toggle();
+        	}
+    	}
+    }); */
+	    $('.certification').on('click',function(e){
+	    	$('.certification').toggle();
+	    	$('.layer-rele-cont').toggle();
+	    })
+	
+	var count = 0;
+	function get_goodsTypeList(){//获取商品类型
+        var cmd = 'goodsTypeList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params ={};
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+	        	if(isNull(data['body']['list'])){
+	        		var pjobTypeListHtml = '';
+	        		$.each(data['body']['list'],function(i,val){
+	        			pjobTypeListHtml += '<li typeID='+val['typeID']+'>'+val['typeName']+'</li>';
+	        		})
+				 $('.mac-list-sort-auto').append(pjobTypeListHtml);
+	        	}
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	get_goodsTypeList();//获取商品类型
+	
+	function get_myGoods(params){//获取我的商品
+        var cmd = 'myGoods';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                'sort':sort,
+                'farmworkType' : farmworkType,
+                'status':status,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    var orderStatus = '';
+                    var css_type = '';
+                    $.each(data['body']['list'],function(i,val){
+                		switch(parseInt(val['status'])){
+            			case 0:
+            				var orderStatus = '待接单';
+           				 css_type = 'look-ok';
+            			       break;
+            			case 1:
+            				var orderStatus = '进行中';
+              				 css_type = 'look-ing';
+            			       break;
+            			case 2:
+            				var orderStatus = '进行中';
+             				 css_type = 'look-ing';
+            			       break;
+            			case 3:
+            				var orderStatus = '已完成';
+              				 css_type = 'look-ywc';
+            			       break;
+            			case 4:
+              				var orderStatus = '已关闭';
+             				 css_type = 'look-ygb';
+            			       break;
+            			case 5:
+              				var orderStatus = '已关闭';
+             				 css_type = 'look-ygb';
+            			       break;
+            		}   //<a href="goods-details.html?goodsID='+val['goodsID']+'&from=h5">
+                        search_html += '<article class="ms-works-art mr-look-art posin ovw"><a href="javascript:;" class="goods-detail" goodsID="'+ val['goodsID']+'">'+
+    	    			'<figure class="mr-look-tx ovw" publisherID = '+val['publisherID']+'><span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="'+val['poster']+'"/></span><figcaption style="line-height: 0.5333rem;height: 0.5333rem;">'+val['publisherName']+'</figcaption></figure>'+
+    	    			'<p><font>发布时间:</font>'+val['timeline']+'</p>'+
+    	    			//'<p><font>商品类型:</font>'+val['goodsType']+'</p>'+
+    	    			'<p><font>商品名称:</font>'+val['goodsName']+'</p>'+
+    		    		'<p><font>价格:</font>￥'+val['goodsPrice']+'</p>'+
+    		    		//'<p><font>详细说明:</font>'+val['goodsInfro']+'</p>'+
+    		    		'</a><span class="mr-look-state mr-look-sa '+css_type+' ovw">'+orderStatus+'</span></article>';
+    		    		count++;
+                   });
+                   //$('.nhlb').append(search_html);
+                }else{
+/*                 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.nhlb').append(search_html); */
+
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+/* 	            		search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.ms-contents').html(search_html);
+						return false; */
+	            		html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                        $('.dropload-down').siblings().remove();
+						$('.dropload-down').before(html);
+                        dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+                        return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.ms-contents').html(search_html);	
+                         }else{
+                         	$('.ms-contents').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        //dropload.noData(false);
+                        $('.dropload-down').hide();
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	$(document).on('click','.goods-detail',function(){
+                var goodsID = $(this).attr('goodsID');
+                var detail_url = 'http://'+window.location.host+'/goods-details.html?from=h5&goodsID='+goodsID;
+                openH5(detail_url);
+            })
+
+	//*********************************我的商品列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义
+		dropload = $('.ms-contents').dropload({
+		    scrollArea : window,
+		    /* domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_myGoods(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_myGoods(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	var params = {
+			'userid':userid,
+     //       'sort':sort,
+       //     'goodsType':type,
+           // 'machineType' : 1,
+       //    'status':status,
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };console.info(params);
+	dropload_machineList(params);//获取我的零活
+	},100);  
+	
+    var sort = '';
+    var type = '';
+    var status = '';
+    /*********************时间排序*************************/
+    $('.mac-list-time-auto li').on('click',function(){
+    	$('.mac-list-time-auto li').removeClass('hover');
+    	$(this).addClass('hover');
+    	var li_name = $(this).text();
+    	sort = $(this).attr('mac-list-auto');
+    	type = $('.mac-list-sort-auto .hover').attr('typeid')?type = $('.mac-list-sort-auto .hover').attr('typeid'):'';
+    	status = $('.mac-list-type-auto .hover').attr('mac-list-auto')?$('.mac-list-type-auto .hover').attr('mac-list-auto'):'';
+    	var params = {	//我的农机列表接口提供参数
+    			'userid':userid,
+    			'sort' : sort,//排序类型：排序：1时间倒序，2时间升序,true
+			'goodsType' : type,//类型：商品类型，false
+			'status':status,
+			'page' :PAGE,
+			'num' : PAGE_NUM,
+		};
+    	$('.pick-work-ula').find('.hover').text(li_name);
+		$('.mac-list-time-auto').toggle();
+		$('.layer-map-bj').toggle();
+	//	$('.ms-contents').html('');
+		 count = 0;
+			dropload.lock();
+	        dropload.resetload();
+	delete dropload.opts.domUp;
+	//$('.ms-contents').html('');
+			       				$('.dropload-down').siblings().remove();
+							$('.dropload-down').show();
+		       				$('.my-topic-cont').remove();
+		 dropload_machineList(params);console.info(params);
+	    	$.each($('.dropload-down'),function(i){
+	            if(i!=0) $($('.dropload-down')[i]).remove();
+	       })
+		 console.info(params);
+    })
+    
+        /*********************类型排序*************************/
+    $(document).on('touchend','.mac-list-sort-auto li',function(e){	    
+    //$('.mac-list-sort-auto li').on('click',function(){
+    	$('.mac-list-sort-auto li').removeClass('hover');
+    	$(this).addClass('hover');
+    	var li_name = $(this).text();
+    	$('.mac-list-sort-auto_nav a').text(li_name);
+    	sort = $('.mac-list-time-auto .hover').attr('mac-list-auto')?$('.mac-list-time-auto .hover').attr('mac-list-auto'):'';
+    	type =$(this).attr('typeid');
+    	status = $('.mac-list-type-auto .hover').attr('mac-list-auto')?$('.mac-list-type-auto .hover').attr('mac-list-auto'):'';
+    	var params = {	//我的话题列表接口提供参数
+    			'userid':userid,
+    			'sort' : sort,//排序类型：排序：1时间倒序，2时间升序,true
+			'goodsType' : type,//类型：商品类型，false
+			'status':status,
+			'page' :PAGE,
+			'num' : PAGE_NUM,
+		};
+    	$('.pick-work-ula').find('.hover').text(li_name);
+		$('.mac-list-sort-auto').toggle();
+		$('.layer-map-bj').toggle();
+	//	$('.ms-contents').html('');
+		 count = 0;
+			dropload.lock();
+	        dropload.resetload();
+	delete dropload.opts.domUp;
+//	$('.ms-contents').html('');
+		$('.dropload-down').siblings().remove();
+		$('.dropload-down').show();
+		$('.my-topic-cont').remove();	
+dropload_machineList(params);console.info(params);
+$.each($('.dropload-down'),function(i){
+    if(i!=0) $($('.dropload-down')[i]).remove();
+})
+		// console.info(params);
+	        e.preventDefault();
+    })
+    
+            /*********************状态排序*************************/
+    $(document).on('touchend','.mac-list-type-auto li',function(e){	    
+    //$('.mac-list-sort-auto li').on('click',function(){
+    	$('.mac-list-type-auto li').removeClass('hover');
+    	$(this).addClass('hover');
+    	var li_name = $(this).text();
+    	$('.mac-list-sort-auto_nav a').text(li_name);
+    	sort = $('.mac-list-time-auto .hover').attr('mac-list-auto')?$('.mac-list-time-auto .hover').attr('mac-list-auto'):'';
+    	type = $('.mac-list-sort-auto .hover').attr('typeid')?$('.mac-list-sort-auto .hover').attr('typeid'):'';
+    	status = $(this).attr('mac-list-auto');
+    	var params = {	//我的话题列表接口提供参数
+    		'userid':userid,
+    		'sort' : sort,//排序类型：排序：1时间倒序，2时间升序,true
+    		'goodsType' : type,//类型：商品类型，false
+			'status':status,
+			'page' :PAGE,
+			'num' : PAGE_NUM,
+		};
+    	$('.pick-work-ula').find('.hover').text(li_name);
+		$('.mac-list-type-auto').toggle();
+		$('.layer-map-bj').toggle();
+	//	$('.ms-contents').html('');
+		 count = 0;
+			dropload.lock();
+	        dropload.resetload();
+	delete dropload.opts.domUp;
+	$('.ms-contents').html('');console.info(params);
+		 dropload_machineList(params);
+		//console.info(params);
+        e.preventDefault();
+    })
+	
+/*         $(document).on('click','.header-reg',function(){
+    	if(userid==0){
+    		gotoLogin();
+    	}else{
+    	window.location.href = 'goods-release.html?from=h5';	
+    	}
+    }) */
+    
+});
+    
+function test(){
+	//	userid = 35;
+		if(userid==0){
+			gotoLogin();
+		}else{
+			var params = {
+					'userid':userid,
+					'type':5,//二手
+				}
+				//console.info(params);
+				getReleaseAuth(params);
+		}
+	}
+    
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+					<section class="header-fixed-cont ovw">
+			<section class="header-fixed ovw">
+	   <div class="header ovw posin">我的商品<a href="my-release.html" class="header-back ovw"><img src="images/back.png"/></a><div onclick="test()" class="header-reg header-rele">发布</div></div>
+	     <ul class="eval-all-ula three-ula ovw pick-work-ula">
+	    	<li><a href="javascript:;">时间倒序</a></li>
+	    	<li><a href="javascript:;">类型</a></li>
+	    	<li><a href="javascript:;">状态</a></li>
+	    </ul>
+	    	    	    	    </section>   
+	    	     </section>
+	    	     
+	    	     	<section class="layer-bj rele-bj certification" style="display: none;z-index: 900;"></section>
+	<section class="layer-rele-cont ovw" style="display: none;z-index:900">
+		<img src="images/cer_8.jpg"  class="layer-icon-a"/>
+		<p class="layer-rele-p ovw">是否立即认证个人信息</p>
+		<p class="layer-rele-c ovw">只能认证<font  class="ReleaseAuth"></font>才能发布需求/商铺</p>
+		<a href="certification-list.html?from=app"class="layer-rele-a ovw">立即认证</a>
+		<span class="layer-rele-s ovw">跳过此步骤</span>
+	</section>
+	    	     	   
+	    	      <section class="layer-bj layer-map-bj" style="display: none;"></section>
+	    <ul class="layer-sorting layer-up-some ovw mac-list-time-auto layer-time1" style="display: none;">
+<li class="" mac-list-auto="1">时间倒序</li>
+<li class="" mac-list-auto="2">时间正序</li>
+</ul>
+<ul class="layer-sorting layer-up-some ovw mac-list-sort-auto" style="display: none;">
+<li typeID='0'>全部</li>
+<!-- <li class="hover" mac-list-auto="1">我发布的</li>
+<li class="" mac-list-auto="2">我参与的</li> -->
+</ul>
+<ul class="layer-sorting layer-up-some ovw mac-list-type-auto layer-type1" style="display: none;">
+<li class="" mac-list-auto="0">全部</li>
+<li class="" mac-list-auto="1">待接单</li>
+<li class="" mac-list-auto="2">进行中</li>
+<li class="" mac-list-auto="3">已完成</li>
+<li class="" mac-list-auto="4">已关闭</li>
+</ul>
+	    <section class="ms-contents ovw">
+	    	<!-- <article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类:</font>二手摩托车</p>
+		    		<p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区:</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-ing ovw">进行中</span>
+	    	</article>
+	    	<article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类:</font>二手摩托车</p>
+		    		<p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区:</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-over ovw">已完成</span>
+	    	</article>
+	    	<article class="ms-works-art mr-look-art posin ovw">
+	    		<a href="#">
+	    			<figure class="mr-look-tx ovw">
+	    				<img src="images/order_1.png" />
+	    				<figcaption>Sunny</figcaption>
+	    			</figure>
+	    			<p><font>种类:</font>二手摩托车</p>
+		    		<p><font>说明:</font>上海市闵行区二手摩托车四辆上海市闵行区二手摩托车四辆</p>
+		    		<p><font>地区:</font>上海市嘉定区</p>
+	    		</a>
+	    		<span class="mr-look-state mr-look-sa look-ok ovw">待接单</span>
+	    	</article> -->
+	    </section>
+	</section>
+</body>
+</html>

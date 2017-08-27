@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>注册</title>
+	<meta content="telephone=no,email=no" name="format-detection">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="css/public.css" />
+	<link rel="stylesheet" href="css/reset.css" />
+	<script type="text/javascript" src="js/jquery.min.js" ></script>
+        <script type="text/javascript" src="js/flexible.js" ></script>
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+        <script type="text/javascript" src="src/lib/common/public.js"></script>
+        <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+</head>
+<body>
+    <div class="top-height">
+	<div class="reg_header">
+		<a class="reg_return" href="javascript:;"><img src="images/left.png" alt="" /></a>
+		<p class="reg_title">注册</p>
+	</div>
+	<!--分界线-->
+	<p class="reg_line"></p>
+	<div class="reg_icon">
+		<img src="images/ngy.png" alt="" />
+	</div>
+	
+	<div class="reg_introduce">
+		<p>您的好友<span class="sharer">  </span>正在使用农民公社应用</p>
+		<h3>诚邀您加入！</h3>
+	</div>
+    </div>
+	<form class="reg_info" action="">
+		<div class="reg_item">
+			<span>
+				<img src="images/phone_num.png" alt="" />
+			</span>
+			<input class="telephone" type="text" placeholder="请输入手机号"/>
+		</div>
+		<div class="reg_item">
+			<span>
+				<img class="pass" src="images/pass.png" alt="" />
+			</span>
+                    <input class="passwd" type="password" placeholder="请输入密码"/>
+		</div>
+		<div class="reg_item">
+			<span>
+				<img class="ver_code" src="images/ver_code.png" alt="" />
+			</span>
+			<input class="vertify" type="text" placeholder="请输入验证码" style="width:4.0rem;"/>
+			<i class="reg_code" style="width:2.5rem;">获取验证码</i>
+		</div>
+	</form>
+	
+	<div class="reg_protocol">
+		<input class="reg_cb" id="check3" type="checkbox" checked="checked"/>
+                <span>已阅读并同意<i><a href="agreement.html" style="color: #dd1616;">《农民公社规则与条款》</a></i></span>
+	</div>
+    <a class="reg_btn" href="javascript:;" style="margin-bottom: 0.5rem;">注册</a>
+	
+	<script>
+            $(function(){
+            var windowHeight = $(window).height();
+            var topHeight = $('.top-height').height();
+            var reg_protocol = $('.reg_protocol').height();
+            var reg_info = $('.reg_info').height();
+            var reg_btn = $('.reg_btn').height();
+            var margin_height = windowHeight-topHeight-reg_protocol-reg_btn-reg_info-30;
+            if(margin_height<0){
+                $('.reg_info').css({'margin-top':'0',});
+                $('.reg_icon').css({'margin-top':'20px',});
+            }else{
+                $('.reg_info').css({'margin-top':margin_height,});
+            }
+            $('.reg_return').on('click',function(){
+                window.history.go(-1);
+            })
+            var username = GetQueryParam('username');//邀请人
+            var inviter_id = GetQueryParam('userid');//邀请人ID
+            var imei = isNull(GetQueryParam('imei'))?GetQueryParam('imei'):'';//手机
+            var phoneModel = isNull(GetQueryParam('phoneModel'))?GetQueryParam('phoneModel'):'';
+            var addressIDs = GetQueryParam('address');
+            var arr_areaID = addressIDs.split(",");
+            var province;
+            var city;
+            var area;
+            var town;
+            var village; 
+            province = arr_areaID[0];
+            city = arr_areaID[1]==''?0:arr_areaID[1];
+            area = arr_areaID[2]==''?0:arr_areaID[2];
+            town = arr_areaID[3]==''?0:arr_areaID[3];
+            village = arr_areaID[4]==''?0:arr_areaID[4];
+            $('.sharer').text(username);
+            /**
+             * 注册
+             */
+            function regist(params){
+                var cmd = 'shareRegister';//接口命令
+                var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                var jsonp=1; 
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd+ts+params_str+SECURITY);//生成验证码
+                console.info(1);
+                $.ajax({
+                    type: "POST",
+                    url: apiURL,//接口地址
+                    data: {'cmd':cmd,'ts':ts,'params':params,'jsonp':jsonp},
+                    dataType: "jsonp",
+                    success: function(data){
+                        console.info(data);
+                        sign = 1;
+                        if(data['resultCode']==1){
+                            window.location.href = "register_succeed.html";
+                        }else{
+                            layer.msg(data['resultMessage']);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                         console.info(XMLHttpRequest.status);
+                         console.info(XMLHttpRequest.readyState);
+                         console.info(textStatus);
+                    },
+                });
+            }
+            $('.reg_btn').on('click',function(){
+                var phone = $('.telephone').val();
+                var passwd = $.trim($('.passwd').val());
+                var vertify = $.trim($('.vertify').val());
+                if(!phoneReg.test(phone)){
+                    layer.msg('手机号码格式不正确');
+                    return false;
+                }
+                if(passwd.length<6||passwd.length>16){
+                    layer.msg('密码为6-16位字母，数字或符号');
+                    return false;
+                }
+                if(vertify==''){
+                    layer.msg('请正确填写验证码');
+                    return false;
+                }
+                if($('#check3').prop('checked')!=true){
+                    layer.msg('请阅读并同意《农民公社规则与条款》');
+                    return false;
+                }
+                var params = {
+                    'phone':phone,
+                    'password':passwd,
+                    'code':vertify,
+                    'inviterID':inviter_id,
+                    'imei':imei,
+                    'phoneModel':phoneModel,
+                    'village':village,
+                    'town':town,
+                    'area':area,
+                    'city':city,
+                    'province':province,
+                }
+//                if(sign==1){
+//                    sign = 0;
+                    regist(params);
+//                }
+            });
+            var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+		var oBtn=document.querySelector(".reg_code");
+		jsq=null;
+		time=60;
+		oBtn.onclick=function(){
+			if(jsq != null){
+				return;
+			}
+                        phone = $('.telephone').val();
+			if(!phoneReg.test(phone)){
+				layer.msg('手机号码格式不正确');
+				return false;
+			}
+                        sign = 0;
+                        getMsgVerify(phone,2);
+		};
+		
+    });
+	</script>
+</body>
+</html>

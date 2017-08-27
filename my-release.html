@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title>我的发布</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<style type="text/css">
+.add-subs-ula a{
+display:block;
+width:100%;
+}
+</style>
+<script type="text/javascript">
+
+$(function(){
+	/**********************验证是否登录*******************************/
+	 userid = isLogin();
+
+	if(userid==0){//未登录状态
+		gotoLogin();
+		//alert(1);
+	}
+	
+	$('.header-back').on('click',function(){//返回原生页面
+		backtoNative();	
+	})
+});
+</script>
+</head>
+<body>
+	    <section class="body-bj">
+	    	<section class="header ovw posin">我的发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <section class="add-subs ovw">
+		    	<ul class="add-subs-ula ovw">
+                            <li><a href="my-vehicle.html">预约车<img src="images/my-car_03.png"/></a></li>
+		    		<li><a href="my-work-3.html">找农机<img src="images/subs-1.jpg"/></a></li>
+		    		<li><a href="my-work.html">接农活<img src="images/subs-2.jpg"/></a></li>
+                                <li><a href="my-work-2.html">招零工<img src="images/subs-6.png"/></a></li>
+		    		<li><a href="my-work-6.html">打零活<img src="images/subs-3.jpg"/></a></li>
+		    		<li><a href="my-work-4.html">商品<img src="images/subs-4.jpg"/></a></li>
+		    		<li><a href="my-work-5.html">二手<img src="images/subs-7.png"/></a></li>
+                                <li><a href="my-topic.html?from=h5">圈子<img src="images/subs-5.jpg"/></a></li>
+		    	</ul>
+		    	
+		    </section>
+	    </section>
+</body>
+</html>

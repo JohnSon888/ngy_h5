@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">技能认证<a href="certification-work.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <ul class="ld-card-ula ovw" style="padding-top: 1.333rem;">
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>姓名：</label>
+		    		<input class="ld-lia-in ld-lia-w sk-name" type="text" style="width:6.6rem"/>
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>证件名称：</label>
+		    		<input class="ld-lia-in sk-cardName" type="text" style="width:6.0rem" />
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>技能证件号：</label>
+		    		<input class="ld-lia-in sk-card" type="text" style="width: 5.7rem;"/>
+		    	</li>
+		    	<li class="add-pic-ld" style="border: 1px solid #ddd;border-radius: 0.12rem;height: 3.2rem;width:99%;">
+		    		<!-- <aside class="add-plant-as add-plant-af ovw"> -->
+		    			<label class="fl ovw" style="line-height: 1.04rem;text-indent: 0.2666rem;"><span class="must-fill-in">*&nbsp;</span>技能证件:</label>
+		    			<span class="fl plant-imgb ovw pic pic-add"><img src="images/plant_2.png"></span>
+		    			<!-- <span class="fl plant-imgb ovw"><img src="images/plant_3.png"></span> -->
+		    		<!-- </aside> -->
+		    	</li>
+		    </ul>
+		    <span class="over-order ovw">保存</span>
+	    </section>
+<script type="text/javascript">
+$(function(){
+	var authorizationID = GetQueryParam("authorizationID");
+	function skillAuthList(params){
+		var cmd = 'skillAuthList';//技能认证列表接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(isNull(data['body']['list'])){
+	            	$.each(data['body']['list'],function(i,val){
+	            		if(authorizationID==val['authorizationID']){
+	            			$('.sk-name').val(val['trueName']);
+							$('.sk-card').val(val['identification']);
+							$('.sk-cardName').val(val['idTypeName']);
+							var images = '';
+					        for(var i=0;i<val['idImages'].length;i++){
+					            images += '<span class="fl plant-imgb ovw pic picture"><img src="'+val['idImages'][i]+'"></span>';
+					        }
+					        $('.pic').before(images);
+	            		}else{
+	            			params.page++;
+	            			skillAuthList(params);
+	            		}
+	            	})
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}	
+	setTimeout(function(){
+		var skillAuthList_params={
+			'userid':userid,
+			'page':PAGE,
+			'num':PAGE_NUM,
+		};
+		skillAuthList(skillAuthList_params);
+	},100)
+
+	function modifySkill(params){
+		var cmd = 'modifySkill';//
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	        data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	            if(data['resultCode']==1){
+	            	layer.msg('技能认证提交成功，请等待审核!');
+//                        sign=1;
+	            	setTimeout(function(){
+		           		window.location.href = 'certification-list.html';
+		            },1000);
+	            }else{
+	            	layer.msg('技能认证提交失败，系统出错!');
+	            }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	// $('.sk-name').on('blur',function(){
+	// 	var land_user = $.trim($('.sk-name').val());
+	// 	if(!isNull(land_user)){
+	// 		layer.msg('请正确填写姓名');
+	// 	}
+	// })
+	// $('.sk-cardName').on('blur',function(){
+	// 	var card_name = $.trim($('.sk-cardName').val());
+	// 	if(!isNull(card_name)){
+	// 		layer.msg('请正确填写姓名');
+	// 	}
+	// })
+	// $('.sk-card').on('blur',function(){
+	// 	var land_num = $.trim($('.sk-card').val());
+	// 	if(!isNull(land_num)){
+	// 		layer.msg('请正确填写证件编号栏目');
+	// 	}
+	// })
+	//点击上传图片
+	$(document).on('click','.pic',function(){
+		var pic_index = $(this);
+		var num = $('.picture').length;
+		var pic_num_left = 4-num;
+		if($(this).siblings('.pic-add').length>0){
+			layer.open({
+			    content: '您确定要删除图片吗？'
+			    ,btn: ['是', '否']
+			    ,yes: function(index){
+				    layer.close(index);
+				    pic_index.remove();
+				    if(num==3&&$('.pic-add img').attr('src')!='images/plant_2.png'){
+				    	$('.pic-add').before('<span class="fl plant-imgb ovw picture pic"><img src="'+$('.pic-add img').attr('src')+'"></span>');
+						$('.pic-add img').attr('src','images/plant_2.png')
+					}
+					// else{
+					// 	uploadImage(pic_num_left);
+					// }
+			   	}
+			});
+		}else{
+			if(num==3&&$('.pic-add img').attr('src')!='images/plant_2.png'){
+				layer.msg('最多添加4张图片');
+			}else{
+				uploadImage(pic_num_left);
+			}
+		}
+	});
+	//保存实名认证消息
+	$('.over-order').click(function(){
+            if(sign==1){
+                sign=0;
+		var land_user = $.trim($('.sk-name').val());
+	    var land_num = $.trim($('.sk-card').val());
+	    var card_name = $.trim($('.sk-cardName').val());
+	    var idImages = [];//证件照片数组
+	    $.each($('.picture img'),function(i){
+	    	idImages.push($($('.picture img')[i]).attr('src'));
+	    });
+	    if($('.pic-add img').attr('src')!='images/plant_2.png'){
+		    storeImages.push($('.-pic-add img').attr('src'));
+		}
+	    if(land_user==''){
+	    	layer.msg('请正确填写姓名');
+                sign=1;
+	    }else{
+	    	if(!isNull(card_name)){
+				layer.msg('请正确填写证件名称栏目');
+                                sign=1;
+	    	}else{
+	    		if(land_num==''){
+		    		layer.msg('请正确填写技能证件号栏目');
+                                sign=1;
+		    	}else{
+		    		if(idImages.length==0){
+		    			layer.msg('请上传技能证件');
+                                        sign=1;
+		    		}else{
+		    			if(authorizationID==0){	//新增
+			    			var params = {
+			    				'userid':userid,
+					            'trueName':land_user,//姓名
+					            'identification' : land_num,//证件号码
+					            'idTypeName': card_name,//证件名称
+					            'idImages' : idImages,//证件照片数组
+			    		    };
+			    		}else{
+			    			var params = {
+			    				'userid':userid,
+			    				'authorizationID' : authorizationID,//认证ID（修改的时候需要传ID，否则就是新增）
+					            'trueName':land_user,//姓名
+					            'identification' : land_num,//证件号码
+					            'idTypeName': card_name,//证件名称
+					            'idImages' : idImages,//证件照片数组
+			    		    };
+			    		}
+		    			modifySkill(params);
+		    		}
+		    	}
+	    	}
+	    }
+        }
+	})
+})
+
+	/**
+	*   图片上传成功回调
+	*   imageUrl         图片url地址
+    **/
+    function imageUploaded(imageUrl){
+    	imageUrl_arr = handleAppValue(imageUrl);
+    	var images = '';
+    	for(var i=0;i<imageUrl_arr.length;i++){
+            images += '<span class="fl plant-imgb ovw pic picture"><img src="'+imageUrl_arr[i]+'"></span>';
+        }
+        if($('.picture').length==3){
+        	$('.pic-add img').attr('src',imageUrl_arr[0]);
+        	// $('.pic-add').addClass('picture');
+        }else{
+        	$('.pic-add').before(images);
+        }
+    }
+</script>
+</body>
+</html>

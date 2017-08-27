@@ -1,0 +1,545 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script src="src/lib/public/public.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder"></script>
+</head>
+<body>
+	    <section class="body-bj ovw">
+	    	<section class="header ovw posin" style="position:fixed;z-index:1000;">农活发布<a href="javascript:;" class="header-back ovw" style="height:0.8rem;"><img src="images/back.png"/></a></section>
+		     <section class="release-near-content ovw">
+		     	<ul class="ld-card-ula rele-work-persoal ovw" style="padding-top: 1.333rem;">
+		     	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">联&nbsp;&nbsp;系&nbsp;&nbsp;人：</label>
+			    		<input class="ld-lia-in mers-lia-a username" type="text" placeholder="请输入您的姓名" maxlength="15" />
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</label>
+			    		<input class="ld-lia-in mers-lia-a phone" type="number" oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入您的电话"/>
+			    	</li>
+		     		<li class="mers-lia-c mers-lia-d" style="margin-top:0.2rem;">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">作业时间：</label>
+			    			<input class="add-state start-time" id="start_time" type="date"/>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">截止时间：</label>
+			    			<input class="add-state end-time" id="end_time" type="date"/>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">作业品种：</label>
+			    			<select class="add-state work-class"><option  plantType="0" value="0">请选择作业品种</option></select>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad ovw">
+			    			<label class="fl ovw">作业类型：</label>
+			    			<select class="add-state work-type"><option  farmworkType="0" value="0">请选择作业类型</option></select>
+			    		</aside>
+			    	</li>
+		     		<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">作业面积：</label>
+			    		<input class="ld-lia-in mers-lia-a work-area" type="text" placeholder="请输入作业面积" />
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">报&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
+			    		<input class="ld-lia-in mers-lia-a work-fee" type="text" placeholder="请输入报价"/>
+			    	</li>
+			    	<li class="ld-lia re-work-address">
+			    		<label class="ld-lia-la ovw">作业地点：</label>
+			    		<input class="ld-lia-in work-address zydd" type="text" placeholder="请输入地点"/>
+			    		<img src="images/add_1.png" class="address-s"/>
+			    	</li>
+			    	<li class="ld-lia">
+			    		<label class="ld-lia-la ovw">门牌号码：</label>
+			    		<input class="ld-lia-in mers-lia-a work-address-detail" type="text" placeholder="门牌号码"/>
+			    	</li>
+			    	<li class="ld-lia ld-lie">
+			    		<label class="ld-lia-la ovw">详细介绍：</label>
+			    		<textarea class="merchants-text ovw"></textarea>
+			    	</li>
+		     	</ul>
+		     </section>
+		    <a class="over-order ovw fram-sure" href="javascript:void(0);">发布</a>
+	    </section>
+	    <input type="hidden" class="lng" value="">
+    <input type="hidden" class="lat" value="">
+<script type="text/javascript">
+$(function(){
+        var farmWorkID = GetQueryString("farmWorkID");
+	var from = GetQueryParam('from');
+	var p_c_a = GetQueryParam("address");
+	$('.header-back').on('click',function(){
+                $.delStorage('pca');
+            	$.delStorage('temp_params');
+		if(from=="app"){
+			window.location.href="farm-work-list.html";
+		}else if(from=="h5"){
+			window.location.href="my-work.html";
+		}else if(from=="details"){
+			window.location.href="farm-work-details.html?farmWorkID="+farmWorkID;
+		}else{
+			backtoNative();
+		}
+	})
+	var province;
+	var city;
+	var area;
+	var town;
+	var village; 
+	/*****************************默认地点*****************************/
+	setTimeout(function(){
+             if(!isNull(farmWorkID)&&!isNull(p_c_a)){
+        var arr_areaID = current_location_areaIDs.split(",");
+        $('.zydd').val(current_location_address);
+        province = arr_areaID[0];
+		city = arr_areaID[1]==''?0:arr_areaID[1];
+		area = arr_areaID[2]==''?0:arr_areaID[2];
+		town = arr_areaID[3]==''?0:arr_areaID[3];
+		village = arr_areaID[4]==''?0:arr_areaID[4];
+                $('.phone').val(telephone);
+                }
+        },500);
+		if(isNull(p_c_a)){
+			var get_temp_params =  eval('('+$.getStorage('temp_params')+')');//由JSON字符串转换为JSON对象
+			$('.username').val(get_temp_params.username);
+			$('.phone').val(get_temp_params.phone);
+			$('.start-time').val(get_temp_params.starttime);  //作业时间
+			$('.end-time').val(get_temp_params.endtime);  //截止时间
+			$('.work-class').val(get_temp_params.work_class_name);//
+			// $('.work-class').attr('plantType',get_temp_params.cropType);
+			$('.work-type').val(get_temp_params.work_type_name);//
+			// $('.work-type').attr('farmworkType',get_temp_params.machineType);
+			$('.work-area').val(get_temp_params.acreage);  //农机类型ID
+			$('.work-fee').val(get_temp_params.price);//理想报价
+			$('.work-address-detail').val(get_temp_params.address);//详细地址
+			$('.merchants-text').val(get_temp_params.intro);//详细介绍
+                        $('.zydd').val(get_temp_params.zydd);
+                        plantTypeList({},1,get_temp_params.cropType);
+                        if(get_temp_params.cropType!=0){
+                             farmworkTypeList({'pid':get_temp_params.cropType},2,get_temp_params.machineType);
+                        }
+			from = get_temp_params.from;
+			if(p_c_a!="empty"){
+				$('.zydd').val(p_c_a);
+				geocoder(p_c_a);
+			}
+			setTimeout(function(){
+				$.each($('.work-class option'),function(i){
+					if($($('.work-class option')[i]).attr('plantType')==get_temp_params.cropType){
+						$(this).selected = true;
+					}
+				})
+			},500)
+			setTimeout(function(){
+				$.each($('.work-type option'),function(i){
+					if($($('.work-type option')[i]).attr('farmworkType')==get_temp_params.machineType){
+						$(this).selected = true;
+					}
+				})
+			},500)
+		}
+
+	//*****************************农活发布接口*****************************
+	function farmWorkRelease(params){
+		var cmd = 'farmWorkRelease';//农活发布接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(data['resultCode']==1){
+	        		$.delStorage('pca');
+            		$.delStorage('temp_params');
+            		$('.over-order').attr('disabled','disabled');
+                            if(!isNull(farmWorkID)){
+                                layer.msg('农活发布内容已提交');
+                            }else{
+                                layer.msg('农活发布内容已保存');
+                            }
+	        		setTimeout(function(){
+	        			if(from=="app"){
+							window.location.href="farm-work-list.html";
+						}else if(from=="h5"){
+							window.location.href="my-work.html";
+						}else if(from=="details"){
+                                                        window.location.href="farm-work-details.html?farmWorkID="+farmWorkID;
+                                                }else{
+							backtoNative();
+						}
+	        		},1000);
+	        	}else{
+                            sign = 1;//可点击
+	        		layer.msg('农活发布内容提交失败,'+data['resultMessage']);
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+
+	//********************************获取作业类型**************************
+	function farmworkTypeList(params,classNum,typeid){
+		var cmd = 'farmWorkTypeList';//农活类型接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(isNull(data['body']['list'])){
+	        		var farmworkTypeListHtml = '';
+	        		$.each(data['body']['list'],function(i,val){
+	        			if(isNull(p_c_a)){
+							var get_temp_params =  eval('('+$.getStorage('temp_params')+')');
+							if(val['typeID']==get_temp_params.machineType){
+								farmworkTypeListHtml += '<option selected="selected" value='+val['typeID']+' farmworkType='+val['typeID']+'>'+val['typeName']+'</option>';	
+							}else{
+								farmworkTypeListHtml += '<option value='+val['typeID']+' farmworkType='+val['typeID']+'>'+val['typeName']+'</option>';	
+							}
+						}else{
+							farmworkTypeListHtml += '<option value='+val['typeID']+' farmworkType='+val['typeID']+'>'+val['typeName']+'</option>';	
+						}
+	        		})
+	    			$('.work-type').append(farmworkTypeListHtml);
+                                switch(parseInt(classNum)){
+                                    case 1:
+                                        $('.work-class').val(typeid);break;
+                                    case 2:
+                                        $('.work-type').val(typeid);break;
+                                }
+	        	}else{
+	        		var farmworkTypeListHtml = '<option farmworkType="0" value="0">请选择作业类型</option>';
+	        		$('.work-type').append(farmworkTypeListHtml);
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	} 
+	// farmworkTypeList('');
+	$(document).on('change','.work-class',function(){
+		var pid1 = $(this).find('option:selected').attr('planttype');
+		var farmworkTypeList_params = {
+			'pid':pid1,
+		}
+		$('.work-type').html('');
+		farmworkTypeList(farmworkTypeList_params);
+	})
+
+
+	//********************************获取种植类型**************************
+	function plantTypeList(params,classNum,typeid){
+		var cmd = 'farmWorkTypeList';//种植类型接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){ 
+	        	if(isNull(data['body']['list'])){
+	        		var plantTypeListHtml = '';
+	        		$.each(data['body']['list'],function(i,val){
+	        			if(isNull(p_c_a)){
+							var get_temp_params =  eval('('+$.getStorage('temp_params')+')');
+							if(val['typeID']==get_temp_params.cropType){
+								plantTypeListHtml += '<option selected="selected" plantType='+val['typeID']+' value='+val['typeID']+'>'+val['typeName']+'</option>';	
+							}else{
+								plantTypeListHtml += '<option plantType='+val['typeID']+' value='+val['typeID']+'>'+val['typeName']+'</option>';
+							}
+						}else{
+							plantTypeListHtml += '<option plantType='+val['typeID']+' value='+val['typeID']+'>'+val['typeName']+'</option>';
+						}
+	        		})
+	    			$('.work-class').append(plantTypeListHtml);
+//	    			if(isNull(p_c_a)){
+//		    			var pid = $('.work-class').find('option:selected').attr('plantType');
+//						var farmworkTypeList_params = {
+//							'pid':pid,
+//						}
+//						$('.work-type').html('');
+//						farmworkTypeList(farmworkTypeList_params);
+//                                }
+                                switch(parseInt(classNum)){
+                                    case 1:
+                                        $('.work-class').val(typeid);break;
+                                    case 2:
+                                        $('.work-type').val(typeid);break;
+                                }
+	        	}else{
+	        		var plantTypeListHtml = '<option farmworkType="1">测试收割小麦</option><option farmworkType="2">测试小麦施肥</option><option farmworkType="3">测试打农药</option>';
+	        		$('.work-type').append(plantTypeListHtml);
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	} 
+	
+
+	$('.zydd').on('click',function(){//作业地点
+		var username = $.trim($('.username').val());
+		var phone = $('.phone').val();//phoneReg.test($('.phone').val())
+		var start_time = $('.start-time').val();
+		var end_time = $('.end-time').val();
+		var work_class = $('.work-class option:selected').attr('plantType');
+		var work_class_name = $('.work-class').val();
+		var work_type = $('.work-type option:selected').attr('farmworkType');
+		var work_type_name = $('.work-type').val();
+		var work_area = $.trim($('.work-area').val());
+		var work_fee = $.trim($('.work-fee').val());
+		// var work_address = $.trim($('.work-address').val());
+		var work_address_detail = $.trim($('.work-address-detail').val());
+		var introduce = $.trim($('.merchants-text').val());
+		var temp_params = {
+			'username':username,
+			'phone':phone,
+			'starttime':start_time,
+			'endtime':end_time,
+			'cropType':work_class,
+			'work_type_name':work_type_name,
+			'work_class_name':work_class_name,
+			'machineType':work_type,
+			'acreage':work_area,
+			'price':work_fee,
+			'address':work_address_detail,
+			'intro':introduce,
+			'from':from,
+                        'zydd':$('.zydd').val(),
+		};
+		$.setStorage('temp_params',temp_params);
+                if(isNull(farmWorkID)){
+                    window.location.href = "place.html?type=2&detailsID="+farmWorkID;
+                }else{
+                    window.location.href = "place.html?type=2";
+                }
+		
+	})
+
+	//点击确定发布农活
+	var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+	$('.fram-sure').on('click',function(){
+		if(sign==1){
+			var username = $.trim($('.username').val());
+			var phone = $('.phone').val();//phoneReg.test($('.phone').val())
+			var start_time = timeStyle($('.start-time').val());
+			var end_time = timeStyle($('.end-time').val());
+			var work_class = $('.work-class option:selected').attr('plantType');
+			var work_type = $('.work-type option:selected').attr('farmworkType');
+			var work_area = $.trim($('.work-area').val());
+			var work_fee = $.trim($('.work-fee').val());
+			var work_address = $.trim($('.work-address').val());
+			var work_address_detail = $.trim($('.work-address-detail').val());
+			var introduce = $.trim($('.merchants-text').val());
+			if(isNull(p_c_a)||isNull(farmWorkID)){
+				var ssq = eval('('+$.getStorage('pca')+')')?eval('('+$.getStorage('pca')+')'):'';
+			}else{
+				var ssq = '';
+			}
+			province = ssq.sf==undefined?province:ssq.sf;
+			city = ssq.cs==undefined?city:ssq.cs;
+			area = ssq.qx==undefined?area:ssq.qx;
+			town = ssq.xz==undefined?town:ssq.xz;
+			village = ssq.cz==undefined?village:ssq.cz;
+			if(!isNull(username)){
+				layer.msg('请填写联系人');
+		    	return false;
+			}
+			if(!isNull(phone)||!phoneReg.test(phone)){
+				layer.msg('请正确填写电话');
+		    	return false;
+			}
+			if(!isNull(start_time)){
+				layer.msg('请填写作业时间');
+		    	return false;
+			}
+			if(!isNull(end_time)){
+				layer.msg('请填写截止时间');
+		    	return false;
+			}
+			if(start_time>end_time){
+				layer.msg('填写时间不对，作业时间大于截止时间');
+				return false;
+			}
+                        if(work_class==0){
+				layer.msg('请填写作业品种');
+		    	return false;
+			}
+			if(!isNull(work_area)){
+				layer.msg('请填写作业面积');
+		    	return false;
+			}
+			if(!isNull(work_fee)){
+				layer.msg('请填写报价');
+		    	return false;
+			}
+			if(!isNull(work_address)){
+				layer.msg('请填写作业地点');
+		    	return false;
+			}
+			if(!isNull(work_address_detail)){
+				layer.msg('请填写门牌号码');
+		    	return false;
+			}
+			if(!isNull(introduce)){
+				layer.msg('请填写详细介绍');
+		    	return false;
+			}
+                        sign = 0;//不可点击
+                        if(isNull(farmWorkID)){
+                            var farmWorkRelease_params = {	//农活发布
+                                'farmWorkID':farmWorkID,
+				'userid':userid,
+				'username':username,
+				'phone':phone,
+				'starttime':start_time,
+				'endtime':end_time,
+				'cropType':work_class,
+				'machineType':work_type,//作业类型
+				'acreage':work_area,//作业面积（单位也是手动输入）
+				'province':province,
+				'city':city,
+				'area':area,
+				'town':town,
+				'village':village,
+				'address':work_address_detail,
+				'price':work_fee,
+				'intro':introduce,
+				'lng':$('.lng').val(),//'118.834861',
+				'lat':$('.lat').val(),//'32.017352',
+                            };
+                        }else{
+                            var farmWorkRelease_params = {	//农活发布
+                                    'userid':userid,
+                                    'username':username,
+                                    'phone':phone,
+                                    'starttime':start_time,
+                                    'endtime':end_time,
+                                    'cropType':work_class,
+                                    'machineType':work_type,//作业类型
+                                    'acreage':work_area,//作业面积（单位也是手动输入）
+                                    'province':province,
+                                    'city':city,
+                                    'area':area,
+                                    'town':town,
+                                    'village':village,
+                                    'address':work_address_detail,
+                                    'price':work_fee,
+                                    'intro':introduce,
+                                    'lng':$('.lng').val(),//'118.834861',
+                                    'lat':$('.lat').val(),//'32.017352',
+                            };
+                        }
+//			 console.info(farmWorkRelease_params);
+			farmWorkRelease(farmWorkRelease_params);
+		}
+	}); 
+
+        function farmWorkDetail(params){
+            var cmd = 'farmWorkDetail';//农活详情接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){console.info(data);
+                    if(isNull(data['body'])){
+                        if(!isNull(p_c_a)){
+                            var address_content = data['body']['area']['province']['areaName']+data['body']['area']['city']['areaName']+data['body']['area']['area']['areaName']+data['body']['area']['town']['areaName']+data['body']['area']['village']['areaName'];
+                            $('.username').val(data['body']['username']);
+                            $('.phone').val(data['body']['phone']);//phoneReg.test($('.phone').val())
+                            $('.start-time').val(data['body']['starttime']);
+                            $('.end-time').val(data['body']['endtime']);
+                            plantTypeList({},1,data['body']['CropID']);
+                            farmworkTypeList({'pid':data['body']['CropID']},2,data['body']['TypeID']);
+                            $('.work-area').val(data['body']['acreage']);
+                            $('.work-fee').val(data['body']['price']);
+                            $('.work-address').val(address_content);
+                            $('.work-address-detail').val(data['body']['detailAddress']);
+                            $('.merchants-text').val(data['body']['intro']);
+                            var pca = {
+                                    'sf':data['body']['area']['province']['areaID'],
+                                    'cs':data['body']['area']['city']['areaID'],
+                                    'qx':data['body']['area']['area']['areaID'],
+                                    'xz':data['body']['area']['town']['areaID'],
+                                    'cz':data['body']['area']['village']['areaID'],
+                                }
+                            $.setStorage('pca',pca);
+                        }
+                }
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+        if(isNull(farmWorkID)){
+            $('.over-order').html("保存");
+            var farmWorkDetail_params = {
+                    'userid':userid,
+                    'farmworkID':farmWorkID,
+            }
+            farmWorkDetail(farmWorkDetail_params);
+        }else{
+            if(!isNull(p_c_a)){
+                var plantTypeList_params = {};
+                plantTypeList(plantTypeList_params);
+            }
+        }
+})
+</script>
+</body>
+</html>

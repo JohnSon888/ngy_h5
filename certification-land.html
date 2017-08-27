@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/ajaxfileupload.js" ></script>
+</head>
+<body>
+	    <section class="all-main">
+	    	<section class="header ovw posin" style="position:fixed;z-index:100;">土地认证<a href="certification-list.html" class="header-back ovw"><img src="images/back.png"/></a></section>
+		    <ul class="ld-card-ula ovw" style="padding-top: 1.333rem;">
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>土地所有人：</label>
+		    		<input class="ld-lia-in five-ld-w" type="text" style="width:5.6rem;"/>
+		    	</li>
+		    	<li class="ld-lia">
+		    		<label class="ld-lia-la ovw"><span class="must-fill-in">*&nbsp;</span>土地承包证编号：</label>
+		    		<input class="ld-lia-in iphone-lia-la" type="text" style="width:5.0rem;"/>
+		    	</li>
+		    	<li class="ld-lic"><span class="must-fill-in">*&nbsp;</span>土地承包证/土地承包合同照片：</li>
+		    	<li class="ld-lid ld-pic"><img src="images/id.png"/></li>
+		    </ul>
+		    <a class="over-order ovw" href="#">保存</a>
+	    </section>
+	    <input type="hidden" class="authorizationID" value="0" />
+<script type="text/javascript">
+	$(function(){
+            var pass = GetQueryParam("pass");
+            if(pass==1){
+                $('.over-order').hide();
+            }
+		var idImages = [];
+	/**********************获取土地认证信息接口*******************************/
+		function getFarmAuthInfo(userid){
+	        var cmd = 'getFarmAuthInfo';
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        var params = {
+	        	'userid':userid
+	        };
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ console.info(data);
+	            	if(isNull(data['body'])){
+	            		$('.authorizationID').val(data['body']['authorizationID']);
+	            		$('.five-ld-w').val(data['body']['trueName']);
+	            		$('.iphone-lia-la').val(data['body']['identification']);
+	            		$('.ld-pic img').attr('src',data['body']['idImages'][0]);
+	            		$('.ld-pic').addClass('pic');
+                                if(pass==1){
+                                    $('input').attr('readonly',true);
+                                    $(".ld-pic").unbind("click");
+                                }
+	            	}
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+	    setTimeout(function(){
+	    	getFarmAuthInfo(userid);
+	    },100);
+	/**********************土地认证接口命令*******************************/
+		function verifyFarm(params){
+	        var cmd = 'verifyFarm';//土地认证接口命令
+	        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	        var jsonp = 1;
+	        params = objKeySort(params);//按照属性名升序排列
+	        var params_str = objChangeStr(params);//拼接params参数的属性值
+	        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	        $.ajax({
+	        	url : apiURL,//接口地址
+	            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	            dataType : 'jsonp',
+	            success: function(data){ 
+	            	if(data['resultCode']==1){
+		        		layer.msg('土地认证提交成功，请等待审核!');
+//                                sign=1;
+			            setTimeout(function(){
+			            	window.location.href = 'certification-list.html';
+			            },1000);
+		        	}else{
+		        		layer.msg(data['resultMessage']);
+		        	}   
+	            },
+	            error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                layer.msg('网络请求延迟！');
+	                console.info(XMLHttpRequest.status);
+	                console.info(XMLHttpRequest.readyState);
+	                console.info(textStatus);
+	            },
+	        });
+	    }
+	    
+	  
+		//点击上传图片
+		$('.ld-pic').click(function(){
+			var num = idImages.length;
+			if(num==5){
+				layer.msg('最多添加5张图片');
+			}else{
+				var pic_num_left = 5-num;
+				uploadImage(pic_num_left);
+			}
+		});
+		//保存土地认证消息
+		$('.over-order').click(function(){
+                    if(sign==1){
+                        sign=0;
+                            var authorizationID = $('.authorizationID').val();
+                            var land_user = $.trim($('.five-ld-w').val());
+                        var land_num = $.trim($('.iphone-lia-la').val());
+                        var pic = $('.pic img').attr('src');
+                        if(idImages.length==0&&$('.pic').length>0){
+                                idImages.push(pic);
+                        }
+                        if(land_user==''){
+                                layer.msg('请正确填写土地所有人栏目');
+                                sign=1;
+                        }else{
+                                // var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+                                if(land_num==''){
+                                        layer.msg('请正确填写证件编号栏目');
+                                        sign=1;
+                                }else{
+                                        if(idImages.length==0){
+                                                layer.msg('请上传土地地契照片');
+                                                sign=1;
+                                        }else{
+                                                if(authorizationID==0){	//新增
+                                                        var params = {
+                                                        'userid':userid,
+                                                        'trueName':land_user,//姓名
+                                                        'identification' : land_num,//证件号码
+                                                        'idImages':idImages,//证件图片数组
+                                                        };
+                                                }else{					//修改
+                                                        var params = {
+                                                                'authorizationID' : authorizationID,//认证ID（修改的时候需要传ID，否则就是新增）
+                                                        'userid':userid,
+                                                        'trueName':land_user,//姓名
+                                                        'identification' : land_num,//证件号码
+                                                        'idImages':idImages,//证件图片数组
+                                                        };
+                                                }
+                                                verifyFarm(params);
+                                        }
+                            }
+                        }
+	    	}
+		})
+	})
+	/**
+	*   图片上传成功回调
+	*   imageUrl         图片url地址
+    **/
+    function imageUploaded(imageUrl){
+		imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+    	//idImages.push(imageUrl);
+    	idImages = imageUrl_arr;
+        $('.ld-pic img').attr('src',imageUrl_arr[0]);
+        if($('.pic').length==0){
+        	$('.ld-pic').addClass('pic');
+        } 
+    }
+    //图片预览
+    $('.pic').click(function(){
+        imagePreview(idImages, 0);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1823 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="email=no" name="format-detection">
+        <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+        <title></title>
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/demo.css">
+        <script type="text/javascript" src="js/jquery.min.js" ></script>
+        <!-- dropload -->
+        <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+        <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+        <script type="text/javascript" src="js/flexible.js" ></script>
+        <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+        <script type="text/javascript" src="src/lib/common/common.js"></script>
+        <script type="text/javascript" src="src/lib/common/farming.js"></script>
+        <script type="text/javascript" src="src/lib/common/public.js"></script>
+         <!--<script type="text/javascript" src="src/lib/common/ajaxPrefilter.js"></script>-->
+        <script type="text/javascript" src="src/lib/public/public.js"></script>
+        <!-- layer -->
+        <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+        <!-- 高德地图JavaScript API入口脚本 -->
+        <!-- <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=34b20fdce57dd0f6c48ba77f9a5d0e46"></script>  -->
+        <style type="text/css">
+            .none-more-content{
+                color: #868686;
+                font-size: 14px;
+                height: 200px;
+                line-height: 200px;
+                text-align: center;
+            }
+            .layer-near li {
+                border-bottom: 1px solid #ececec;
+                color: #666;
+                font-size: 12px;
+                line-height: 0.9466rem;
+                overflow: hidden;
+                text-align: center;
+            }
+            .layer-near .hover{color:#dd1616;}
+            .fram-work-ula li{width:24.7%;}
+            .amap-logo{display: none;}
+            .amap-copyright{display: none !important;}
+            .certification{z-index: 889;}
+            .layer-time-content li span{line-height:0.946rem;}
+            .fram-list-sort-type li{width:100%;}
+            .fram-work-sort-type{
+                background: #fff none repeat scroll 0 0;
+                border-top: 1px solid #ececec;
+                right: 0;
+                padding-top: 2px;
+                position: fixed;
+                top: 2.1733rem;
+                width: 50%;
+                z-index: 888;
+                height: 4.853rem;
+                overflow: scroll;
+            }
+            .fram-work-sort-type li{width:100%;}
+            .text-color{color:#dd1616;}
+        </style>
+        <script>
+
+            $(function () {
+                // setTimeout(function(){
+                // 	$("head").append("<script src='http://webapi.amap.com/maps?v=1.3&key=34b20fdce57dd0f6c48ba77f9a5d0e46' type='text/javascript'><\/script>");
+                // },100);    	
+                $('.visa-in').on("focus", function (e) {
+                    $(this).parent('form').prev('aside').children().hide();
+                    $(this).parent('form').prev('aside').css('textIndent', '9999px');
+        //      $(this).next('.sear-close').show();
+                });
+                $('.visa-in').on("blur", function (e) {
+                    var val = $(this).val();
+                    if (val != '') {
+                        $(this).parent('form').prev('aside').children().hide()
+                        $(this).parent('form').prev('aside').css('textIndent', '9999px')
+
+                    } else {
+                        $(this).parent('form').prev('aside').children().show()
+                        $(this).parent('form').prev('aside').css('textIndent', '0.1333rem')
+        //          $(this).next('.sear-close').hide();
+                    }
+                });
+
+        //  发布隐藏
+                $('.layer-rele-s').on('touchstart', function (e) {
+                    $('.rele-bj').hide();
+                    $('.layer-rele-cont').hide();
+                    // window.location.href="farm-work-release.html?from=app";
+                    e.preventDefault();
+                })
+                //弹出层隐藏
+                $('.layer-map-bj').on('touchstart', function (e) {
+                    $('.layer-map-bj').toggle()
+                    // $('.layer-sorting').hide()
+                    // $('.layer-type').hide()
+                    // $('.layer-time').hide()
+                    $('.layer-up-some').hide();
+                    $('.fram-work-sort-type').hide();
+                    document.activeElement.blur();
+                    e.preventDefault();
+                });
+                //
+                $('.fram-work-ula li').on('click', function (e) {
+                    $('.three-ula li').removeClass('hover');
+                    $(this).addClass('hover');
+                    var index = $(this).index();
+                    switch (index) {
+                        case 0:
+                            if ($('.sort-first0').length > 0 || $('.sort-first2').length > 0) {
+                                $('.layer-type').hide();
+                                $('.layer-sorting').hide();
+                                $('.layer-time').hide();
+                                // $('.layer-map-bj').toggle();
+                                $('.layer-area').toggle();
+                                if ($('.layer-area').css('display') == 'block') {
+                                    $('.layer-map-bj').show();
+                                } else {
+                                    $('.layer-map-bj').hide();
+                                }
+                                e.preventDefault();
+                            } else {
+                                $('.layer-type').hide();
+                                $('.layer-sorting').hide();
+                                $('.layer-time').hide();
+                                // $('.layer-map-bj').toggle();
+                                $('.layer-near').toggle();
+                                if ($('.layer-near').css('display') == 'block') {
+                                    $('.layer-map-bj').show();
+                                } else {
+                                    $('.layer-map-bj').hide();
+                                }
+                                e.preventDefault();
+                            }
+                            break;
+                        case 1:
+                            // $('.layer-map-bj').toggle();
+                            $('.layer-area').hide();
+                            $('.layer-near').hide();
+                            $('.layer-sorting').hide();
+                            $('.layer-time').hide();
+                            $('.layer-type').toggle();
+                            if ($('.layer-type').css('display') == 'block') {
+                                $('.layer-map-bj').show();
+                            } else {
+                                $('.layer-map-bj').hide();
+                            }
+                            e.preventDefault();
+                            break;
+                        case 2:
+                            // $('.layer-map-bj').toggle();
+                            $('.layer-type').hide();
+                            $('.layer-near').hide();
+                            $('.layer-area').hide();
+                            $('.layer-time').toggle();
+                            if ($('.layer-time').css('display') == 'block') {
+                                $('.layer-map-bj').show();
+                            } else {
+                                $('.layer-map-bj').hide();
+                            }
+                            if ($('.layer-time').css('display') == 'block') {
+                                $('body').css({'position': 'fixed', 'top': '0', 'left': '0', 'width': '100%'});
+                            } else {
+                                $('body').css({'position': 'relative', 'top': '0', 'left': '0', 'width': '100%'})
+                            }
+
+                            // e.preventDefault();
+
+                            break;
+                        case 3:
+                            // $('.layer-map-bj').toggle();
+                            $('.layer-type').hide();
+                            $('.layer-near').hide();
+                            $('.layer-area').hide();
+                            $('.layer-time').hide();
+                            $('.layer-sorting').toggle();
+                            if ($('.layer-sorting').css('display') == 'block') {
+                                $('.layer-map-bj').show();
+                            } else {
+                                $('.layer-map-bj').hide();
+                            }
+                            e.preventDefault();
+
+                            break;
+
+                    }
+                });
+
+                //点击全国
+                // $(document).on('click','.all-country',function(){
+                // $('.all-country').on('click',function(){
+                // 	$(this).addClass('hover');
+                // 	$('.drop-down-a a').text('区域');
+                // 	$('.drop-down-a').addClass('sort-first');
+                // })
+                // $.each($('.three-ula li'),function(i){
+                //    	$($('.three-ula li')[i]).on('click',function(){
+                //    		$('.three-ula li').removeClass('hover');
+                //    		$(this).addClass('hover');
+                //    	})
+                //    })
+
+
+            $.each($('.base-sele-main li'), function (i) {
+                $($('.base-sele-main li')[i]).on('click', function () {
+                    if(sign == 0){
+                        sign=1;
+                        $('.drop-down-b a').text("全部");
+                        $('.sf').html('<option areaID="-1">省份</option>');
+                        $('.cs').html('<option areaID="0">城市</option>');
+                        $('.qx').html('<option areaID="0">区县</option>');
+                        $('.xz').html('<option areaID="0">乡镇</option>');
+                        $('.cz').html('<option areaID="0">村</option>');
+                        switch (i) {
+                            case 0://全国
+                                $('.base-sele-main li').removeClass('hover');
+                                $('.base-sele-main li').removeClass('text-color');
+                                $('.three-ula li').removeClass('sort-first1');
+                                $('.three-ula li').removeClass('sort-first2');
+                                $(this).addClass('hover');
+                                $(this).addClass('text-color');
+                                $('.drop-down-a a').text('区域');
+                                $('.drop-down-a').addClass('sort-first0');
+                                $('.farmWorkList').show();
+                                $('#container').hide();
+                                $('.fram-work-detail').hide();
+                                closeInfoWindow(map);
+                                var arr_areaID = location_areaIDs.split(",");
+                                var arr_areaNames = location_areaNames.split(",");
+                                getArea(0, 1, 1); //用户设置的区域位置
+                                if (arr_areaID[0] != '') {
+                                    getArea(arr_areaID[0], 2, 1);
+                                    var area_id = arr_areaID[0];
+                                }
+                                if (arr_areaID[1] != '') {
+                                    getArea(arr_areaID[1], 3, 1);
+                                    var area_id = arr_areaID[1];
+                                }
+                                if (arr_areaID[2] != '') {
+                                    getArea(arr_areaID[2], 4, 1);
+                                    var area_id = arr_areaID[2];
+                                }
+                                if (arr_areaID[3] != '') {
+                                    getArea(arr_areaID[3], 5, 1);
+                                    var area_id = arr_areaID[3];
+                                }
+                                if (arr_areaID[4] != '') {
+                                    var area_id = arr_areaID[4];
+                                }
+                                searchContent = $.trim($('.visa-in').val());
+                                var params = {//农活搜索列表接口提供参数
+                                    'keyword': searchContent,
+                                    // 'distance' :,//距离搜索；0表示全国,false
+                                    // 'type' : type,//类型搜索,false
+                                    // 'subtype':subtype,
+                                    // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                    'area': area_id, //地区搜索,false
+                                    'page': PAGE,
+                                    'num': PAGE_NUM,
+                                    // 'lng':$('.lng_val').val(),
+                                    // 'lat':$('.lat_val').val(),
+                                };
+                                break;
+                            case 1://附近
+                                $('.base-sele-main li').removeClass('hover');
+                                $('.base-sele-main li').removeClass('text-color');
+                                $('.three-ula li').removeClass('sort-first0');
+                                $('.three-ula li').removeClass('sort-first2');
+                                $(this).addClass('hover');
+                                $(this).addClass('text-color');
+                                $('.drop-down-a a').text('附近 10km');
+                                $('.drop-down-a').addClass('sort-first1');
+                                $('.farmWorkList').show();
+                                $('#container').hide();
+                                $('.fram-work-detail').hide();
+                                closeInfoWindow(map);
+                                searchContent = $.trim($('.visa-in').val());
+                                var params = {//农机搜索列表接口提供参数
+                                    'keyword': searchContent,
+                                    'distance': 5, //距离搜索；0表示全国,false
+                                    // 'type' : type,//类型搜索,false
+                                    // 'subtype':subtype,
+                                    // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                    // 'area' : 1,//地区搜索,false
+                                    'page': PAGE,
+                                    'num': PAGE_NUM,
+                                    'lng': lng,
+                                    'lat': lat,
+                                };
+                                break;
+                            case 2:
+                                $('.base-sele-main li').removeClass('hover');
+                                $('.base-sele-main li').removeClass('text-color');
+                                $('.three-ula li').removeClass('sort-first0');
+                                $('.three-ula li').removeClass('sort-first1');
+                                $(this).addClass('hover');
+                                $(this).addClass('text-color');
+                                $('.drop-down-a a').text('区域');
+                                $('.drop-down-a').addClass('sort-first2');
+                                $('.farmWorkList').hide();
+                                $('#container').show();
+                                map.remove(markers);
+                                // addMaker(lng_lat);
+                                // var map_detail = mapZoom();
+                                // geocoder(map_detail[1],map_detail[2]);
+                                var arr_areaID = current_location_areaIDs.split(",");
+                                var arr_areaNames = current_location_areaNames.split(",");
+                                getArea(0, 1, 0);
+                                if (arr_areaID[0] != '') {
+                                    getArea(arr_areaID[0], 2, 0);
+                                    var area_id = arr_areaID[0];
+                                }
+                                if (arr_areaID[1] != '') {
+                                    getArea(arr_areaID[1], 3, 0);
+                                    var area_id = arr_areaID[1];
+                                }
+                                if (arr_areaID[2] != '') {
+                                    getArea(arr_areaID[2], 4, 0);
+                                    var area_id = arr_areaID[2];
+                                }
+                                if (arr_areaID[3] != '') {
+                                    getArea(arr_areaID[3], 5, 0);
+                                    var area_id = arr_areaID[3];
+                                }
+                                if (arr_areaID[4] != '') {
+                                    var area_id = arr_areaID[4];
+                                }
+                                geocoder(current_location_address, 14);
+                                searchContent = $.trim($('.visa-in').val());
+                                var params = {//农活搜索列表接口提供参数
+                                    'keyword': searchContent,
+                                    // 'distance' :,//距离搜索；0表示全国,false
+                                    // 'type' : type,//类型搜索,false
+                                    // 'subtype':subtype,
+                                    // 'sort' : sort,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                    'area': area_id, //地区搜索,false
+                                    'page': PAGE,
+                                    'num': 30,
+                                    // 'lng':$('.lng_val').val(),
+                                    // 'lat':$('.lat_val').val(),
+                                };
+                                break;
+                        }
+                     
+                        count = 0;
+                        map.remove(markers);
+                        closeInfoWindow(map);
+                        lng_lat = [];//农活的经纬度
+                        markers = [];//农活位置在地图上的点标
+                        farmWorkDetails = [];//农活的内容
+                        dropload.lock();
+                        dropload.noData();
+                        dropload.resetload();
+                        delete dropload.opts.domUp;
+                        $('.dropload-down').siblings().remove();
+                        // $('.dropload-down').show();
+                        dropload_farmWorkList(params);
+                        $.each($('.dropload-down'), function (i) {
+                            if (i != 0)
+                                $($('.dropload-down')[i]).remove();
+                        })
+                    }
+                })
+            })
+
+                // $(document).on('click ','.sort-first0',function(){
+                $('.sort-first0').on('touchend', function () {
+                    $('.layer-type').hide();
+                    $('.layer-sorting').hide();
+                    $('.layer-map-bj').toggle();
+                    $('.layer-area').toggle()
+                })
+
+                //地图高度
+                var oHa = $(window).height();
+                var header_height = $('.header-fixed-cont').height();
+                var bottom_height = $('.base-sele').height();
+                var map_height = oHa - header_height - bottom_height;
+                $('#container').height(map_height);
+                $('.mach-List').css({'bottom': bottom_height + 1, });
+
+                var osHeigt = $('.layer-li-one span').height() - 1;
+                $('.layer-li-one').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.7);
+                    var oLs = $('.layer-li-one span').eq(oNm).addClass('st-year').siblings().removeClass('st-year');
+                });
+                $('.layer-li-two').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.7);
+                    var oLs = $('.layer-li-two span').eq(oNm).addClass('st-month').siblings().removeClass('st-month');
+                });
+                $('.layer-li-three').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.8);
+                    var oLs = $('.layer-li-three span').eq(oNm).addClass('st-day').siblings().removeClass('st-day');
+                });
+                $('.layer-li-four').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.7);
+                    var oLs = $('.layer-li-four span').eq(oNm).addClass('st-year').siblings().removeClass('st-year');
+                });
+                $('.layer-li-five').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.8);
+                    var oLs = $('.layer-li-five span').eq(oNm).addClass('st-month').siblings().removeClass('st-month');
+                });
+                $('.layer-li-six').scroll(function () {
+                    var oTop = $(this).scrollTop();
+                    var oNm = Math.round(oTop / osHeigt + 0.8);
+                    var oLs = $('.layer-li-six span').eq(oNm).addClass('st-day').siblings().removeClass('st-day');
+                });
+            })
+
+        </script>
+    </head>
+    <body>
+        <section class="body-bj ovw">
+            <section class="header-fixed-cont ovw">
+                <section class="header-fixed ovw">
+                    <section class="header ovw posin">
+                        <div class="search-visa ovw posin"><aside class="serch-t"><img src="images/search.png" class="search-icon">搜索农活</aside>
+                            <form action="javascript:return true;" method="get">
+                                <input type="search" class="visa-in" style="height:0.853rem;line-height:0.853px;text-align:center;">
+                            </form>
+                        </div>
+                        <a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:void(0);" class="header-reg header-rele" pass="0">发布</a>
+                    </section>
+                    <ul class="eval-all-ula three-ula fram-work-ula ovw">
+                        <li class="drop-down-a hover"><a href="javascript:;" style="text-indent:-15px;">&nbsp;</a></li>
+                        <li class="drop-down-b" style="text-align:center;text-indent:0;"><a href="javascript:;">全部</a></li>
+                        <li class="drop-down-c"><a href="javascript:;">作业时间</a></li>
+                        <li class="drop-down-d"><a href="javascript:;">智能排序</a></li>
+                    </ul>
+                </section>
+            </section>
+            <section class="release-near-content ovw farmWorkList">
+
+                <!-- <article class="release-near-art ovw">
+                        <dl class="release-near-dl ovw">
+                                <dt><img src="images/goods_1.png"/><span class="rele-near-name fl ovw">李四四</span></dt>
+                                <dd>
+                                        <div class="rele-near-dete ovw">
+                                                <div class="near-discuse ovw fl">
+                                                        <p class="star-eval ovw fr">
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a "></span>
+                                                        </p>
+                                                        <cite class="fr">评价:</cite>
+                                                </div>
+                                        </div>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">农机类型：</label>
+                                                <span class="fl">拖拉机</span>
+                                        </p>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">作业地点：</label>
+                                                <span class="fl">河北省保定市开封县妙龄镇奥博村</span>
+                                        </p>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">详细说明：</label>
+                                                <span class="fl">河北省保定市开封县妙龄镇奥博村村口需要收割，有兴趣的联系我...</span>
+                                        </p>
+                                </dd>
+                        </dl>
+                </article> -->
+            </section>
+
+            <!-- 高德地图 容器-->
+            <div id="container" style="width:100%; display:none;"></div>  
+
+            <section class="base-sele ovw">
+                <ul class="eval-all-ula base-sele-main ovw">
+                    <li class="all-country"><a href="javascript:;">全国</a></li>
+                    <li class="near"><img src="images/rele_1.jpg" class="imga"/><img src="images/rele_3.jpg" class="imgb"/>附近</li>
+                    <li class="mac-map"><img src="images/rele_2.jpg" class="imga"/><img src="images/rele_4.jpg" class="imgb"/>地图 </li>
+                </ul>
+            </section>
+
+            <!-- <section class="synthesis-cont fram-work-detail" style="display:none;">
+                <article class="synthesis-main ovw mach-List" style="overflow-y: scroll;padding-top: 0.28rem;height:auto;">
+                        <dl class="release-near-dl ovw">
+                                <dt><img src="images/goods_1.png"/><span class="rele-near-name fl ovw">李四四</span></dt>
+                                <dd>
+                                        <div class="rele-near-dete ovw">
+                                                <div class="near-discuse ovw fl">
+                                                        <p class="star-eval ovw fr">
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a star"></span>
+                                                                <span class="fl star-a "></span>
+                                                        </p>
+                                                        <cite class="fr">评价:</cite>
+                                                </div>
+                                        </div>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">农机类型：</label>
+                                                <span class="fl">拖拉机</span>
+                                        </p>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">作业地点：</label>
+                                                <span class="fl">河北省保定市开封县妙龄镇奥博村</span>
+                                        </p>
+                                        <p class="near-pa ovw">
+                                                <label class="fl">详细说明：</label>
+                                                <span class="fl">河北省保定市开封县妙龄镇奥博村村口需要收割，有兴趣的联系我...</span>
+                                        </p>
+                                </dd>
+                        </dl>
+                </article>
+            </section> -->
+        </section>
+
+
+        <!---->
+        <section class="layer-bj rele-bj certification" style="display: none;"></section>
+        <section class="layer-rele-cont ovw" style="display: none;z-index:900;">
+            <img src="images/cer_8.jpg"  class="layer-icon-a"/>
+            <p class="layer-rele-p ovw">是否立即认证个人信息</p>
+            <p class="layer-rele-c ovw">只能认证<font class="certification-list">个人/商户</font>才能发布需求</p>
+            <a href="certification-list.html?from=app"class="layer-rele-a ovw">立即认证</a>
+            <span class="layer-rele-s ovw">跳过此步骤</span>
+        </section>
+        <!---->
+        <section class="layer-bj layer-map-bj"></section>
+        <ul class="layer-sorting layer-up-some ovw fram-list-sort-auto" style="z-index: 888;">
+            <li class="hover" fram-list-auto="1">智能排序</li>
+            <li fram-list-auto="2">离我最近</li>
+            <li fram-list-auto="3">最新发布</li>
+            <li fram-list-auto="4">评分由高到低</li>
+            <li fram-list-auto="5">成交单数</li>
+        </ul>
+        <ul class="layer-type layer-type1 layer-up-some ovw fram-list-sort-type" style="z-index: 888;width:50%;height: 4.853rem;overflow: scroll;">
+            <!-- <li typeID="1">全部</li>
+            <li>小麦收获</li> -->
+        </ul>
+        <ul class="layer-type layer-type2 ovw fram-work-sort-type">
+            <!-- <li typeID="1">全部</li>
+            <li>小麦收获</li> -->
+        </ul>
+        <div class="layer-area layer-up-some ovw" style="display:none;height:172px;top:2.373rem;z-index: 888;">
+            <ul class="mac-all-country" style="width:92%;margin:10px auto;line-height:39px;">
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="sf"><option areaID="-1">省份</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="cs"><option areaID="0">城市</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;"><select style="width:100%;z-index:100;" class="qx"><option areaID="0">区县</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;margin-top:8px;"><select style="width:100%;z-index:100;" class="xz"><option areaID="0">乡镇</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-top:8px;"><select style="width:100%;z-index:100;" class="cz"><option areaID="0">村</option></select></li>
+                <li style="width:100%;height:36px;float:left;margin-top:25px;line-height:36px;background:#dd1616;font-size:14px;color:white;border-radius:3px;text-align:center;" class="area-sure">确定</li>
+            </ul>
+        </div>
+        <ul class="layer-near layer-up-some ovw fram-list-sort-near" style="display:none;z-index:888">
+            <!-- <li class="hover">全国 <span style="display:none;">0</span></li> -->
+            <li class="hover">附近 <span>10</span>km</li>
+            <li>附近 <span>15</span>km</li>
+            <li>附近 <span>20</span>km</li>
+        </ul>
+        <section class="layer-time layer-up-some ovw" style="z-index:888">
+            <cite class="layer-time-name ovw">起始时间</cite>
+            <ul class="layer-time-content ovw time-satart">
+                <li class="layer-li-one">
+                    <span></span>
+                    <span>2014</span>
+                    <span>2015</span>
+                    <span>2016</span>
+                    <span>2017</span>
+                    <span></span>
+                </li>
+                <li class="layer-li-two">
+                    <span></span>
+                    <span>1月</span>
+                    <span>2月</span>
+                    <span>3月</span>
+                    <span>4月</span>
+                    <span>5月</span>
+                    <span>6月</span>
+                    <span>7月</span>
+                    <span>8月</span>
+                    <span>9月</span>
+                    <span>10月</span>
+                    <span>11月</span>
+                    <span>12月</span>
+                    <span></span>
+                </li>
+                <li class="layer-li-three">
+                    <span></span>
+                    <span>1日</span>
+                    <span>2日</span>
+                    <span>3日</span>
+                    <span>4日</span>
+                    <span>5日</span>
+                    <span>6日</span>
+                    <span>7日</span>
+                    <span>8日</span>
+                    <span></span>
+                </li>
+            </ul>
+            <cite class="layer-time-name ovw">截止时间</cite>
+            <ul class="layer-time-content ovw time-end">
+                <li class="layer-li-four">
+                    <span></span>
+                    <span>2014</span>
+                    <span>2015</span>
+                    <span>2016</span>
+                    <span>2017</span>
+                    <span></span>
+                </li>
+                <li class="layer-li-five">
+                    <span></span>
+                    <span>1月</span>
+                    <span>2月</span>
+                    <span>3月</span>
+                    <span>4月</span>
+                    <span>5月</span>
+                    <span>6月</span>
+                    <span>7月</span>
+                    <span>8月</span>
+                    <span>9月</span>
+                    <span>10月</span>
+                    <span>11月</span>
+                    <span>12月</span>
+                    <span></span>
+                </li>
+                <li class="layer-li-six">
+                    <span></span>
+                    <span>1日</span>
+                    <span>2日</span>
+                    <span>3日</span>
+                    <span>4日</span>
+                    <span>5日</span>
+                    <span>6日</span>
+                    <span>7日</span>
+                    <span>8日</span>
+                    <span></span>
+                </li>
+            </ul>
+            <p class="layer-time-name ovw time-sort" style="margin-top:10px;color:red;">确定</p>
+        </section>
+        <input type="hidden" class="lng_val" value="">
+        <input type="hidden" class="lat_val" value="">
+        <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9&plugin=AMap.Geocoder,AMap.Autocomplete,AMap.PlaceSearch"></script>
+        <script type="text/javascript">
+        // $(function(){
+            /*********************返回路径配置************************/
+            var from = GetQueryParam('from');
+            $('.header-back').on('click', function () {
+                if (from == 'infor') {
+                    window.location.href = 'order-infor.html';
+                } else {
+                    backtoNative();
+                }
+            })
+
+            /*************消息通知消息状态处理****************/
+            var messageID = GetQueryParam('messageID');
+            if (from == 'infor') {
+                setTimeout(function () {
+                    var notice_params = {
+                        'messageID': messageID,
+                        'userid': userid,
+                    }
+                    console.info(notice_params);
+                    readMessage(notice_params);
+                }, 100);
+            }
+
+            var type = isNull(GetQueryParam("type")) ? GetQueryParam("type") : 0;
+            var sec_type = GetQueryParam("work_type");
+            var searchContent = GetQueryParam("search_txt");
+            if (isNull(searchContent)) {
+                $('.visa-in').val(searchContent);
+                $('.visa-in').parent('form').prev('aside').children().hide();
+                $('.visa-in').parent('form').prev('aside').css('textIndent', '9999px');
+            } else {
+                $('.visa-in').val('');
+            }
+            var count = 0;
+            var map;
+            var lng_lat = [];//农活的经纬度
+            var markers = [];//农活位置在地图上的点标
+            var farmWorkDetails = [];//农活的内容
+
+            //*******************************农活搜索列表*****************************
+            function farmWorkList(params) {
+                var cmd = 'farmWorkList';//农活搜索列表接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var up = 1;//默认是上拉
+                if (params.page == 0) {
+                    up = 0;
+                    count = 0;
+                    params.page = 1;
+                }
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        if (isNull(data['body']['list'])) {
+                            var farmWorkListHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                var comment_star = showStar(val['grade']);
+                                if (isNull(val['lng']) && isNull(['lat'])) {
+                                    var temp_lng_lat = {'lng': val['lng'], 'lat': val['lat']};
+                                    lng_lat.push(temp_lng_lat);
+                                }//farm-work-details.html?farmWorkID=' + val['farmworkID'] + '&search_txt='+searchContent+'
+//                              farmWorkListHtml += '<article class="release-near-art ovw"><a href="farm-work-details.html?farmWorkID=' + val['farmworkID'] + '&search_txt='+searchContent+'" farmWorkID="'+ val['farmworkID']+'">' +
+                                farmWorkListHtml += '<article class="release-near-art ovw"><a href="javascript:;" class="farmWork-detail" farmWorkID="'+ val['farmworkID']+'">' +
+                                        '<dl class="release-near-dl ovw">' +
+                                        '<dt><div style="border-radius: 100%;height: 1.33rem;width: 1.33rem;overflow: hidden;"><img src="' + val['poster'] + '" style="height: auto;border-radius: 0;width:100%;"/></div><span class="rele-near-name fl ovw">' + val['publisherName'] + '</span></dt>' +
+                                        '<dd>' +
+                                        '<div class="rele-near-dete ovw">' +
+                                        '<div class="near-discuse ovw fl">' +
+                                        '<p class="star-eval ovw fr">' + comment_star +
+                                        '</p>' +
+                                        '<cite class="fr">评价:</cite>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '<p class="near-pa ovw">' +
+                                        '<label class="fl">作业时间：</label>' +
+                                        '<span class="fl">' + val['timeline'] + '</span>' +
+                                        '</p>' +
+                                        '<p class="near-pa ovw">' +
+                                        '<label class="fl">作业地点：</label>' +
+                                        '<span class="fl">' + val['farmworkAddress'] + '</span>' +
+                                        '</p>' +
+                                        '<p class="near-pa ovw">' +
+                                        '<label class="fl">作业品种：</label>' +
+                                        '<span class="fl">' + val['cropType'] + '</span>' +
+                                        '</p>' +
+                                        '<p class="near-pa ovw">' +
+                                        '<label class="fl">作业类型：</label>' +
+                                        '<span class="fl">' + val['farmworkType'] + '</span>' +
+                                        '</p>' +
+                                        '</dd>' +
+                                        '</dl>' +
+                                        '</a></article>';
+                                farmWorkDetails.push(val);
+                                count++;
+                            })
+                            // $('.farmWorkList').append(farmWorkListHtml);
+                        } else {
+                            sign=0;
+                            if ((count != 0)) {//上拉加载无内容锁定无数据
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                            } else {
+                                html = '<div class="none-more-content">暂无内容</div>';
+                                $('.dropload-down').siblings().remove();
+                                $('.dropload-down').before(html);
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData();
+                                $('.dropload-down').hide();
+                                return false;
+                            }
+                        }
+                        // console.info(lng_lat);
+                        //*********************把农活位置经纬度保存并展示为点标*******************
+                        // var marke =  [{'lng':"117.274802","lat":"31.872853"},{ "lng":"117.133226",  "lat":"31.897232"},{ "lng":"117.494401",  "lat":"31.861082"},{ "lng":"117.339219",  "lat":"31.604122"}, { "lng":"117.159318",  "lat":"31.914719"}];
+                        if (params.page > 1) {
+                            markers = [];
+                        }
+                        $.each(lng_lat, function (i, marker) {	//lng_lat
+                            if (isNull(marker.lng) && isNull(marker.lat)) {
+                                marker = new AMap.Marker({
+                                    map: map,
+                                    position: [marker.lng, marker.lat],
+                                    clickable: true,
+                                });
+                                markers.push(marker);
+                            }
+                        });
+                        // addMaker(lng_lat);
+                        $.each(markers, function (i) {
+                            markers[i].on('click', function (e) {
+                                if ($('.voice').length > 0) {
+                                    closeInfoWindow(map);
+                                    $('.synthesis-cont').remove();
+                                }
+                                var message = openInfo(i);
+                                infoWindow = new AMap.InfoWindow({
+                                    content: message[0], //使用默认信息窗体框样式，显示信息内容
+                                    isCustom: true, //使用自定义窗体
+                                });
+                                infoWindow.open(map, map.getCenter());
+                                // readText(message[1]);
+                            })
+                        });	        	// 为了测试，延迟1秒加载
+                        setTimeout(function () {
+                            $('.none-more-content').remove();
+                            if (up == 0) {//下拉加载
+                                if (count < ((params.page) * params.num) && count != 0) {
+                                    farmWorkListHtml += '<div class="dropload-down" style="display:none;"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.farmWorkList').html(farmWorkListHtml);
+                                } else {
+                                    $('.farmWorkList').html(farmWorkListHtml);
+                                    dropload_farmWorkList(params);
+                                }
+                                dropload.resetload();
+                                dropload.unlock();// 解锁loadDownFn里锁定的情况
+                                // dropload.noData(false);
+                                $('.dropload-down').hide();
+                                params.page = 2;// 重置页数，重新获取loadDownFn的数据
+
+                            } else {
+                                if (count < ((params.page) * params.num)) {
+                                    dropload.lock();// 锁定
+                                    dropload.noData();// 无数据
+                                    $('.dropload-down').hide();
+                                }
+                                $('.dropload-down').before(farmWorkListHtml);
+                                // $('.farmWorkList').prepend(farmWorkListHtml);
+                                dropload.resetload();// 每次数据加载完，必须重置
+                            }
+                            if($('.release-near-art').length>0){
+                                sign=0;
+                            }
+                        }, 300);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            $(document).on('click', '.voice', function () {
+                var marker_num = $(this).attr('marker_id');
+                var message_content = openInfo(marker_num);
+                readText(message_content[1]);
+            })
+            $(document).on('click','.farmWork-detail',function(){
+                var farmWorkID = $(this).attr('farmWorkID');
+                var detail_url = 'http://'+window.location.host+'/farm-work-details.html?farmWorkID='+farmWorkID;
+                openH5(detail_url);
+            })
+            //*********************************农活搜索列表上拉加载*****************
+            function dropload_farmWorkList(params) {
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var time = toLocalTime(ts, 6);
+                dropload = $('.farmWorkList').dropload({
+                    scrollArea: window,
+                    domUp: {
+                        domClass: 'dropload-up',
+                        domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                    },
+                    domDown: {
+                        domClass: 'dropload-down',
+                        domRefresh: '<div class="dropload-refresh"></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                        domNoData: '<div class="dropload-noData">已加载全部数据</div>'
+                    },
+                    loadUpFn: function (me) {
+                        //下拉刷新
+                        params.page = 0;
+                        farmWorkList(params);
+                        params.page = 1;
+                    },
+                    loadDownFn: function (me) {
+                        //上拉加载
+                        farmWorkList(params);
+                        params.page++;
+                    },
+                    threshold: 50
+                });
+            }
+
+            //***********************************获取农活类型*********************
+            function farmworkTypeList(params,type) {
+                var cmd = 'farmWorkTypeList';//接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;console.info(params);
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {console.info(data);
+                        if (isNull(data['body']['list'])) {
+                            if(isNull(sec_type)){
+                                var farmworkTypeListHtml = '<li typeID="0">全部</li>';
+                            }else{
+                                var farmworkTypeListHtml = '<li typeID="0"  class="hover">全部</li>';
+                            }
+                            $.each(data['body']['list'], function (i, val) {
+                                if(sec_type==val['typeID']){
+                                    farmworkTypeListHtml += '<li typeID="' + val['typeID'] + '" class="hover">' + val['typeName'] + '</li>';
+                                    $('.drop-down-b a').html(val['typeName']);
+                                 }else{
+                                    farmworkTypeListHtml += '<li typeID="' + val['typeID'] + '">' + val['typeName'] + '</li>';
+                                }
+                            });
+                            $('.fram-work-sort-type').append(farmworkTypeListHtml);
+                        } else {
+                            html = '<div class="none-more-content">暂无内容</div>';
+                            $('.fram-work-sort-type').html(html);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+
+            //********************************获取种植类型**************************
+            function plantTypeList(params,type) {
+                var cmd = 'farmWorkTypeList';//种植类型接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        console.info(data);
+                        if (isNull(data['body']['list'])) {
+                            if(isNull(type)){
+                                var plantTypeListHtml = '<li typeID="0" style="background:#f9f9f9">全部</li>';
+                            }else{
+                                var plantTypeListHtml = '<li typeID="0" class="hover" style="background:#f9f9f9">全部</li>';
+                            }
+                            $.each(data['body']['list'], function (i, val) {
+                                if(type==val['typeID']){
+                                    plantTypeListHtml += '<li typeID="' + val['typeID'] + '" class="hover">' + val['typeName'] + '</li>';
+                                }else{
+                                    plantTypeListHtml += '<li typeID="' + val['typeID'] + '">' + val['typeName'] + '</li>';
+                                }
+                            });
+                            $('.fram-list-sort-type').append(plantTypeListHtml);
+                        } else {
+                            html = '<div class="none-more-content">暂无内容</div>';
+                            $('.fram-list-sort-type').html(html);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            var plantTypeList_params = {};
+            plantTypeList(plantTypeList_params,type);
+            var farmworkTypeList_params1 = {
+                'pid': type,
+            }
+            $('.fram-work-sort-type').html('');
+            farmworkTypeList(farmworkTypeList_params1,sec_type);
+            $(document).on('touchend', '.fram-list-sort-type li', function () {
+                // $('.fram-list-sort-type li').on('touchend',function(){
+                // if($(this).index()!=0){
+                $('.fram-list-sort-type li').removeClass('hover');
+                $(this).addClass('hover');
+                $('.fram-list-sort-type li').css({'background': 'none'});
+                $(this).css({'background': '#f9f9f9'});
+                var pid = $(this).attr('typeID');
+                var farmworkTypeList_params = {
+                    'pid': pid,
+                }
+                $('.fram-work-sort-type').html('');
+                farmworkTypeList(farmworkTypeList_params);
+                $('fram-work-sort-type').show();
+                e.preventDefault();
+                // }
+            })
+            /**********************列表搜索查找*********************************/
+            //附近
+            var near_distance = '';
+            $('.fram-list-sort-near li').on('click', function () {
+                $('.drop-down-a a').html($(this).html());
+                searchContent = $.trim($('.visa-in').val());
+                $('.fram-list-sort-near li').removeClass('hover');
+                $(this).addClass('hover');
+                $('.fram-list-sort-near li').css({'color': '#666'});
+                $(this).css({'color': '#dd1616'});
+                near_distance = $(this).children('span').text();
+                sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                $('.qx option:selected').attr('areaID', 0);
+                var params = {//农机搜索列表接口提供参数
+                    'keyword': searchContent,
+                    'distance': near_distance, //距离搜索；0表示全国,false
+                    'type': type, //类型搜索,false
+                    'subtype': subtype,
+                    'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                    // 'area' : 1,//地区搜索,false
+                    'page': PAGE,
+                    'num': PAGE_NUM,
+                    'lng': lng,
+                    'lat': lat,
+                };
+                $('.fram-list-sort-near').toggle();
+                $('.layer-map-bj').toggle();
+                count = 0;
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//农活的经纬度
+                markers = [];//农活位置在地图上的点标
+                farmWorkDetails = [];//农活的内容
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_farmWorkList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+            //农活类型排序
+            $(document).on('touchend', '.fram-work-sort-type li', function (e) {
+                $('.drop-down-b a').html($(this).html());
+                searchContent = $.trim($('.visa-in').val());
+                $('.fram-work-sort-type li').removeClass('hover');
+                $(this).addClass('hover');
+                type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                subtype = $(this).attr('typeID');
+                near_distance = $('.fram-list-sort-near .hover').children('span').text();
+                sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                if ($('.base-sele-main .hover').text() == "附近") {
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        'distance': near_distance, //距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        // 'area' : location_info,//地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'lng': lng,
+                        'lat': lat,
+
+                    };
+                } else {
+                    var area_sort = mapZoom();
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': isNull(area_sort[0])?area_sort[0]:0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':$('.lng_val').val(),
+                        // 'lat':$('.lat_val').val(),
+                    };
+                }
+                $('.fram-list-sort-type').toggle();
+                $('.fram-work-sort-type').toggle();
+                $('.layer-map-bj').toggle();
+                count = 0;
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//农活的经纬度
+                markers = [];//农活位置在地图上的点标
+                farmWorkDetails = [];//农活的内容
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_farmWorkList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+                e.preventDefault();
+            })
+            //智能排序
+            var sort = '';
+            $('.fram-list-sort-auto li').on('click', function () {
+                $('.drop-down-d a').html($(this).html());
+                searchContent = $.trim($('.visa-in').val());
+                $('.fram-list-sort-auto li').removeClass('hover');
+                $(this).addClass('hover');
+                sort = $(this).attr('fram-list-auto');
+                near_distance = $('.fram-list-sort-near .hover').children('span').text();
+                type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                if ($('.base-sele-main .hover').text() == "附近") {
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        'distance': near_distance, //距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        // 'area' : location_info,//地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'lng': lng,
+                        'lat': lat,
+                    };
+                } else {
+                    var area_sort = mapZoom();
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': isNull(area_sort[0])?area_sort[0]:0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':$('.lng_val').val(),
+                        // 'lat':$('.lat_val').val(),
+                    };
+                }
+                $('.fram-list-sort-auto').toggle();
+		$('.layer-map-bj').toggle();
+                count = 0;
+                map.remove(markers);
+                closeInfoWindow(map);//infoWindow.close();
+                lng_lat = [];//农活的经纬度
+                markers = [];//农活位置在地图上的点标
+                farmWorkDetails = [];//农活的内容
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_farmWorkList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+
+            //时间排序
+            var time_year = '<span></span>';
+            for (var i = 2016; i < 2031; i++) {
+                if (i == 2016) {
+                    time_year += '<span class="st-year">' + i + '</span>';
+                } else {
+                    time_year += '<span>' + i + '</span>';
+                }
+            }
+            ;
+            time_year += '<span></span>';
+            $($('.time-satart li')[0]).html(time_year);
+            $($('.time-end li')[0]).html(time_year);
+            var time_month = '<span></span>';
+            for (var i = 1; i < 13; i++) {
+                if (i == 1) {
+                    time_month += '<span class="st-month">' + i + '月</span>';
+                } else {
+                    time_month += '<span>' + i + '月</span>';
+                }
+            }
+            ;
+            time_month += '<span></span>';
+            $($('.time-satart li')[1]).html(time_month);
+            $($('.time-end li')[1]).html(time_month);
+            var time_day = '<span></span>';
+            for (var i = 1; i < 32; i++) {
+                if (i == 1) {
+                    time_day += '<span class="st-day">' + i + '日</span>';
+                } else {
+                    time_day += '<span>' + i + '日</span>';
+                }
+
+            }
+            ;
+            time_day += '<span></span>';
+            $($('.time-satart li')[2]).html(time_day);
+            $($('.time-end li')[2]).html(time_day);
+            $('.time-sort').on('click', function () {
+                var starttime = $($('.st-year')[0]).text() + '-' + $($('.st-month')[0]).text().replace(/[\u4e00-\u9fa5]/g, "") + '-' + $($('.st-day')[0]).text().replace(/[\u4e00-\u9fa5]/g, "");
+                var endtime = $($('.st-year')[1]).text() + '-' + $($('.st-month')[1]).text().replace(/[\u4e00-\u9fa5]/g, "") + '-' + $($('.st-day')[1]).text().replace(/[\u4e00-\u9fa5]/g, "");
+                searchContent = $.trim($('.visa-in').val());
+                if (starttime > endtime) {
+                    layer.msg('开始时间不能大于截止时间');
+                    return false;
+                }
+                $('.fram-list-sort-type li').removeClass('hover');
+                type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                near_distance = $('.fram-list-sort-near .hover').children('span').text();
+                sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                if ($('.base-sele-main .hover').text() == "附近") {
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        'distance': near_distance, //距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        // 'area' : location_info,//地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'starttime':starttime,
+                        'endtime':endtime,
+                        'lng': lng,
+                        'lat': lat,
+                    };
+                } else {
+                    var area_sort = mapZoom();
+                    params = {//农机搜索列表接口提供参数
+                        'keyword': searchContent,
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        'type': type, //类型搜索,false
+                        'subtype': subtype,
+                        'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': isNull(area_sort[0])?area_sort[0]:0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        'starttime':starttime,
+                        'endtime':endtime,
+                        // 'lng':$('.lng_val').val(),
+                        // 'lat':$('.lat_val').val(),
+                    };
+                }
+                $('.layer-time').toggle();
+                $('.layer-map-bj').toggle();
+                $('body').css({'position': 'relative', 'top': '0', 'left': '0', 'width': '100%'});
+                count = 0;
+                map.remove(markers);
+                closeInfoWindow(map);//infoWindow.close();
+                lng_lat = [];//农活的经纬度
+                markers = [];//农活位置在地图上的点标
+                farmWorkDetails = [];//农活的内容
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                dropload_farmWorkList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+
+            //从搜索提供参数
+            setTimeout(function () {
+                if (current_location_address != '') {   //获取到当前位置
+                    geocoder(current_location_address);
+                } else {                              //没获取到当前位置使用用户设置的位置
+                    geocoder(location_address);
+                }
+            }, 100)
+            setTimeout(function () {
+                if (current_location_address != '') {   //获取到当前位置
+                    var arr_areaID = current_location_areaIDs.split(",");
+                    var arr_areaNames = current_location_areaNames.split(",");
+                } else {                              //没获取到当前位置使用用户设置的位置
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                }
+                // getArea(0,1,0);
+                // if(arr_areaID[0]!=''){getArea(arr_areaID[0],2,0);}
+                // if(arr_areaID[1]!=''){getArea(arr_areaID[1],3,0);}
+                // if(arr_areaID[2]!=''){getArea(arr_areaID[2],4,0);}
+                // if(arr_areaID[3]!=''){getArea(arr_areaID[3],5,0);}
+                near_distance = $('.fram-list-sort-near .hover').children('span').text();
+                //从首页搜索跳转过来
+                if (from == 'index') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                    getArea(0, 1, 1); //用户设置的区域位置
+                    if (arr_areaID[0] != '') {
+                        getArea(arr_areaID[0], 2, 1);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (arr_areaID[1] != '') {
+                        getArea(arr_areaID[1], 3, 1);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (arr_areaID[2] != '') {
+                        getArea(arr_areaID[2], 4, 1);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (arr_areaID[3] != '') {
+                        getArea(arr_areaID[3], 5, 1);
+                        var area_id = arr_areaID[3];
+                    }
+                    var params = {//农机搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        // 'type' : type,//类型搜索,false
+                        // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area': 0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                    dropload_farmWorkList(params);
+                }else if (from == 'infor') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    getArea(0, 1,2); //从订阅消息跳转过来
+                    var params = {//农机搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                         'type' : type,//类型搜索,false
+                         'subtype': sec_type,
+                        'area': 0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                    dropload_farmWorkList(params);
+                } else if (from == 'near') {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[1]).addClass('hover');
+                    $($('.base-sele-main li')[1]).addClass('text-color');
+                    $('.drop-down-a a').text('附近 10km');
+                    if (lng == '') {
+                        layer.msg('抱歉，未获取到当前位置,请稍后！');
+                        setTimeout(function () {
+                            var params = {//农机搜索列表接口提供参数
+                                'keyword': isNull(searchContent) ? searchContent : '',
+                                'distance': near_distance, //距离搜索；0表示全国,false
+                                'type': type, //类型搜索,false
+                                'subtype': 0,
+                                'sort': 0, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                // 'area' : location_info,//地区搜索,false
+                                'page': PAGE,
+                                'num': PAGE_NUM,
+                                'lng': lng,
+                                'lat': lat,
+                            };
+                            dropload_farmWorkList(params);
+                        }, 400);
+                    }else{
+                        var params = {//农机搜索列表接口提供参数
+                                'keyword': isNull(searchContent) ? searchContent : '',
+                                'distance': near_distance, //距离搜索；0表示全国,false
+                                'type': type, //类型搜索,false
+                                'subtype': 0,
+                                'sort': 0, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                                // 'area' : location_info,//地区搜索,false
+                                'page': PAGE,
+                                'num': PAGE_NUM,
+                                'lng': lng,
+                                'lat': lat,
+                            };
+                            dropload_farmWorkList(params);
+                    }
+                }else {
+                    $('.base-sele-main li').removeClass('hover');
+                    $('.base-sele-main li').removeClass('text-color');
+                    $($('.base-sele-main li')[0]).addClass('hover');
+                    $($('.base-sele-main li')[0]).addClass('text-color');
+                    $('.drop-down-a a').text('区域');
+                    $('.drop-down-a').addClass('sort-first0');
+                    var arr_areaID = location_areaIDs.split(",");
+                    var arr_areaNames = location_areaNames.split(",");
+                   getArea(0, 1, 1); //用户设置的区域位置
+                    if (arr_areaID[0] != '') {
+                        getArea(arr_areaID[0], 2, 1);
+                        var area_id = arr_areaID[0];
+                    }
+                    if (arr_areaID[1] != '') {
+                        getArea(arr_areaID[1], 3, 1);
+                        var area_id = arr_areaID[1];
+                    }
+                    if (arr_areaID[2] != '') {
+                        getArea(arr_areaID[2], 4, 1);
+                        var area_id = arr_areaID[2];
+                    }
+                    if (arr_areaID[3] != '') {
+                        getArea(arr_areaID[3], 5, 1);
+                        var area_id = arr_areaID[3];
+                    }if (arr_areaID[4] != '') {
+                        var area_id = arr_areaID[4];
+                    }
+                    var params = {//农机搜索列表接口提供参数
+                        'keyword': isNull(searchContent) ? searchContent : '',
+                        // 'distance' :near_distance,//距离搜索；0表示全国,false
+                        // 'type' : type,//类型搜索,false
+                        // 'sort' : ,//排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                        'area':isNull(area_id)?area_id:0, //地区搜索,false
+                        'page': PAGE,
+                        'num': PAGE_NUM,
+                        // 'lng':lng,
+                        // 'lat':lat,
+                    };
+                    dropload_farmWorkList(params);
+                }
+            }, 500);
+
+            // dropload_farmWorkList(params);
+            // farmworkTypeList();//农机类型加载
+
+
+            $(document).keyup(function (event) {
+                if (event.keyCode == 13) {
+                    searchContent = $.trim($('.visa-in').val());
+                    near_distance = $('.fram-list-sort-near .hover').children('span').text();
+                    type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                    subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                    sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                    if ($('.base-sele-main .hover').text() == "附近") {
+                        params = {
+                            'keyword': searchContent,
+                            'distance': near_distance, //距离搜索；0表示全国,false
+                            'type': type, //类型搜索,false\
+                            'subtype': subtype,
+                            'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                            // 'area' : location_info,//地区搜索,false
+                            'page': PAGE,
+                            'num': PAGE_NUM,
+                            'lng': lng,
+                            'lat': lat,
+                        };
+                    } else {
+                        var area_sort = mapZoom();
+                        params = {//农机搜索列表接口提供参数
+                            'keyword': searchContent,
+                            // 'distance' :near_distance,//距离搜索；0表示全国,false
+                            'type': type, //类型搜索,false
+                            'subtype': subtype,
+                            'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                            'area': isNull(area_sort[0])?area_sort[0]:0, //地区搜索,false
+                            'page': PAGE,
+                            'num': PAGE_NUM,
+                            // 'lng':$('.lng_val').val(),
+                            // 'lat':$('.lat_val').val(),
+                        };
+                    }
+                    // if(searchContent==''){
+                    //     layer.msg('搜索内容不能为空哦！');
+                    //     // return false;
+                    // }else{
+                    count = 0;
+                    map.remove(markers);
+                    closeInfoWindow(map);//infoWindow.close();
+                    lng_lat = [];//农活的经纬度
+                    markers = [];//农活位置在地图上的点标
+                    farmWorkDetails = [];//农活的内容
+                    dropload.lock();
+                    dropload.resetload();
+                    delete dropload.opts.domUp;
+                    $('.dropload-down').siblings().remove();
+                    $('.dropload-down').show();
+                    dropload_farmWorkList(params);
+                    // }
+                    $.each($('.dropload-down'), function (i) {
+                        if (i != 0)
+                            $($('.dropload-down')[i]).remove();
+                    })
+                    // if(searchContent != ''){
+                    // window.location.href = changeUrlParam('search_txt',searchContent);
+                    // }
+                }
+            });
+
+            /****************************获取地区信息接口********************
+             **type:1.省份；2.城市，3.区县；4.乡镇
+             */
+            function getArea(areaID, type, when) {
+                var cmd = 'getArea';//农机投诉接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var params = {
+                    'areaID': areaID,
+                };
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        if (isNull(data['body']['list'])) {
+                            var areaHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                            });
+                            switch (parseInt(type)) {
+                                case 1:
+                                    $('.sf').append(areaHtml);
+                                    break;
+                                case 2:
+                                    $('.cs').append(areaHtml);
+                                    break;
+                                case 3:
+                                    $('.qx').append(areaHtml);
+                                    break;
+                                case 4:
+                                    $('.xz').append(areaHtml);
+                                    break;
+                                case 5:
+                                    $('.cz').append(areaHtml);
+                                    break;
+                            }
+                            if (when == 0) {        //0  当前位置
+                                if (current_location_address != '') {   //获取到当前位置
+                                    var arr_areaID = current_location_areaIDs.split(",");
+                                    var arr_areaNames = current_location_areaNames.split(",");
+                                } else {                      //没获取到当前位置使用用户设置的位置
+                                    var arr_areaID = location_areaIDs.split(",");
+                                    var arr_areaNames = location_areaNames.split(",");
+                                }
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            } else if (when == 1) {  //  首页设置位置
+                                var arr_areaID = location_areaIDs.split(",");
+                                var arr_areaNames = location_areaNames.split(",");
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            }else if (when == 2) {  //  我的订阅跳转
+                                $('.sf').val(0);
+                            }
+
+                        } else {
+                            // layer.msg('暂无区域内容');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            // getArea(0,1);
+            $('.sf').on('change', function () {
+                if ($('.sf option:selected').attr('areaID') != -1) {
+                    $('.cs').html('');
+                    $('.cs').append('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    if ($('.sf option:selected').attr('areaID') != 0) {
+                        getArea($('.sf option:selected').attr('areaID'), 2);
+                    }
+                } else {
+                    $('.cs').html('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.cs').on('change', function () {
+                if ($('.cs option:selected').attr('areaID') != 0) {
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.cs option:selected').attr('areaID'), 3);
+                } else {
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.qx').on('change', function () {
+                if ($('.qx option:selected').attr('areaID') != 0) {
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.qx option:selected').attr('areaID'), 4);
+                } else {
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.xz').on('change', function () {
+                if ($('.xz option:selected').attr('areaID') != 0) {
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.xz option:selected').attr('areaID'), 5);
+                } else {
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $(document).on('touchend', '.area-sure', function () {
+                var area_sort = mapZoom();
+                if (area_sort[0] == 0) {
+                    geocoder("西安", 4);
+                } else {
+                    geocoder(area_sort[1], area_sort[2]);
+                }
+                $('.fram-list-sort-near li').removeClass('hover');
+                searchContent = $.trim($('.visa-in').val());
+                type = $('.fram-list-sort-type .hover').attr('typeID') ? $('.fram-list-sort-type .hover').attr('typeID') : 0;
+                subtype = $('.fram-work-sort-type .hover').attr('typeID') ? $('.fram-work-sort-type .hover').attr('typeID') : 0;
+                sort = $('.fram-list-sort-auto .hover').attr('fram-list-auto');
+                $('.layer-area').hide();
+                $('.layer-map-bj').hide();
+                if ($('.base-sele-main .hover').text() == "全国") {
+                    var num = PAGE_NUM;
+                } else {
+                    var num = 30;
+                }
+                var params = {//农活搜索列表接口提供参数
+                    'keyword': searchContent,
+                    // 'distance' :,//距离搜索；0表示全国,false
+                    'type': type, //类型搜索,false
+                    'subtype': subtype,
+                    'sort': sort, //排序类型：1智能排序、2离我最近，3最新发布，4评分由高到低，5成交单数，false
+                    'area': isNull(area_sort[0])?area_sort[0]:0, //地区搜索,false
+                    'page': PAGE,
+                    'num': num,
+                    // 'lng':$('.lng_val').val(),
+                    // 'lat':$('.lat_val').val(),
+                };
+                count = 0;
+                map.remove(markers);
+                closeInfoWindow(map);
+                lng_lat = [];//农活的经纬度
+                markers = [];//农活位置在地图上的点标
+                farmWorkDetails = [];//农活的内容
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                dropload_farmWorkList(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0)
+                        $($('.dropload-down')[i]).remove();
+                })
+            })
+            //*******************发布认证***********************************************
+            $('.header-rele').on('click', function () {
+                if (userid != 0) {
+                    var getReleaseAuth_params = {
+                        'userid': userid,
+                        'type': 2,
+                    }
+                    getReleaseAuth(getReleaseAuth_params);
+                } else {
+                    gotoLogin();
+                }
+            });
+            $('.certification').on('click', function (e) {
+                $('.certification').toggle();
+                $('.layer-rele-cont').toggle();
+            })
+            //*************************地图点标处理*************************************
+            var infoWindow;//信息窗体
+            /*var map = new AMap.Map('container', {
+             resizeEnable: true,
+             zoom:11,
+             center:[121.4456600000,31.2033870000]// [117.274802,31.872853]   
+             });*/
+            setTimeout(function () {
+                map = new AMap.Map('container', {
+                    resizeEnable: true,
+                    zoom: 4,
+                });
+                map.setFitView();
+            }, 1000);
+
+            //在指定位置打开信息窗体
+            function openInfo(index) {
+                //构建信息窗体中显示的内容
+                var hh = $('.base-sele').height();
+                var contentHtml;
+                var text;
+                $.each(farmWorkDetails, function (i, val) {
+                    if (index == i) {
+                        var comment_star = showStar(val['grade']);
+                        contentHtml = '<section class="synthesis-cont fram-work-detail" style="display:block;"><article class="synthesis-main ovw mach-List" style="overflow-y: scroll;padding-top: 0.28rem;padding-bottom: 0.28rem;height:auto;bottom:' + hh + 'px;">' +
+                                '<dl class="release-near-dl ovw">' +
+                                '<a href="javascript:;" class="farmWork-detail" farmWorkID="'+ val['farmworkID']+'"><dt><img src="' + val['poster'] + '"/><span class="rele-near-name fl ovw">' + val['publisherName'] + '</span></dt></a>' +
+                                '<dd>' +
+                                '<div class="rele-near-dete ovw">' +
+                                '<div class="near-discuse ovw fl">' +
+                                '<p class="star-eval ovw fr">' + comment_star +
+                                '</p>' +
+                                '<cite class="fr">评价:</cite>' +
+                                '<a href="javascript:void(0);" class="header-reg voice" marker_id="' + i + '"><img src="images/map-voice.png" style="width:0.85rem"></a>' +
+                                '</div>' +
+                                '</div>' +
+                                '<p class="near-pa ovw">' +
+                                '<label class="fl">作业时间：</label>' +
+                                '<span class="fl">' + val['timeline'] + '</span>' +
+                                '</p>' +
+                                '<a href="javascript:;" class="farmWork-detail" farmWorkID="'+ val['farmworkID']+'"><p class="near-pa ovw">' +
+                                '<label class="fl">作业地点：</label>' +
+                                '<span class="fl">' + val['farmworkAddress'] + '</span>' +
+                                '</p>' +
+                                '<p class="near-pa ovw">' +
+                                '<label class="fl">作业品种：</label>' +
+                                '<span class="fl">' + val['cropType'] + '</span>' +
+                                '</p>' +
+                                '<p class="near-pa ovw">' +
+                                '<label class="fl">作业类型：</label>' +
+                                '<span class="fl">' + val['farmworkType'] + '</span>' +
+                                '</p></a>' +
+                                '</dd>' +
+                                '</dl>' +
+                                '</article></section>';
+                        text = "作业时间" + val['timeline'] + "作业地点" + val['farmworkAddress'] + "作业品种" + val['cropType'] + "作业类型" + val['farmworkType'];
+                    }
+                })
+                return [contentHtml, text];
+            }
+
+            /*****************************发布需要的认证权限*********************/
+            function getReleaseAuth(params) {      //type:1农机；2农活；3零工 ；4零活；5商品；6二手
+                var cmd = 'getReleaseAuth';
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        // if(data['resultCode']==-1){
+                        var body = data['body'];
+                        if (body['phone'] == 1) {
+                            var phone = "手机/";
+                        } else {
+                            var phone = "";
+                        }
+                        if (body['realname'] == 1) {
+                            var realname = "实名/";
+                        } else {
+                            var realname = "";
+                        }
+                        if (body['land'] == 1) {
+                            var land = "土地/";
+                        } else {
+                            var land = "";
+                        }
+                        if (body['contractor'] == 1) {
+                            var contractor = "大户/";
+                        } else {
+                            var contractor = "";
+                        }
+                        if (body['machine'] == 1) {
+                            var machine = "农机手/";
+                        } else {
+                            var machine = "";
+                        }
+                        if (body['merchants'] == 1) {
+                            var merchants = "商户/";
+                        } else {
+                            var merchants = "";
+                        }
+                        if (body['skill'] == 1) {
+                            var skill = "技能/";
+                        } else {
+                            var skill = "";
+                        }
+                        var certification_list = phone + realname + land + contractor + machine + merchants + skill;
+                        if (body['phone'] == 1 || body['realname'] == 1 || body['land'] == 1 || body['contractor'] == 1 || body['machine'] == 1 || body['merchants'] == 1 || body['skill'] == 1) {
+                            $('.certification-list').html(certification_list);
+                            $('.certification').toggle();
+                            $('.layer-rele-cont').toggle();
+                        } else {
+                            window.location.href = "farm-work-release.html?from=app";
+                        }
+
+                        // }else{}
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+
+
+        // })
+
+        </script>
+    </body>
+</html>

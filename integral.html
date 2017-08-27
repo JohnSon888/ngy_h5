@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<title></title>
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<style>
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+	.inte-main{
+		margin-top: 0.166rem;
+		background: #fff;
+		width: 100%;
+	}
+	.inte-ula{
+		width: 100%;
+	}
+	.inte-ula li{position: relative;width: 100%;padding: 0.266rem 0;overflow: hidden;}
+	.inte-ula li samp,.inte-ula li span{display: block;padding-left: 0.86rem;overflow: hidden;}
+	.inte-ula li span{font-size: 14px;color: #333;line-height: 0.626rem;}
+	[data-dpr="2"] .inte-ula li span{font-size: 28px;}
+	[data-dpr="3"] .inte-ula li span{font-size: 42px;}
+	.inte-ula li samp{font-size: 12px;color: #999;line-height: 0.52rem;font-family: arial;}
+	[data-dpr="2"] .inte-ula li samp{font-size: 24px;}
+	[data-dpr="3"] .inte-ula li samp{font-size: 36px;}
+	.inte-ula li:after{
+		content: "";
+		left: 0.86rem;
+		bottom: 0;
+		right: 0;
+		position: absolute;
+		height: 1px;
+		background: #ededed;
+		z-index: 2;
+	}
+	.inte-ula li font{display: block;text-align: right;position: absolute;top: 0.266rem;line-height: 0.626rem;color: #dd1616;font-size: 14px;right: 0.266rem;z-index: 2;}
+	[data-dpr="2"] .inte-ula li font{font-size: 28px;}
+	[data-dpr="3"] .inte-ula li font{font-size: 42px;}
+	.inte-ula li:before{
+		content: "";
+		width: 0.08rem;
+		left: 0.41rem;
+		top: 0;
+		bottom: 0;
+		background: #ededed;
+		position: absolute;
+		z-index: 2;
+	}
+	.inte-imga{
+		display: block;
+		position: absolute;
+		left: 0.29rem;
+		top: 0.4rem;
+		z-index: 3;
+		width: 0.32rem;
+	}
+	.inte-ula li:last-child:before{
+		bottom: 0.5rem;
+	}
+</style>
+<script type="text/javascript">
+$(function(){
+    $(document).on('click','.header-back',function(){
+		backtoNative();	
+	    })
+})
+</script>
+<script type="text/javascript">
+$(function(){
+	/*********************积分记录****************************/
+	var count = 0;
+	function myScoreList(params){
+	    var cmd = 'myScoreList';//积分记录接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    var from = '';
+                    $.each(data['body']['list'],function(i,val){
+                		switch(parseInt(val['from'])){//来源 1.注册2.交易3.认证4.签到5.评论
+            			case 1:
+            				from = '注册';
+            			       break;
+            			case 2:
+            				from = '交易';
+            			       break;
+            			case 3:
+            				from = '认证';
+            			       break;
+            			case 4:
+            				from = '签到';
+            			       break;
+            			case 5:
+            				from = '评论';
+            			       break;
+            		}
+                        search_html += '<li>'+
+        	    			'<span>'+from+'奖励</span>'+
+        	    			'<samp>'+val['time']+'</samp>'+
+        	    			'<font>＋'+val['score']+'</font>'+
+        	    			'<img src="images/inte.png" class="inte-imga" />'+
+        	    		'</li>';
+    		    		count++;
+                   });
+                   //$('.rdzx').append(search_html);
+                }else{
+/*                 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.rdzx').append(search_html); */
+
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+	            	}else{
+	            		search_html = '<div class="none-more-content" style="background:#fff;">暂无内容</div>';
+						$('.inte-ula').html(search_html);
+						return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){;//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">已加载全部数据</div></div>'; 
+                            $('.inte-ula').html(search_html);	
+                         }else{
+                         	$('.inte-ula').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	}
+	
+	//*********************************我的热点资讯列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义		
+		dropload = $('.inte-ula').dropload({
+		    scrollArea : window,
+		    /* domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	myScoreList(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	myScoreList(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	
+	/**************ios匹配，延时获取userid*******************/
+	setTimeout(function(){
+	 var params ={
+             'userid':userid,
+             'page':PAGE,
+             'num':PAGE_NUM,
+             };
+	
+	 dropload_machineList(params)
+	},100);  
+	
+})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin" style="position: fixed;z-index:500">我的积分<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	    <section class="inte-main ovw" style="margin-top:1.233rem">
+	    	<ul class="inte-ula ovw">
+<!-- 	    		<li>
+	    			<span>注册奖励</span>
+	    			<samp>2016-12-15 18:56</samp>
+	    			<font>＋2</font>
+	    			<img src="images/inte.png" class="inte-imga" />
+	    		</li>
+	    		<li>
+	    			<span>注册奖励</span>
+	    			<samp>2016-12-15 18:56</samp>
+	    			<font>＋2</font>
+	    			<img src="images/inte.png" class="inte-imga" />
+	    		</li>
+	    		<li>
+	    			<span>注册奖励</span>
+	    			<samp>2016-12-15 18:56</samp>
+	    			<font>＋2</font>
+	    			<img src="images/inte.png" class="inte-imga" />
+	    		</li> -->
+	    	</ul>
+	    </section>
+	</section>
+</body>
+</html>

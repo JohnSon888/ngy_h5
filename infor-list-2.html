@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>资讯详情</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="css/public.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .infor-one-de {
+    margin-top: 0.253rem;
+    padding-left: 1.733rem;
+    padding-top: 0;
+    position: relative;
+}
+.infor-one-sp{
+    border: 1px solid #eb2014;
+    color: #eb2014;
+    font-size: 14px;
+    height: 0.506rem;
+    left: 0;
+    line-height: 0.506rem;
+    position: absolute;
+    text-align: center;
+    top: 0.4rem;
+    width: 1.206rem;
+}
+.topic-deta-lic p img{
+   width:100%;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+//	userid = 35;
+
+	//分享参数
+	var shareImage = '';
+	var shareText = '';
+	var shareTitle = '';
+	var shareURL = window.location.href+"&share=1&username="+username+"&userid="+userid;
+        var share_params = GetQueryParam('share');
+//        if(share_params==1){
+//            var share_name = GetQueryParam('username');
+//            var share_userid = GetQueryParam('userid');
+//            var phoneID = GetQueryParam('imei');
+//            var phoneModel = GetQueryParam('phoneModel');
+//            var addressIDs = GetQueryParam('address');
+//            $('.info_btn').attr('href','register.html?username='+share_name+'&userid='+share_userid+"&imei="+phoneID+"&phoneModel="+phoneModel+"&address="+addressIDs);
+//            $('.info_btn').show();
+//        }
+
+	
+	var newsid = parseInt(GetQueryParam('id'));
+	function get_newsDetail(params){//获取资讯详情
+        var cmd = 'newsDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'newsid':newsid,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            	var isfav = data['body']['isFav'];
+            	if(isfav==1){//已经关注
+            		$('.details_concern').attr('src','images/topic_5.png');
+            		$('.details_concern').attr('concern','2');
+            	}else{//未关注
+            		$('.details_concern').attr('src','images/topic_3.png');
+            		$('.details_concern').attr('concern','1');
+            	}
+            	var tag_class = '';
+            	if(!isNull(data['body']['newsTag'])||data['body']['newsTag']==''){
+            		tag_class = '';
+            	}else{
+            		tag_class = 'infor-one-de';
+            	}
+            	shareImage = data['body']['newsImage'];
+				shareText = data['body']['newsDesc'];
+				shareTitle = data['body']['newsTitle'];
+            	
+            	var content_html = data['body']['content'];
+            	var content = content_html.replace(/height:\w+;?|width:\w+;?/g,'');
+            	var htm = '<section class="topic-deta-cont infor-list-cont ovw" style="margin-top: 1.3333rem;">'+
+                	'<cite class="topic-deta-title '+tag_class+' ovw"><span class="infor-one-sp">'+data['body']['newsTag']+'</span>'+data['body']['newsTitle']+'</cite>'+
+                	'<ul class="eval-content-ula ovw"><li class="eval-content-lia">'+
+        	    			'<img style="display:none" src="'+data['body']['autherAvatar']+'" class="infor-tx fl">'+
+        	    			'<p  class="infor-list-pa ovw fl" style="margin-top: 0.16rem;"><span style="display:none" >'+data['body']['autherName']+'</span>'+
+        	    				'<samp style="line-height: 0.406rem;">'+data['body']['timeline']+'</samp></p>'+
+        	    			'<span class="fr ovw eval-content-zan"style="line-height: 0.626rem;padding-left: 0.6rem;background-size: auto 0.4933rem;margin-top:0px;">'+data['body']['goods']+'</span></li>'+
+        	    	//	'<li class="topic-deta-lib"><img src="'+data['body']['newsImage']+'"/></li>'+
+        	    		'<li class="topic-deta-lic">'+content+'</li></ul></section>'+	 
+                '<p class="infor-numb-pro"><span class="infor-span-nub">浏览次数：<font>'+data['body']['views']+'</font></span><span class="infor-span-nuc">'+data['body']['columnName']+'</span></p>';
+                $('.zxxq').append(htm);
+                //$('.header-rele').attr('newsid',newsid);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            	layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	  var params ={
+				'userid':userid,
+              'newsid':newsid,
+              };
+	  console.info(params);
+	get_newsDetail(params);
+	
+	 /************************资讯收藏***********************************/
+	function markNews(params){//话题收藏
+        var cmd = 'Mark';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                'sort':sort,
+                'type' : type,
+    			'page' :PAGE,
+    			'num' : PAGE_NUM,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(data['resultCode']==1){
+                    layer.msg('已收藏!');
+                    // window.location.href = "";
+                }else{
+                    layer.msg('收藏失败，系统出错!');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+    /************************资讯取消收藏***********************************/
+	function cancelMarkNews(params){//话题收藏
+        var cmd = 'UnMark';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params = {
+                'sort':sort,
+                'type' : type,
+    			'page' :PAGE,
+    			'num' : PAGE_NUM,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(data['resultCode']==1){
+                    layer.msg('已取消收藏!');
+                    // window.location.href = "";
+                }else{
+                    layer.msg('取消收藏失败，系统出错!');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    
+ $(document).on('click','.header-rele',function(){//点击收藏按钮，收藏话题	
+	//$('.header-rele').click(function(){
+	 var concern = parseInt($(this).attr('concern'));
+	    	var params = {	//我的话题列表接口提供参数
+	    			'id' : newsid,
+	    			'userid':userid,
+	    			'type':8,
+			};
+    	console.info(params);
+ 		if(concern==1){//取消收藏
+			$('.details_concern').attr('src','images/topic_5.png');
+			$('.details_concern').attr('concern','2');		
+			markNews(params);
+		}else{//收藏
+			$('.details_concern').attr('src','images/topic_3.png');
+			$('.details_concern').attr('concern','1');		
+			cancelMarkNews(params);
+		} 
+	    	//markNews(params);
+	    })
+	    
+	    /************************点赞********************************/
+		function praiseNews(params){//话题收藏
+     var cmd = 'praiseNews';//接口命令
+     var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+     var jsonp = 1;
+/*         var params = {
+             'sort':sort,
+             'type' : type,
+ 			'page' :PAGE,
+ 			'num' : PAGE_NUM,
+             }; */
+     params = objKeySort(params);//按照属性名升序排列
+     var params_str = objChangeStr(params);//拼接params参数的属性值
+     params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+     $.ajax({
+     	url : apiURL,//接口地址
+         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+         dataType : 'jsonp',
+         success: function(data){ 
+         	console.info(data);
+             if(data['resultCode']==1){
+                 layer.msg('点赞成功!');
+             	setTimeout(function(){
+                	window.location.reload();
+            	},1000);
+             }else if(data['resultCode']==-1){
+                 layer.msg('您已经点过赞了!');
+             }else{
+            	    layer.msg('点赞失败，系统错误!');
+             }
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             layer.msg('网络请求延迟！');
+             console.info(XMLHttpRequest.status);
+             console.info(XMLHttpRequest.readyState);
+             console.info(textStatus);
+         },
+     });
+ }
+ $(document).on('touchend','.eval-content-zan',function(){
+ 	var params = {	//我的话题列表接口提供参数
+			'newsid' : newsid,
+			'userid':userid,
+	};
+ 	//console.info(params);
+ 	praiseNews(params);
+ })
+ 
+ 
+	    
+	    	var from = GetQueryParam('from');
+	$('.header-back').on('click',function(){
+		if(from=="app"){
+			window.location.href="infor-list.html";
+		}else if(from=="h5"){
+			window.location.href="hot-infor.html";
+		}else{
+			backtoNative();
+		}
+	})
+	
+ 	/**************ios匹配，延时获取userid*******************/
+ 		var messageID = GetQueryParam('messageID');
+ 	if(from=="h5"){
+	setTimeout(function(){
+    	var params2 = {
+    			'userid':userid,
+    	           'messageID':messageID,//圈子通知
+    	};
+    	readMessage(params2);
+},100);  
+ 	}
+ 	
+	//**********************************资讯分享***************************
+ 	$('.farm-work-share').on('click touched',function(){
+//            shareURL += "&imei="+phoneIMEI+"&phoneModel="+phoneModels+"&address="+current_location_areaIDs;
+ 		if(userid==0){
+			gotoLogin();
+		}else{
+			share(shareImage, shareText, shareTitle, shareURL);
+		}
+	});
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw zxxq">
+	   <!--  <section class="header ovw posin" style="position: fixed;  z-index: 500;">资讯详情<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a><a href="javascript:;" class="header-reg header-rele"  mark="1">收藏</a></section> -->
+ <section style=" position: fixed;z-index:500;" class="header ovw posin">资讯详情<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a>
+	    	<!-- <a href="javascript:void(0);" class="header-reg farm-work-mark">关注</a> -->
+	    	<a href="javascript:void(0);" class="header-reg farm-work-mark" style="right:1.3rem;"><img class="details_concern header-rele" concern="1" style="width: 22px;" src="images/topic_3.png" /></a><!--  关注-->
+	    	<a href="javascript:void(0);" class="header-reg farm-work-share"><img style="width: 22px;" src="images/share-button.png" /></a>
+	    </section>
+        <!-- <section class="topic-deta-cont infor-list-cont ovw">
+        	<cite class="topic-deta-title infor-one-t ovw">冬天的早晨不想起床怎么办？</cite>
+        	<ul class="eval-content-ula ovw">
+	    		<li class="eval-content-lia">
+	    			<img src="images/topic_6.jpg" class="infor-tx fl">
+	    			<p class="infor-list-pa ovw fl">
+	    				<span>Sunny</span>
+	    				<samp>2016-01-29 18:28</samp>
+	    			</p>
+	    			<span class="fr ovw eval-content-zan">200000</span>
+	    		</li>
+	    		<li class="topic-deta-lib"><img src="images/topic_1.jpg"/></li>
+	    		<li class="topic-deta-lic">
+	    			<p>
+	    				起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）。
+	    			</p>
+	    			<p>
+	    				起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）起床，本意离床下地、起身，喻指病愈。语出《儒林外史》第四八回：“饿到六天上，不能起牀（床）。
+	    			</p>
+	    		</li>
+	    	</ul>
+        </section>	 
+        <p class="infor-numb-pro"><span class="infor-span-nub">浏览次数：<font>187</font></span><span class="infor-span-nuc">三农政策</span></p> -->
+	</section>
+    <a class="info_btn" href="javascript:;" style="display:none;">
+		<span>欢迎注册下载，惊喜等着你哦！&nbsp;&nbsp;马上注册</span>
+		<img src="images/ret.png" alt="">
+	</a>
+</body>
+</html>

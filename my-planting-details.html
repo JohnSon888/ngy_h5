@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<title>我的种植详情</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/flexible.js"></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js"></script>
+<style type="text/css">
+.work-deta-ul li {line-height: 0.72rem;}
+.work-deta-ul li label{color:#333333;}
+.work-deta-ul li span{color:#666666;}
+.plant_images span{width:30%;height:1.73rem;display:block;overflow:hidden;float:left;padding: 0.2rem 0.18rem 0.2rem 0.12rem;}
+.plant_images span img{width:100%}
+</style>
+<script type="text/javascript">
+$(function(){
+	var cropID = GetQueryParam('cropID');	
+	/*****************种植详情*******************/
+	function plantDetail(params){
+        var cmd = 'plantDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+       /*  var params = {
+                'cropID':cropID,
+                'userid' : userid,
+                'cropType':cropType,
+                'cropArea':cropArea,
+                'production':production,
+                'images':images,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            var plant_image = '';
+            if(data['body']['images']['0']==''){
+            	plant_image = '<span><img alt="" src="images/goods_2.jpg"></span>';
+            }else{
+            	$.each(data['body']['images'],function(i,val){
+            		plant_image +=  '<span><img alt="" src="'+val+'"></span>';
+            	})
+            }
+            var detailAddress = isNull(data['body']['detailAddress'])?data['body']['detailAddress']:'';
+            var plant_html = '<section class="work-deta-content ovw">'+
+	    	'<ul class="work-deta-ul ovw">'+
+	    		'<li><label class="fl ovw">类型：</label><span class="fl ovw">'+data['body']['cropType']+'</span></li>'+
+	    		'<li><label class="fl ovw">产品：</label><span class="fl ovw">'+data['body']['production']+'</span></li>'+
+	    		'<li><label class="fl ovw">面积：</label><span class="fl ovw">'+data['body']['cropArea']+'</span></li>'+
+	    		'<li><label class="fl ovw">产值：</label><span class="fl ovw">'+data['body']['output']+'</span></li>'+
+	    		'<li><label class="fl ovw">种植区域：</label><span class="fl ovw">'+data['body']['address']+detailAddress+'</span></li>'+
+	    		'<li class="plant_images">'+
+	    		''+plant_image+''+
+	    		'</li>'+
+	    	'</ul>'+
+	    '</section>'+
+	    '<a class="over-order work-ok fr ovw del_plant" style="width:46%;margin-right:0.2rem" href="javascript:;">删除</a>'+
+	   	'<a class="over-order work-ok fl ovw edit_plant" style="width:46%;margin-left:0.2rem;background: #ececec;color:#666;border:1px solid #666" href="javascript:;">编辑</a>';
+	   		$('.body-bj').append(plant_html);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var detail_params = {
+			'cropID':cropID,
+	}
+	plantDetail(detail_params);
+	
+	/*****************删除种植*******************/
+	function delPlant(params){
+        var cmd = 'delPlant';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+       /*  var params = {
+                'cropID':cropID,
+                'userid' : userid,
+                'cropType':cropType,
+                'cropArea':cropArea,
+                'production':production,
+                'images':images,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            	if(data['resultCode']==1){
+                    layer.msg('删除种植成功');
+    				setTimeout(function(){
+    	               window.location.href = "my-planting.html";
+    	                },1000);
+                }else{
+                    layer.msg('删除种植失败，系统出错!');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	//点击删除按钮删除种植
+	$(document).on('click','.del_plant',function(){
+		var params = {
+				'cropID':cropID,
+				'userid':userid,
+		}
+		layer.open({
+		    content: '是否确认删除该种植？'
+		    ,btn: ['是', '否']
+		    ,yes: function(index){
+			    layer.close(index);
+			    console.info(params);
+			    delPlant(params); 
+		   	},btn2:function(index){
+			    layer.close(index);
+		   	}
+		});
+	})
+	
+	/*************编辑地址跳转*****************/
+	$(document).on('click','.edit_plant',function(){
+		window.location.href="my-planting-2.html?cropID="+cropID+"&from=h5";
+	})
+	
+		/*************编辑返回跳转*****************/
+	$(document).on('click','.header-back',function(){
+		window.location.href="my-planting.html";
+	})
+})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">我的种植<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+	  <!--   <section class="work-deta-content ovw">
+	    	<ul class="work-deta-ul ovw">
+	    		<li><label class="fl ovw">类型：</label><span class="fl ovw">小麦收割，拖拉机</span></li>
+	    		<li><label class="fl ovw">产品：</label><span class="fl ovw">2台</span></li>
+	    		<li><label class="fl ovw">面积：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">产值：</label><span class="fl ovw">河北省保定市开封县妙龄镇奥博村</span></li>
+	    		<li><label class="fl ovw">种植区域：</label><span class="fl ovw">88元/亩</span></li>
+	    		<li class="plant_images">
+	    		<span><img alt="" src="images/goods_1.png"></span>
+	    			    		<span><img alt="" src="images/goods_1.png"></span>
+	    			    			    		<span><img alt="" src="images/goods_1.png"></span>
+	    			    			    			    		<span><img alt="" src="images/goods_1.png"></span>
+	    		</li>
+	    	</ul>
+	    </section>
+	    <a class="over-order work-ok fr ovw del_plant" style="width:46%;margin-right:0.2rem" href="javascript:;">删除</a>
+	   	<a class="over-order work-ok fl ovw edit_plant" style="width:46%;margin-left:0.2rem;background: #ececec;color:#666;border:1px solid #666" href="javascript:;">编辑</a> -->
+	</section>
+</body>
+</html>

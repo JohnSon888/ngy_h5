@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title></title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="css/public.css" />
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<script>
+	$(function(){
+		$('.work-ok').on('touchstart',function(){
+			$('.layer-work').show()
+			$('.layer-work-cont').show()
+			
+		})
+		$('.layer-work').on('touchstart',function(){
+			$('.layer-work').hide()
+			$('.layer-work-cont').hide()
+			
+		})
+	})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+	    <section class="header ovw posin">预约车详情<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
+<!--	    <section class="work-deta-content ovw">
+	    	<div class="order">
+	    		<img src="images/order.png" alt="" />&nbsp;
+	    		<span>已接单</span>
+	    	</div>
+	    	<dl class="work-deta-dla ovw">
+	    		<dt><img src="images/default.jpg"/></dt>
+	    		<dd>
+	    			<p>张三</p>
+	    			<span>131****0222</span>
+	    			<a href="#" class="work-tel"><img src="images/ing_3.png"/></a>
+	    		</dd>
+	    	</dl>
+	    	<ul class="work-deta-ul ovw">
+	    		<li><label class="fl ovw">出发地：</label><span class="fl ovw">上海市闵行区 泰虹路268号 万科时一区</span></li>
+	    		<li><label class="fl ovw">目的地：</label><span class="fl ovw">上海市闵行区 泰虹路268号 万科时一区</span></li>
+	    		<li><label class="fl ovw">车辆类型：</label><span class="fl ovw">拉人</span></li>
+	    		<li><label class="fl ovw">乘车人数：</label><span class="fl ovw">3人</span></li>
+	    		<li><label class="fl ovw">出发时间：</label><span class="fl ovw">2016-12-30 12:34:45</span></li>
+	    		<li><label class="fl ovw">备注：</label><span class="fl ovw">小麦、玉米</span></li>
+	    	</ul>
+	    </section>
+	    <a class="over-order work-ok ovw" href="javascript:;">确认完成</a>-->
+	 
+	</section>
+<script type="text/javascript">
+    var carID = GetQueryString('carID');
+    var publisher = GetQueryString('publisher');
+    var from = GetQueryString('from');
+    $('.header-back').on('touchend', function () {
+        if (from == "h5") {
+            //			window.location.href="my-work.html";
+            backtoPrev(0);
+        } else if (from == "order") {
+            //			window.location.href="my-order.html";
+            backtoPrev(0);
+        }else if(from=="notice"){
+			window.location.href="notice-order.html";
+        } else {
+            //			window.location.href="farm-work-list.html?search_txt="+searchContent;
+            backtoPrev(0);
+        }
+    });
+    /*************消息通知消息状态处理****************/
+		var messageID = GetQueryParam('messageID');
+		if(from=='notice'){
+			setTimeout(function(){
+			var notice_params = {
+					'messageID':messageID,
+					'userid':userid,
+			}
+	    	readMessage(notice_params);
+			},100);  
+		}
+    /*
+     * 约车详情
+     */
+    function vehicleDetail(params){
+        var cmd = 'vehicleDetail'; //商户详情接口命令
+        var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params); //按照属性名升序排列
+        var params_str = objChangeStr(params); //拼接params参数的属性值
+        params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+        $.ajax({
+            url: apiURL, //接口地址
+            data: {
+                'cmd': cmd,
+                'ts': ts,
+                'params': params,
+                'jsonp': jsonp
+            },
+            dataType: 'jsonp',
+            success: function (data) {console.info(data);
+                var merchantDetailHtml = '';
+                var orderStatus = '待接单';
+                var userHtml = '';
+                var orderHtml = '<a class="over-order work-ok ovw" href="javascript:;">确认完成</a>';
+                if(isNull(data['body'])){
+                    switch(parseInt(data['body']['status'])){// 0=> '待接单',1=> '进行中',2=> '已取消',3=> '已完成',4=> '最终完成',
+                        case 0 : 
+                            orderStatus = '待接单';
+                            if(userid==data['body']['user_id0']){
+                                userHtml =''; 
+                                orderHtml = '<a class="over-order work-ok ovw cancel-order" href="javascript:;">取消预约</a>';
+                            }else{
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id0']+'&poster='+data['body']['user_pic0']+'&username='+data['body']['user_name0']+'"><img src="'+data['body']['user_pic0']+'"/></a></dt><dd>'+
+	    			'<p>'+data['body']['user_name0']+'</p>'+
+	    			'<span>'+phone_replace(data['body']['mobile0'])+'</span>'+
+	    			'<a href="#" class="work-tel" style="display:none;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw receive-order" href="javascript:;">接单</a>';
+                            }
+                            break;
+                        case 1 :
+                            orderStatus = '已接单';
+                            if(userid==data['body']['user_id0']){    //用户是发布人，展示司机信息
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id']+'&poster='+data['body']['user_pic']+'&username='+data['body']['user_name']+'"><img src="'+data['body']['user_pic']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name']+'</p>'+
+                                    '<span class="det_car">'+data['body']['auth_merchant_num']+'<i></i>'+data['body']['auth_machine_num']+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<div class="det_btn"><a class="fl order-cancel" href="cancel-car.html?carID='+data['body']['id']+'">取消预约</a><a class="fr order-complete" href="javascript:;">确认完成</a></div>';
+                            }else{      //用户是接单人，展示发布人信息
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id0']+'&poster='+data['body']['user_pic0']+'&username='+data['body']['user_name0']+'"><img src="'+data['body']['user_pic0']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name0']+'</p>'+
+                                    '<span>'+phone_replace(data['body']['mobile0'])+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile0']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw order-confirm" href="javascript:;">确认完成</a>';
+                            }   
+                            break;
+                        case 2 : 
+                            orderStatus = '已取消';
+                            if(userid==data['body']['user_id0']){
+                                if(isNull(data['body']['user_id'])){
+                                    userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id']+'&poster='+data['body']['user_pic']+'&username='+data['body']['user_name']+'"><img src="'+data['body']['user_pic']+'"/></a></dt><dd>'+
+                                        '<p>'+data['body']['user_name']+'</p>'+
+                                        '<span class="det_car">'+data['body']['auth_merchant_num']+'<i></i>'+data['body']['auth_machine_num']+'</span>'+
+                                        '<a href="tel:'+data['body']['mobile']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                }else{
+                                    userHtml = '';
+                                }
+                                orderHtml = '<a class="over-order work-ok ovw cancel-order" href="javascript:;" style="display:none;">取消预约</a>';
+                            }else{
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id0']+'&poster='+data['body']['user_pic0']+'&username='+data['body']['user_name0']+'"><img src="'+data['body']['user_pic0']+'"/></a></dt><dd>'+
+	    			'<p>'+data['body']['user_name0']+'</p>'+
+	    			'<span>'+phone_replace(data['body']['mobile0'])+'</span>'+
+	    			'<a href="tel:'+data['body']['mobile0']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw receive-order" href="javascript:;" style="display:none;">接单</a>';
+                            }
+                            break;
+                        case 4 : 
+                            orderStatus = '已完成';
+                            if(userid==data['body']['user_id0']){    //用户是发布人，展示司机信息
+                                if(data['body']['isComment']==0){
+                                    var comment_style = "style='display:block;'";
+                                }else{
+                                    var comment_style = "style='display:none;'";
+                                }
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id']+'&poster='+data['body']['user_pic']+'&username='+data['body']['user_name']+'"><img src="'+data['body']['user_pic']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name']+'</p>'+
+                                    '<span class="det_car">'+data['body']['auth_merchant_num']+'<i></i>'+data['body']['auth_machine_num']+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw" '+comment_style+' href="mac-comments.html?type=7&ownerID='+data['body']['user_id']+'&commentId='+data['body']['id']+'">立即评价</a>';
+                            }else{      //用户是接单人，展示发布人信息
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id0']+'&poster='+data['body']['user_pic0']+'&username='+data['body']['user_name0']+'"><img src="'+data['body']['user_pic0']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name0']+'</p>'+
+                                    '<span>'+phone_replace(data['body']['mobile0'])+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile0']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw" href="javascript:;" style="display:none;">确认完成</a>';
+                            }   
+                            break;
+                        default:
+                            orderStatus = '已接单';
+                            if(userid==data['body']['user_id0']){    //用户是发布人，展示司机信息
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id']+'&poster='+data['body']['user_pic']+'&username='+data['body']['user_name']+'"><img src="'+data['body']['user_pic']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name']+'</p>'+
+                                    '<span>'+phone_replace(data['body']['mobile'])+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<div class="det_btn"><a class="fl order-cancel" href="cancel-car.html?carID='+data['body']['id']+'">取消预约</a><a class="fr order-complete" href="javascript:;">确认完成</a></div>';
+                            }else{      //用户是接单人，展示发布人信息
+                                userHtml = '<dl class="work-deta-dla ovw"><dt><a href="list.html?userid='+data['body']['user_id0']+'&poster='+data['body']['user_pic0']+'&username='+data['body']['user_name0']+'"><img src="'+data['body']['user_pic0']+'"/></a></dt><dd>'+
+                                    '<p>'+data['body']['user_name0']+'</p>'+
+                                    '<span>'+phone_replace(data['body']['mobile0'])+'</span>'+
+                                    '<a href="tel:'+data['body']['mobile0']+'" class="work-tel" style="display:block;"><img src="images/ing_3.png"/></a></dd></dl>';
+                                orderHtml = '<a class="over-order work-ok ovw order-confirm" href="javascript:;" style="display:none;">确认完成</a>';
+                            }   
+                            break;
+                    }
+                    merchantDetailHtml += '<section class="work-deta-content ovw"><div class="order">'+
+	    		'<img src="images/order.png" alt="" />&nbsp;'+
+	    		'<span>'+orderStatus+'</span>'+
+                        '</div>'+userHtml+
+                        '<ul class="work-deta-ul ovw">'+
+	    		'<li><label class="fl ovw">出发地：</label><span class="fl ovw">'+data['body']['area']+'</span></li>'+
+	    		'<li><label class="fl ovw">目的地：</label><span class="fl ovw">'+data['body']['area1']+'</span></li>'+
+	    		'<li><label class="fl ovw">车辆类型：</label><span class="fl ovw">'+data['body']['type']+'</span></li>'+
+	    		'<li><label class="fl ovw">乘车人数：</label><span class="fl ovw">'+data['body']['info_num']+'人</span></li>'+
+	    		'<li><label class="fl ovw">出发时间：</label><span class="fl ovw">'+data['body']['start_time'].substring(0,data['body']['start_time'].length-3)+'</span></li>'+
+	    		'<li><label class="fl ovw">备注：</label><span class="fl ovw">'+data['body']['info_intro']+'</span></li>'+
+                        '</ul></section>'+orderHtml;
+                    $('.body-bj').append(merchantDetailHtml);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });    
+    }
+
+    var params = {
+        'user_id': userid,
+        'id': carID,
+        };
+    vehicleDetail(params);  //加载约车详情
+    /***********************取消订单***************************************/
+                        function carCancelReserveList(params){
+                            var cmd = 'carCancelReserveList';//接口命令
+                            var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                            var jsonp = 1;
+                            params = objKeySort(params);//按照属性名升序排列
+                            var params_str = objChangeStr(params);//拼接params参数的属性值
+                            params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                            $.ajax({
+                                    url : apiURL,//接口地址
+                                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                                dataType : 'jsonp',
+                                success: function(data){
+                                    if(data['resultCode']==1){
+                                        layer.msg('您取消预约的请求已提交');
+                                        setTimeout(function(){
+                                            window.location.href = 'my-vehicle.html';
+//                                            window.location.href = 'vehicle-list.html';
+                                        },1000);
+                                    }else{
+                                        layer.msg(data['resultMessage']);
+                                    }
+                                },
+                                error: function(XMLHttpRequest, textStatus, errorThrown){
+                                    layer.msg('网络请求延迟！');
+                                    console.info(XMLHttpRequest.status);
+                                    console.info(XMLHttpRequest.readyState);
+                                    console.info(textStatus);
+                                },
+                            });
+                        }
+
+                        $(document).on('touchend','.cancel-order',function(){
+                            var params = {
+                                'userid': userid,
+                                'carID' : carID,
+                            }
+                            layer.confirm('您确定取消该订单？', {
+                                btn: ['是','否'] //按钮
+                              }, function(){
+                                carCancelReserveList(params);
+                              }, function(){
+                                //否
+                            });
+                        })
+ /***********************司机接单*******是否有权限接单********************************/
+                    function getDriverReleaseAuth(params){
+                        var cmd = 'getDriverReleaseAuth';//接口命令
+                        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                        var jsonp = 1;
+                        params = objKeySort(params);//按照属性名升序排列
+                        var params_str = objChangeStr(params);//拼接params参数的属性值
+                        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                        $.ajax({
+                            url : apiURL,//接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){ 
+                                    if(data['body']['status']==1){
+                                        var params = {
+                                            'user_id': userid,
+                                            'id' : carID,
+                                        }
+                                        vehicleGet(params);
+                                    }else{
+                                        layer.confirm('您的司机认证暂未通过或者还未认证，是否前往认证？', {
+                                            btn: ['是','否'] //按钮
+                                          }, function(){
+                                            window.location.href = "certification-list.html?from=driver";
+                                          }, function(){
+                                            //否
+                                        });
+                                    }
+                               },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                layer.msg('网络请求延迟！');
+                                console.info(XMLHttpRequest.status);
+                                console.info(XMLHttpRequest.readyState);
+                                console.info(textStatus);
+                            },
+                        });
+                    }
+                    function vehicleGet(params){
+                        var cmd = 'vehicleGet';//接口命令
+                        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                        var jsonp = 1;
+                        params = objKeySort(params);//按照属性名升序排列
+                        var params_str = objChangeStr(params);//拼接params参数的属性值
+                        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                        $.ajax({
+                            url : apiURL,//接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){ 
+                                    if(data['resultCode']==1){
+                                        layer.msg('您已成功接单！');
+                                        setTimeout(function(){
+                                            window.location.reload();
+                                        },1000);
+                                    }else{
+                                        layer.msg(data['resultMessage']);
+                                    }
+                               },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                layer.msg('网络请求延迟！');
+                                console.info(XMLHttpRequest.status);
+                                console.info(XMLHttpRequest.readyState);
+                                console.info(textStatus);
+                            },
+                        });
+                    }
+
+                        $(document).on('touchend','.receive-order',function(){
+                            if(userid==0){
+                                gotoLogin();
+                            }else{
+                               var authParams = {
+                                   'userid':userid,
+                                   'type':8,
+                               }
+                               getDriverReleaseAuth(authParams);
+                            }
+                        })
+ /***********************司机确认完成***************************************/
+                    function carConfirm(params){
+                        var cmd = 'carConfirm';//接口命令
+                        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                        var jsonp = 1;
+                        params = objKeySort(params);//按照属性名升序排列
+                        var params_str = objChangeStr(params);//拼接params参数的属性值
+                        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                        $.ajax({
+                            url : apiURL,//接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){ 
+                                    if(data['resultCode']==1){
+                                        layer.msg('您已确认完成！');
+                                        setTimeout(function(){
+                                            window.location.reload();
+                                        },1000);
+                                    }else{
+                                        layer.msg(data['resultMessage']);
+                                    }
+                               },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                layer.msg('网络请求延迟！');
+                                console.info(XMLHttpRequest.status);
+                                console.info(XMLHttpRequest.readyState);
+                                console.info(textStatus);
+                            },
+                        });
+                    }
+
+                        $(document).on('touchend','.order-confirm',function(){
+                            if(userid==0){
+                                gotoLogin();
+                            }else{
+                                var params = {
+                                    'carID' : carID,
+                                };
+                                carConfirm(params);
+                            }
+                        })         
+ /***********************发布人最终确认完成***************************************/
+                    function carComplete(params){
+                        var cmd = 'carComplete';//接口命令
+                        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                        var jsonp = 1;
+                        params = objKeySort(params);//按照属性名升序排列
+                        var params_str = objChangeStr(params);//拼接params参数的属性值
+                        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+                        $.ajax({
+                            url : apiURL,//接口地址
+                            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                            dataType : 'jsonp',
+                            success: function(data){ 
+                                    if(data['resultCode']==1){
+                                        layer.msg('您已确认完成！');
+                                        setTimeout(function(){
+                                            window.location.reload();
+                                        },1000);
+                                    }else{
+                                        window.location.reload();
+                                    }
+                               },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                layer.msg('网络请求延迟！');
+                                console.info(XMLHttpRequest.status);
+                                console.info(XMLHttpRequest.readyState);
+                                console.info(textStatus);
+                            },
+                        });
+                    }
+
+                        $(document).on('touchend','.order-complete',function(){
+                            if(userid==0){
+                                gotoLogin();
+                            }else{
+                                var params = {
+                                    'carID' : carID,
+                                };
+                                carComplete(params);
+                            }
+                        })                                 
+</script>
+</body>
+</html>

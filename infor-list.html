@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+<title>资讯列表</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<!-- dropload -->
+<link rel="stylesheet" href="src/lib/zepto/dropload.css">
+<script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+<script type="text/javascript" src="js/flexible.js" ></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js" ></script>
+<style type="text/css">
+    .infor-one-de {
+padding-left: 0.68rem;
+}
+.infor-one-sp{
+    background: #dd1616 none repeat scroll 0 0;
+    color: #fff;
+    content: "头条";
+    font-size: 8px;
+    height: 0.333rem;
+    left: 0;
+    line-height: 0.333rem;
+    margin-top: -0.1665rem;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 0.546rem;
+}
+    .none-more-content{
+         color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+</style>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+    
+	$('.header-back').on('click',function(){
+/* 		if(from=="app"){
+			window.location.href="hot-infor.html";
+		}else if(from=="h5"){
+			window.location.href="hot-infor.html";
+		}else{ */
+			backtoNative();
+		/* } */
+	})
+
+    })
+
+</script>
+<script>
+	
+    $(function(){
+    	$('.visa-in').on("focus", function (e) {
+        $(this).prev('aside').children().hide();
+        $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+    });
+    $('.visa-in').on("blur", function (e) {
+        var val = $(this).val();
+        if (val != '') {
+            $(this).prev('aside').children().hide()
+            $(this).prev('aside').css('textIndent', '9999px')
+
+        } else {
+            $(this).prev('aside').children().show()
+            $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+        }
+    });
+    
+//  隐藏
+    $('.layer-rele-s').on('touchstart click',function(){
+    	$('.rele-bj').hide()
+    	$('.layer-rele-cont').hide()
+    })
+    //
+    $('.layer-map-bj').on('touchstart click',function(){
+    	$('.layer-map-bj').hide()
+    	$('.layer-sorting').hide()
+    	$('.layer-type').hide()
+    	$('.layer-time1').hide()
+    });
+    //
+    $('.eval-all-ula li').on('touchstart click',function(){
+    	var index = $(this).index();
+    		switch(index){
+    			case 0:
+  			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+			       $('.layer-time1').hide()
+     			   $('.layer-type1').show()
+    			       break;
+    			case 1:
+ 			       $('.layer-map-bj').show()
+			       $('.layer-up-some').hide()
+    			   $('.layer-time1').show()
+     			   $('.layer-type1').hide()
+    			break;
+    		}
+    		$(this).addClass('hover');
+    		$(this).siblings().removeClass('hover');
+    });
+
+    })
+
+</script>
+<script type="text/javascript">
+$(function(){
+	var sort = 1;//排序：1时间倒序，2时间升序
+	var type = '0';
+	var count = 0;
+	
+	//当前图片域名配置
+	var host = window.location.host;
+	var default_image = 'http://'+host+'/images/goods_2.jpg';
+	/************************搜索*****************************/
+	
+	$('.visa-in').on("focus", function (e) {
+	        $(this).parent('form').prev('aside').children().hide();
+	        $(this).parent('form').prev('aside').css('textIndent', '9999px');
+//	      $(this).next('.sear-close').show();
+	    });
+	    $('.visa-in').on("blur", function (e) {
+	        var val = $(this).val();
+	        if (val != '') {
+	            $(this).parent('form').prev('aside').children().hide()
+	            $(this).parent('form').prev('aside').css('textIndent', '9999px')
+
+	        } else {
+	            $(this).parent('form').prev('aside').children().show()
+	            $(this).parent('form').prev('aside').css('textIndent', '0.1333rem')
+//	          $(this).next('.sear-close').hide();
+	        }
+	    });
+		
+		var searchContent = GetQueryParam("search_txt");
+		if(isNull(searchContent)){
+	        $('.visa-in').val(searchContent);
+	        $('.visa-in').parent('form').prev('aside').children().hide();
+	        $('.visa-in').parent('form').prev('aside').css('textIndent', '9999px');
+	    }else{
+	        $('.visa-in').val('');
+	    }
+	
+	//********************************获取资讯类型**************************
+	function newsCateList(){
+		var cmd = 'newsCateList';//获取资讯类型接口命令
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var jsonp = 1;
+	    var params = {};
+	    params = objKeySort(params);//按照属性名升序排列
+	    var params_str = objChangeStr(params);//拼接params参数的属性值
+	    params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+	    $.ajax({
+	        url : apiURL,//接口地址
+	         data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+	        dataType : 'jsonp',
+	        success: function(data){
+	        	if(isNull(data['body']['list'])){
+	        		var newsCateListHtml = '';
+	        		$.each(data['body']['list'],function(i,val){
+	        			newsCateListHtml += '<li typeID='+val['ID']+'>'+val['Name']+'</li>';	
+	        		})
+	    			$('.layer-type1').append(newsCateListHtml);
+	        	}else{
+	        		layer.msg('暂无商品类型');
+	        	}
+	        },
+	        error: function(XMLHttpRequest, textStatus, errorThrown) {
+	            layer.msg('网络请求延迟！');
+	            console.info(XMLHttpRequest.status);
+	            console.info(XMLHttpRequest.readyState);
+	            console.info(textStatus);
+	        },
+	    });
+	} 
+	newsCateList();
+	
+	function get_newslist(params){//获取资讯搜索列表
+        var cmd = 'newslist';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+/*         var params ={
+                'userid':userid,
+                'page':1,
+                'num':10,
+                }; */
+	    var up = 1;//默认是上拉
+	    if(params.page==0){
+	    	up = 0;
+	    	count = 0;
+	    	params.page=1;
+	    }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                	var tag_class = '';
+                	var span_class = '';
+                    $.each(data['body']['list'],function(i,val){
+                    	if(!isNull(val['newsTag'])||val['newsTag']==''){
+                    		tag_class = '';
+                    		span_class = '';
+                    	}else{
+                    		tag_class = 'infor-one-de';
+                    		span_class = 'infor-one-sp';
+                    	}
+                    	   var len = 30;
+                    	    var replacestr = "…";
+                    	    var str = val['intro'];
+                    	    if (str.length > len) {
+                    	        str = str.substring(0,len)+replacestr;//str = str.substr(0, len) + replacestr;//str = str.slice(0,len) + replacestr;
+                    	    }
+                    	    if(!isNull(val['newsImage'])){
+                    	    	var image_src = default_image;
+                    	    }else{
+                    	    	var image_src = val['newsImage'];
+                    	    }
+                     	//	style ='style="content:none"';
+                            search_html += '<dl class="infor-cont-dl ovw">'+
+            	    		'<dt><a href="infor-list-2.html?id='+val['newsid']+'&from=app"><img src="'+image_src+'"/></a></dt>'+
+            	    		'<dd>'+
+            	    			'<cite class="infor-title '+tag_class+' ovw"><a href="infor-list-2.html?id='+val['newsid']+'&from=app"><span class="'+span_class+'">'+val['newsTag']+'</span>'+val['newsTitle']+'</a></cite>'+
+            	    			'<p class="infor-pa ovw"><a href="infor-list-2.html?id='+val['newsid']+'&from=app">'+str+'</a></p>'+
+            	    			'<p class="infor-pb ovw"><span class="fl ovw eval-content-zan">'+val['goods']+'</span><span class="fl ovw eval-content-chat">'+val['views']+'</span></p>'+
+            	    		'</dd>'+
+            	    	'</dl>';
+/*                     	else{
+                    	//	style ='style="content:'+str+';  background: #dd1616 none repeat scroll 0 0;color: #fff;font-size: 8px;height: 0.333rem;left: 0;line-height: 0.333rem;margin-top: -0.1665rem;position: absolute;text-align: center;top: 50%;width: 0.546rem;"';
+                            search_html += '<dl class="infor-cont-dl ovw">'+
+            	    		'<dt><a href="infor-list-2.html?id='+val['newsid']+'&from=app"><img src="'+val['newsImage']+'"/></a></dt>'+
+            	    		'<dd>'+
+            	    			'<cite class="infor-title infor-one ovw"><a href="infor-list-2.html?id='+val['newsid']+'&from=app">'+val['newsTitle']+'</a></cite>'+
+            	    			'<p class="infor-pa ovw"><a href="infor-list-2.html?id='+val['newsid']+'&from=app">'+val['intro']+'</a></p>'+
+            	    			'<p class="infor-pb ovw"><span class="fl ovw eval-content-zan">'+val['goods']+'</span><span class="fl ovw eval-content-chat">'+val['views']+'</span></p>'+
+            	    		'</dd>'+
+            	    	'</dl>';
+                     	} */
+
+    		    		count++;
+                   });
+                   //$('.rdzx').append(search_html);
+                }else{
+/*                 	search_html = '<div class="none-more-content">暂无内容</div>';
+                    $('.rdzx').append(search_html); */
+
+	        		if((count!=0)){//上拉加载无内容锁定无数据
+	            		dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+	            	}else{
+/* 	            		search_html = '<div class="none-more-content">暂无内容</div>';
+						$('.infor-content').html(search_html);
+						return false; */
+	            		html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                        $('.dropload-down').siblings().remove();
+						$('.dropload-down').before(html);
+                        dropload.resetload();
+                        dropload.lock();
+                        dropload.noData();
+                        $('.dropload-down').hide();
+                        return false;
+	            	}
+                }
+	        	// 为了测试，延迟1秒加载
+                setTimeout(function(){
+                	$('.none-more-content').remove();
+                    if(up==0){;//下拉加载
+                    	if(count<((params.page)*params.num)&&count!=0){
+                    		search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>'; 
+                            $('.infor-content').html(search_html);	
+                         }else{
+                         	$('.infor-content').html(search_html);	
+                         	dropload_machineList(params);
+                         }
+                    	dropload.resetload();
+                        dropload.unlock();// 解锁loadDownFn里锁定的情况
+                        dropload.noData(false);
+                        params.page = 2;// 重置页数，重新获取loadDownFn的数据
+                        $('.dropload-down').hide();
+					}else{
+                    	if(count<((params.page)*params.num)){
+                                dropload.lock();// 锁定
+                                dropload.noData();// 无数据
+                                $('.dropload-down').hide();
+                        }
+                    	$('.dropload-down').before(search_html);
+                    	dropload.resetload();// 每次数据加载完，必须重置
+                    }
+                },500);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	
+	//*********************************资讯搜索列表上拉加载*****************
+	function dropload_machineList(params){
+	    var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+	    var time = toLocalTime(ts,6);//下拉时间定义
+		dropload = $('.infor-content').dropload({
+		    scrollArea : window,
+		    /* domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+		        domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+		    },
+		    domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">加载完成</div>'
+		    }, */
+		    domUp : {
+		        domClass   : 'dropload-up',
+		        domRefresh : '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domUpdate  : '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:'+time+'</p></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+		    },
+domDown : {
+		        domClass   : 'dropload-down',
+		        domRefresh : '<div class="dropload-refresh"></div>',
+		        domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+		        domNoData  : '<div class="dropload-noData">已加载全部数据</div>'
+},
+		    loadUpFn : function(me){
+		    	//下拉刷新
+		    	params.page=0;
+		    	get_newslist(params);
+		    	params.page = 1;
+		    },
+		    loadDownFn : function(me){
+		    	//上拉加载
+		    	get_newslist(params);
+		        params.page++;
+		    },
+		    threshold : 50
+		});
+	}
+	
+	
+	var params = {
+			'keyword' : isNull(searchContent)?searchContent:'',
+            'sort':sort,//排序：1时间倒序，2时间升序
+           'type':type,//资讯类型 
+    		'page' :PAGE,
+    		'num' : PAGE_NUM,
+            };
+	console.info(params)
+	$(document).keyup(function(event){
+        if(event.keyCode ==13){
+            searchContent = $('.visa-in').val();
+            // if(searchContent != ''){
+                window.location.href = changeUrlParam('search_txt',searchContent);
+            // }
+        }
+    });
+	
+	dropload_machineList(params);//获取资讯列表
+	
+    /*********************类型排序*************************/
+    $(document).on('touchstart click','.mac-list-time-auto li',function(){
+    	$('.mac-list-time-auto li').removeClass('hover');
+    	$(this).addClass('hover');
+    	//var li_name = $(this).text();
+    	type = $(this).attr('typeid');//类型
+    	sort = $('.mac-list-type-auto .hover').attr('mac-list-auto');//时间排序
+    	var sx_text = $(this).text();
+    	$('.zxlx').text(sx_text);
+    	var params = {	//资讯列表接口提供参数
+    			'keyword' : isNull(searchContent)?searchContent:'',
+    			'sort':sort,//排序：1时间倒序，2时间升序
+                'type':type,//资讯类型 
+         		'page' :PAGE,
+         		'num' : PAGE_NUM,
+		};
+    	//$('.pick-work-ula').find('.hover').text(li_name);
+		$('.mac-list-time-auto').toggle();
+		$('.layer-map-bj').toggle();
+		dropload.lock();
+        dropload.resetload();
+delete dropload.opts.domUp;
+//		$('.infor-content').html('');
+$('.dropload-down').siblings().remove();
+$('.dropload-down').show();
+		 count = 0;
+		 console.info(params);
+		 dropload_machineList(params);
+	    	$.each($('.dropload-down'),function(i){
+	            if(i!=0) $($('.dropload-down')[i]).remove();
+	       })
+		 //dropload = '';
+    })
+	    /*********************时间排序*************************/
+    $(document).on('touchstart click','.mac-list-type-auto li',function(){
+    	$('.mac-list-type-auto li').removeClass('hover');
+    	$(this).addClass('hover');
+    	//var li_name = $(this).text();
+    	type = $('.mac-list-time-auto .hover').attr('typeid');//类型
+    	sort = $(this).attr('mac-list-auto');//时间排序
+    	var sx_text = $(this).text();
+    	$('.sjsx').text(sx_text);
+    	var params = {	//资讯列表接口提供参数
+    			'keyword' : isNull(searchContent)?searchContent:'',
+    			'sort':sort,//排序：1时间倒序，2时间升序
+                'type':type,//资讯类型 
+         		'page' :PAGE,
+         		'num' : PAGE_NUM,
+		};
+    	//$('.pick-work-ula').find('.hover').text(li_name);
+		$('.mac-list-type-auto').toggle();
+		$('.layer-map-bj').toggle();
+//		$('.infor-content').html('');
+		dropload.lock();
+        dropload.resetload();
+delete dropload.opts.domUp;
+//		$('.infor-content').html('');
+$('.dropload-down').siblings().remove();
+$('.dropload-down').show();
+		 count = 0;
+		 dropload_machineList(params);
+	    	$.each($('.dropload-down'),function(i){
+	            if(i!=0) $($('.dropload-down')[i]).remove();
+	       })
+		 //dropload = '';
+    })
+})
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+		<section class="header-fixed-cont ovw">
+			<section class="header-fixed ovw">
+		    <section class="header ovw posin">
+		    	<div class="search-visa ovw posin"><aside class="serch-t"><img src="images/search.png" class="search-icon">搜索资讯</aside>
+		    	<form action="javascript:return true;" method="get">
+		    	<input type="search" class="visa-in" style="height:0.853rem;line-height:0.853px;text-align:center;">
+		    			    	</form>
+		    	</div>
+		    	<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a>
+		    </section>
+		    <ul class="eval-all-ula two-ula ovw">
+		    	<li class="zxlx"><a href="javascript:;">资讯类型</a></li>
+		    	<li class="sjsx"><a href="javascript:;">时间顺序</a></li>
+		    </ul>
+	    </section>
+	     </section>
+	     	    	      <section class="layer-bj layer-map-bj" style="display: none;"></section>
+	    <ul class="layer-sorting layer-up-some ovw mac-list-time-auto layer-type1" style="display: none;">
+<!-- <li class="" mac-list-auto="1">时间正序</li>
+<li class="hover" mac-list-auto="2">时间倒序</li> -->
+</ul>
+</ul>
+<ul class="layer-sorting layer-up-some ovw mac-list-type-auto layer-time1" style="display: none;">
+<li class="hover" mac-list-auto="1">时间正序</li>
+<li class="" mac-list-auto="2">时间倒序</li>
+</ul>
+	    <section class="infor-content ovw">
+<!-- 	    	<dl class="infor-cont-dl ovw">
+	    		<dt><a href="#"><img src="images/info-1.jpg"/></a></dt>
+	    		<dd>
+	    			<cite class="infor-title infor-one ovw"><a href="#">中国对世界可持续农业发展做出.....</a></cite>
+	    			<p class="infor-pa ovw"><a href="#">中国是全球重要农业文化遗产保护的榜样，对世界可持…</a></p>
+	    			<p class="infor-pb ovw"><span class="fl ovw eval-content-zan">200000</span><span class="fl ovw eval-content-chat">1266666</span></p>
+	    		</dd>
+	    	</dl>
+	    	<dl class="infor-cont-dl ovw">
+	    		<dt><a href="#"><img src="images/info-1.jpg"/></a></dt>
+	    		<dd>
+	    			<cite class="infor-title ovw"><a href="#">中国对世界可持续农业发展做出.....</a></cite>
+	    			<p class="infor-pa ovw"><a href="#">中国是全球重要农业文化遗产保护的榜样，对世界可持…</a></p>
+	    			<p class="infor-pb ovw"><span class="fl ovw eval-content-zan">2000002222</span><span class="fl ovw eval-content-chat">1266666</span></p>
+	    		</dd>
+	    	</dl> -->
+	    </section>
+	</section>
+</body>
+</html>

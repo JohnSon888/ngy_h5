@@ -1,0 +1,702 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<title>添加种植</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/demo.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/flexible.js"></script>
+<script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+<script type="text/javascript" src="src/lib/common/common.js"></script>
+<script type="text/javascript" src="src/lib/common/farming.js"></script>
+<script type="text/javascript" src="src/lib/common/public.js"></script>
+<script type="text/javascript" src="src/lib/public/public.js"></script>
+<!-- layer -->
+<script type="text/javascript" src="src/lib/layer/layer.js"></script>
+<style type="text/css">
+	.subs-ulc{padding: 0px 0px;}
+	.ld-card-ula{width:100%;}
+</style>
+<script type="text/javascript">
+var idImages = [];
+$(function(){
+	var cropID = GetQueryParam('cropID');	
+	var cropType_ID = '';
+	var production_ID = '';
+	/*****************种植详情*******************/
+	function plantDetail(params){
+        var cmd = 'plantDetail';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            var plant_image = '';
+            if(data['body']['images']['0']==''){
+            	plant_image = '';
+            }else{
+            	$.each(data['body']['images'],function(i,val){
+            		plant_image +=  '<span class="fl plant-imgb ovw pic picture"><img src="'+val+'"></span>';
+            	})
+            }
+            cropType_ID = parseInt(data['body']['cropTypeID']);
+            production_ID = data['body']['productionID'];
+            
+            production_name = data['body']['production']
+            $('.zzlx').val(cropType_ID);
+    		if(isNull(production_ID)){
+    			$('#cpmc_select').show();
+    			$('.cpmc_input').hide();
+    			$('.production_as').attr('cpmc_type','1');
+    			var params2 = {
+    					'pid':cropType_ID,
+    			}
+    			//$('.cpmc_select').html('');
+    			get_plantTypeList(params2,2);
+    		}else{
+    			$('.production_as').attr('cpmc_type','2');
+    			$('.cpmc_input').val(data['body']['production']);
+    		}
+            $('.zzmj').val(data['body']['cropArea']);
+            $('.zzcz').val(data['body']['output']);
+            $('#detail-address').val(data['body']['detailAddress']);
+        	$('.pic-add').before(plant_image);
+        	var area = data['body']['area'];
+        	console.info(area['province']);
+        	$('.sf').html('');
+			getArea(0,1,0,area['province']['areaID']);
+			if(area['city']['areaID']!=0){getArea(area['province']['areaID'],2,0,area['city']['areaID']);}
+	        if(area['area']['areaID']!=0){getArea(area['city']['areaID'],3,0,area['area']['areaID']);}
+	        if(area['town']['areaID']!=0){getArea(area['area']['areaID'],4,0,area['town']['areaID']);}
+	        if(area['village']['areaID']!=0){getArea(area['town']['areaID'],5,0,area['village']['areaID']);}
+			
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+
+
+	
+	function get_plantTypeList(params,type,when,cropType){
+        var cmd = 'plantTypeList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+   //     var params = {};
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url :apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+                if(isNull(data['body']['list'])){
+                    var search_html = '';
+                    $.each(data['body']['list'],function(i,val){
+                        search_html += '<option value="'+val['typeID']+'">'+val['typeName']+'</option>';
+                    });
+                 var other_html = ''+search_html+'<option value=0>其他</option>';
+                 switch (type){
+                 case 1:$('.zzlx').append(other_html);break;
+                 case 2:$('.cpmc_select').append(search_html);break;
+                 }
+                 if(when==0){
+                 	$('.zzlx').val(parseInt(cropType));
+                 }
+          //          $('.zzlx').append(search_html);
+                }else{
+                	search_html = '<option value=0>其他</option>';
+                }
+                if(isNull(production_ID)){
+        		    setTimeout(function () {
+            			$('#cpmc_select').val(production_ID);    			
+            		    },100);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+	var params = {};
+	get_plantTypeList(params,1);//获取种植类型
+
+	function get_myPlantList(params){
+        var cmd = 'myPlantList';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ console.info(data);
+         		if(isNull(data['body']['list'])){
+	            	$.each(data['body']['list'],function(i,val){
+	            		if(cropID==val['cropID']){
+	            			// $('.zzlx').val(parseInt(val['cropType']));
+	            			get_plantTypeList({},1,0,val['cropType']);
+	            			$('.cpmc_input').val(val['cropName']);
+	            			$('.zzmj').val(val('cropArea'));
+	            			$('.zzcz').val(val('production'));
+                                        $('#detail-address').val(val('address'));
+	            			getArea(0,1,0,val['province']);
+	            			if(val['city']!=0){getArea(val['province'],2,0,val['city']);}
+					        if(val['area']!=0){getArea(val['city'],3,0,val['area']);}
+					        if(val['town']!=0){getArea(val['area'],4,0,val['town']);}
+					        if(val['village']!=0){getArea(val['town'],5,0,val['village']);}
+					        var run_pic = '';
+			            	if(isNull(val['images'])){
+				            	$.each(val['images'],function(i,value){
+				            		run_pic += '<span class="fl plant-imgb ovw picture"><img src="'+value+'"/></span>';
+				            	})
+				            	$('.pic-add').before(run_pic);
+				            }
+			           	}
+			        })
+	            }   
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    // var myPlantList_params = {
+    //         'userid' : 62,
+    //         'typeID':0,
+    //         'page':PAGE,
+    //         'num':PAGE_NUM,
+    //         };
+    // get_myPlantList(myPlantList_params);
+	$('.zzlx').on('change',function(){
+		if(parseInt($('.zzlx option:selected').val())==0){
+			$('.cpmc_input').show()
+			$('.cpmc_select').hide();
+			$('.production_as').removeClass('add-plant-ad');
+			$('.production_as').attr('cpmc_type','2');
+		}else{
+			$('.cpmc_input').hide()
+			$('.cpmc_select').show();
+			$('.production_as').addClass('add-plant-ad');
+			$('.cpmc_input').val('');
+			$('.production_as').attr('cpmc_type','1');
+			var pid = parseInt($('.zzlx option:selected').val());
+			if(pid == -1){
+				$('.cpmc_input').val('');
+				return false;
+			}else{
+				var params2 = {
+						'pid':pid,
+				}
+				console.info(params2);
+				$('.cpmc_select').html('');
+				get_plantTypeList(params2,2);
+			}
+		}
+	});
+	
+	function modifyPlant(params){
+        var cmd = 'modifyPlant';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+       /*  var params = {
+                'cropID':cropID,
+                'userid' : userid,
+                'cropType':cropType,
+                'cropArea':cropArea,
+                'production':production,
+                'images':images,
+                }; */
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+        	url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){ 
+            	console.info(data);
+            	if(data['resultCode']==1){
+            		if(isNull(cropID)){
+                        layer.msg('编辑种植成功');
+        				setTimeout(function(){
+        	               window.location.href = "my-planting.html";
+        	                },1000);
+            		}else{
+                        layer.msg('添加种植成功');
+        				setTimeout(function(){
+        	               window.location.href = "my-planting.html";
+        	                },1000);
+            		}
+                }else{
+                    layer.msg('编辑种植失败，系统出错!');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }	
+	
+	//点击上传图片
+	// $('.more_pic').click(function(){
+ // 		var num = idImages.length;
+	// 	if(num==5){
+	// 		layer.msg('最多添加5张图片');
+	// 	}else{
+	// 		var pic_num_left = 5-num;
+	// 		uploadImage(pic_num_left);
+	// 	} 
+ //   		var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+	// 	imageUploaded(imageUrl);  
+	// });
+	
+
+	$('.over-order').click(function(){
+		var cropType = $.trim($('.zzlx').val());
+		var cropArea = $.trim($('.zzmj').val());
+		var production = $.trim($('.zzcz').val());
+//		var cpmc = $.trim($('.cpmc').val());//产品
+		var images =Array();
+		$.each($('.picture'),function(i){
+		    	images.push($($('.picture img')[i]).attr('src'));
+		    })
+		if($('.more_pic img').attr('src')!='images/plant_3.png'){
+		    images.push($('.more_pic img').attr('src'));
+		}
+		var province = $('.sf option:selected').attr('areaID');
+		var city = $('.cs option:selected').attr('areaID');
+		var area = $('.qx option:selected').attr('areaID');
+		var town = $('.xz option:selected').attr('areaID');
+		var village = $('.cz option:selected').attr('areaID');
+                var address = $('#detail-address').val();
+		if(!isNull(cropType)||cropType ==-1){
+			layer.msg('请选择种植类型');
+	    	return false;
+		}
+/* 		if(!isNull(cpmc)){
+			layer.msg('请输入产品名称');
+	    	return false;
+		} */
+		if(!isNull(cropArea)){
+			layer.msg('请输入用地面积');
+	    	return false;
+		}
+		if(!isNull(production)){
+			layer.msg('请输入产值');
+	    	return false;
+		}
+		if(province==0){
+			layer.msg('请填写种植区域');
+	    	return false;
+		}
+		
+		var cpmc_input = $('.cpmc_input').val();//输入的产品名称
+		var cpmc_select = $('.cpmc_select').val();//选择的产品名称
+
+		var cpmc_type = parseInt($('.production_as').attr('cpmc_type'));
+		if(cpmc_type==1){//选择
+			if(!isNull(cpmc_select)){alert();
+				layer.msg('产品不能为空');
+		    	return false;
+			}
+		if(isNull(cropID)){
+	        var params = {
+	                'cropID':cropID,
+	                'userid' : userid,
+	                'cropType':cropType,
+	                'cropArea':cropArea,
+	                'output':production,
+	                'productionID':cpmc_select,//选择的
+	                'images':images,
+	                'province':province,
+	                'city':city,
+	                'area':area,
+	                'town':town,
+	                'village':village,
+                         'address':address,
+	                };
+		}else{
+	        var params = {
+	                'userid' : userid,
+	                'cropType':cropType,
+	                'cropArea':cropArea,
+	                'output':production,
+	                'productionID':cpmc_select,//选择的
+	                'images':images,
+	                'province':province,
+	                'city':city,
+	                'area':area,
+	                'town':town,
+	                'village':village,
+                         'address':address,
+                        
+	                };
+		}
+
+	        
+		}else{//输入
+			if(!isNull(cpmc_input)){
+				layer.msg('产品不能为空');
+		    	return false;
+			}
+		if(isNull(cropID)){
+	        var params = {
+	                'cropID':cropID,
+	                'userid' : userid,
+	                'cropType':cropType,
+	                'cropArea':cropArea,
+	                'output':production,
+	                'production':cpmc_input,//选择的
+	                'images':images,
+	                'province':province,
+	                'city':city,
+	                'area':area,
+	                'town':town,
+	                'village':village,
+                         'address':address,
+	                };
+		}else{
+	        var params = {
+	                'userid' : userid,
+	                'cropType':cropType,
+	                'cropArea':cropArea,
+	                'output':production,
+	                'production':cpmc_input,//选择的
+	                'images':images,
+	                'province':province,
+	                'city':city,
+	                'area':area,
+	                'town':town,
+	                'village':village,
+                        'address':address,
+	                };
+		}
+		}
+
+//       console.info(params); 
+		modifyPlant(params);
+	});
+	
+    setTimeout(function () {
+	if(isNull(cropID)){
+		var detail_params = {
+				'cropID':cropID,
+		}
+		plantDetail(detail_params);
+	}else{
+            setTimeout(function () {
+                if (current_location_address != '') {   //获取到当前位置
+                    var arr_areaID = current_location_areaIDs.split(",");
+                    var arr_areaNames = current_location_areaNames.split(",");
+                } else {                              //没获取到当前位置使用用户设置的位置
+                     setTimeout(function () {
+                         var arr_areaID = current_location_areaIDs.split(",");
+                        var arr_areaNames = current_location_areaNames.split(",");
+                     },500);
+                }
+                 getArea(0,1,1);
+                 if(arr_areaID[0]!=''){getArea(arr_areaID[0],2,1);}
+                 if(arr_areaID[1]!=''){getArea(arr_areaID[1],3,1);}
+                 if(arr_areaID[2]!=''){getArea(arr_areaID[2],4,1);}
+                 if(arr_areaID[3]!=''){getArea(arr_areaID[3],5,1);}
+            }, 500);
+        }
+    },500);
+    
+    /*************返回地址跳转*******************/
+    	var from = GetQueryParam('from');	
+    	$(document).on('click','.header-back',function(){
+    		if(from=='h5'){
+    			window.location.href="my-planting-details.html?cropID="+cropID+"";    			
+    		}else{
+    			window.location.href="my-planting.html";    			
+    		}
+	})
+
+});
+
+//图片预览
+$('.pic').click(function(){
+    imagePreview(idImages, 0);
+});
+</script>
+</head>
+<body>
+	<section class="body-bj ovw">
+		<section class="header ovw posin"
+			style="position: fixed; z-index: 500;">
+			我的种植<a href="javascript:;" class="header-back ovw"><img
+				src="images/back.png" /></a>
+		</section>
+		<section class="add-plant ovw" style="margin-top: 1.333rem;">
+			<article class="add-plant-cont ovw">
+				<aside class="add-plant-as add-plant-ad ovw">
+					<label class="fl ovw">类型:</label> <select class="add-state zzlx">
+						<option value='-1'>全部</option>
+						<!-- <option value='0'>其他</option> -->
+					</select>
+				</aside>
+				<aside class="add-plant-as ovw production_as" cpmc_type=2>
+					<label class="fl ovw">产品:</label>
+					<!-- 	<select class="add-state"><option>请输入您的产品</option></select> -->
+					<select class="add-state cpmc_select cpmc"  id="cpmc_select" style="display: none">
+						<!-- <option>五谷</option> -->
+					</select> <input placeholder="请输入您的产品" class="add-import cpmc_input cpmc" />
+				</aside>
+				<aside class="add-plant-as ovw">
+					<label class="fl ovw">面积:</label> <input placeholder="请输入您的用地面积"
+						class="add-import zzmj" />
+				</aside>
+				<aside class="add-plant-as ovw">
+					<label class="fl ovw">产值:</label> <input placeholder="请输入您的产值"
+						class="add-import zzcz" />
+				</aside>
+				<ul class="ld-card-ula subs-ulb subs-ulc ovw ">
+				<li class="subs-ulb-lia">
+			    		<label class="ld-lia-la ovw" style="line-height:0.9rem;">种植区域：</label>
+			    	</li>
+			    	<li class="mers-lia-c">
+			    		<aside class="add-plant-as add-plant-ad ovw fl">
+			    			<label class="fl ovw">省份:</label>
+			    			<select class="add-state province sf"><option  value="-1">请选择</option></select>
+			    		</aside>
+			    		<aside class="add-plant-as add-plant-ad ovw fr">
+			    			<label class="fl ovw">城市:</label>
+			    			<select class="add-state city cs"><option  value="0">请选择</option></select>
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c">
+			    		<aside class="add-plant-as add-plant-ad ovw fl">
+			    			<label class="fl ovw">区县:</label>
+			    			<select class="add-state area qx"><option  value="0">请选择</option></select>
+			    		</aside>
+			    		<aside class="add-plant-as  add-plant-ad  ovw fr">
+			    			<label class="fl ovw">乡镇:</label>
+			    			<select class="add-state town xz"><option  value="0">请选择</option></select>
+			    			<!-- <input id='town' class="ld-lia-in ld-lia-c " type="text" style="width: 2.8rem;"> -->
+			    		</aside>
+			    	</li>
+			    	<li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad  ovw">
+			    			<label class="fl ovw">村:</label>
+			    			<select class="add-state village cz"><option   value="0">请选择</option></select>
+			    			<!-- <input id='village' class="ld-lia-in ld-lia-c" type="text" > -->
+			    		</aside>
+			    	</li>
+                                <li class="mers-lia-c mers-lia-d">
+			    		<aside class="add-plant-as add-plant-ad  ovw">
+			    			<label class="fl ovw">门牌号码:</label>
+			    			 <input id='detail-address' class="ld-lia-in ld-lia-c" type="text" style="width:6.0rem;"/> 
+			    		</aside>
+			    	</li>
+			    </ul>
+				<aside class="add-pic-ld" style="border: 1px solid #ddd; border-radius: 0.12rem; height: auto; padding-bottom: 0.8rem; width: 99%; overflow: hidden;">
+					<!-- 	<aside class="add-plant-as add-plant-af ovw"> -->
+					<label class="fl ovw"
+						style="line-height: 1.04rem; text-indent: 0.2666rem;">图片:</label>
+						<!-- <span class="fl plant-imgb ovw picture"><img src="images/plant_3.png"></span> -->
+					<span class="fl plant-imgb ovw pic pic-add"><img
+						src="images/plant_3.png"></span>
+					<!-- 	</aside> -->
+				</aside>
+
+				<!-- 	    		<aside class="add-plant-as add-plant-af ovw">
+	    			<label class="fl ovw">图片:</label>
+	    			<ul class="add-imga ovw">
+	    				<li><img src="images/plant_2.png"/></li>
+	    				<li class="more_pic"><img src="images/plant_3.png"/></li>
+	    			</ul>
+	    		</aside> -->
+			</article>
+		</section>
+		<a class="over-order ovw" href="javascript:;">提交</a>
+	</section>
+<script type="text/javascript">
+    
+	/****************************获取地区信息接口********************
+    **type:1.省份；2.城市，3.区县；4.乡镇
+    */
+	function getArea(areaID,type,when,str){
+        var cmd = 'getArea';//农机投诉接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+            'areaID':areaID,
+        };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : apiURL,//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+                if(isNull(data['body']['list'])){
+                    var areaHtml = '';
+                    $.each(data['body']['list'],function(i,val){
+                        if(val['areaID']!=0){
+                            areaHtml += '<option areaID="'+val['areaID']+'" value="'+val['areaID']+'">'+val['areaName']+'</option>';
+                        }
+                    })
+                    switch(type){
+                        case 1:$('.sf').append(areaHtml);break;
+                        case 2:$('.cs').append(areaHtml);break;
+                        case 3:$('.qx').append(areaHtml);break;
+                        case 4:$('.xz').append(areaHtml);break;
+                        case 5:$('.cz').append(areaHtml);break;
+                    }
+                    if(when==0){
+                    	switch(type){
+	                        case 1:$('.sf').val(str);break;
+	                        case 2:$('.cs').val(str);break;
+	                        case 3:$('.qx').val(str);break;
+	                        case 4:$('.xz').val(str);break;
+	                        case 5:$('.cz').val(str);break;
+	                    }
+                    } else if (when == 1) {  //  首页设置位置
+                                var arr_areaID = current_location_areaIDs.split(",");
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            }
+                }else{
+                    layer.msg('暂无区域内容');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    getArea(0,1);
+    $('.sf').on('change',function(){
+        if($('.sf option:selected').attr('areaID')!=-1){
+            $('.cs').html('');$('.cs').append('<option areaID="0">请选择城市</option>');
+            $('.qx').html('');$('.qx').append('<option areaID="0">请选择区县</option>');
+            $('.xz').html('');$('.xz').append('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0">请选择村庄</option>');
+            if($('.sf option:selected').attr('areaID')!=0){
+                getArea($('.sf option:selected').attr('areaID'),2);
+            }
+        }else{
+            $('.cs').html('<option areaID="0">请选择城市</option>');
+            $('.qx').html('<option areaID="0">请选择区县</option>');
+            $('.xz').html('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0">请选择村庄</option>');
+        }
+    })
+    $('.cs').on('change',function(){
+        if($('.cs option:selected').attr('areaID')!=0){
+            $('.qx').html('');$('.qx').append('<option areaID="0">请选择区县</option>');
+            $('.xz').html('');$('.xz').append('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0">请选择村庄</option>');
+            getArea($('.cs option:selected').attr('areaID'),3);
+        }else{
+            $('.qx').html('<option areaID="0">请选择区县</option>');
+            $('.xz').html('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0">请选择村庄</option>');
+        }
+    })
+    $('.qx').on('change',function(){
+        if($('.qx option:selected').attr('areaID')!=0){
+            $('.xz').html('');$('.xz').append('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('');$('.cz').append('<option areaID="0">请选择村庄</option>');
+            getArea($('.qx option:selected').attr('areaID'),4);
+        }else{
+            $('.xz').html('<option areaID="0">请选择乡镇</option>');
+            $('.cz').html('<option areaID="0">请选择村庄</option>');
+        }
+    })
+    $('.xz').on('change',function(){
+        if($('.xz option:selected').attr('areaID')!=0){
+            $('.cz').html('');$('.cz').append('<option areaID="0">请选择村庄</option>');
+            getArea($('.xz option:selected').attr('areaID'),5);
+        }else{
+            $('.cz').html('<option areaID="0">请选择村庄</option>');
+        }
+    })
+//点击上传图片
+	$(document).on('click','.pic',function(){
+		var pic_index = $(this);
+		var num = $('.picture').length;
+		var pic_num_left = 4-num;
+			if($(this).siblings('.pic-add').length>0){
+				layer.open({
+				    content: '您确定要删除图片吗？'
+				    ,btn: ['是', '否']
+				    ,yes: function(index){
+					    layer.close(index);
+					    pic_index.remove();
+					    if(num==3&&$('.pic-add img').attr('src')!='images/plant_3.png'){
+					    	$('.pic-add').before('<span class="fl plant-imgb ovw pic picture"><img src="'+$('.pic-add img').attr('src')+'"></span>');
+							$('.pic-add img').attr('src','images/plant_3.png')
+						}
+						// else{
+						// 	uploadImage(pic_num_left);
+						// }
+				   	}
+				});
+			}else{
+				if(num==3&&$('.pic-add img').attr('src')!='images/plant_3.png'){
+					layer.msg('最多添加4张图片');
+				}else{
+					uploadImage(pic_num_left);
+				}
+			}
+	});
+    /**
+	*   图片上传成功回调
+	*   imageUrl         图片url地址
+    **/
+    function imageUploaded(imageUrl){
+    	imageUrl_arr = handleAppValue(imageUrl);
+    	var images = '';
+    	for(var i=0;i<imageUrl_arr.length;i++){
+            images += '<span class="fl plant-imgb ovw pic picture"><img src="'+imageUrl_arr[i]+'"></span>';
+        }
+        if($('.picture').length==3){
+        	$('.pic-add img').attr('src',imageUrl_arr[0]);
+        	// $('.pic').addClass('picture');
+        }else{
+        	$('.pic-add').before(images);
+        }
+    }
+</script>
+</body>
+</html>
