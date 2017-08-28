@@ -311,10 +311,10 @@
         //方位辨别
         orien:function(obj, self, pos) {
             var tops, rect = self.getBoundingClientRect();
-            obj.style.left = rect.left + (pos ? 0 :jeDt.scroll(1)) + "px";
+            // obj.style.left = rect.left + (pos ? 0 :jeDt.scroll(1)) + "px";
             tops =  (rect.bottom + obj.offsetHeight / 1.5 <= jeDt.winarea()) ?
                 rect.bottom - 1 : rect.top > obj.offsetHeight / 1.5 ? rect.top - obj.offsetHeight + 1 :jeDt.winarea() - obj.offsetHeight;
-            obj.style.top = Math.max(tops + (pos ? 0 :jeDt.scroll()) + 1, 1) + "px";
+            // obj.style.top = Math.max(tops + (pos ? 0 :jeDt.scroll()) + 1, 1) + "px";
         },
         getDateStr:function(y, m, d) {
             var that = this, opts = that.config, dayStr = "", m = jeDt.digit(m);

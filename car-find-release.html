@@ -14,7 +14,8 @@
     <script type="text/javascript" src="js/flexible.js"></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
-        <script type="text/javascript" src="src/lib/public/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
+    <script type="text/javascript" src="src/lib/jedate/jedate.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
@@ -32,6 +33,9 @@
     background: #fff;
     width: 96%;
     padding-left: 0.37rem;
+}
+.help-center li{
+    overflow: initial;
 }
 .personal-ula li .help-name {
      text-indent: 0rem; 
@@ -51,7 +55,37 @@
     bottom: 0;
     z-index: 22;
 }
-    </style>
+#choise {
+    position: relative;
+}
+.pplist{
+    border:1px solid #dcdcdc;
+    display: none;
+    position: absolute;
+    top:1.173rem;
+    left:0;
+    width:100%;
+}
+.ppitem{
+    height:1.173rem;
+    line-height:1.173rem;
+    padding-right:0.84rem;
+    background: #fff;
+    border-bottom:1px solid #fff;
+    background:#dcdcdc;
+    color:#fff;
+}
+.ppitem:last-child{
+    border-bottom: none;
+}
+#datepicker{height:100%;}
+div#jedatebox{
+    top:20%;
+    left:5%;
+    width:90%;
+    font-size: 22px;
+}
+</style>
 </head>
 
 <body>
@@ -60,7 +94,9 @@
         <section class="add-subs ovw">
             <ul class="help-center personal-ula ovw btzl">
                 <li>
-                    <label class="help-name ovw">品牌</label><span class="personal-some ovw">请选择</span></li>
+                    <label class="help-name ovw">品牌</label><div id="choise" class="personal-some "><span id="xuanze">请选择</span><div class="pplist">
+                        
+                    </div></div></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">车型</label><input id="chexing" placeholder="请输入车型" class="personal-some ovw"></li>
                 <li class="none-right-arrow">
@@ -68,7 +104,7 @@
                     <input id="cartNum" placeholder="请输入车牌" class="personal-some ovw">
                 </li>
                 <li>
-                    <label class="help-name ovw">出发时间</label><span class="personal-some ovw">请选择</span></li>
+                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">目的地</label>
                     <!-- <samp class="personal-some ovw">请输入目的地</samp> -->
@@ -82,23 +118,56 @@
         </section>
     </section>
     <script type="text/javascript">
+    var apiURL = 'http://ngy.innke.net/apiv2/index.php'
+     $.ajax({
+            url : apiURL,//接口地址
+        data : {'cmd':'inviteSelectInfo', 'ts':parseInt(new Date().getTime() / 1000), 'params':{type:4}, 'jsonp':1},
+        dataType : 'jsonp',
+        success: function(data){console.info(data);
+            var data = data.body.list;
+            var str = '';
+            for(var i=0; i<data.length;i++){
+                str+='<div class="ppitem" data-id="'+data[i].infoID+'">'+data[i].infoName+'</div>'
+            }
+            $('.pplist').html(str)
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+            layer.msg('网络请求延迟！');
+            console.info(XMLHttpRequest.status);
+            console.info(XMLHttpRequest.readyState);
+            console.info(textStatus);
+        },
+    });
+    $('#choise').click(function(){
+       $('.pplist').slideToggle();
+    })
+    $('#choise').on('click','.ppitem',function(e){
+        e.stopPropagation();
+        var val = $(this).text();
+        $('#xuanze').text(val)
+       $('.pplist').slideToggle();
+    })
     $('#fabu').click(function(){
         var cmd  = 'carFindPersonPublish';
         var ts = parseInt(new Date().getTime() / 1000); 
         var jsonp = 1;
-        var brand = '';
-
+        var brand = $('#xuanze').text();
+        if(brand=='请选择'){
+            layer.msg('网络请求延迟！');
+            return;
+        }
         var cartType = $('#chexing').val();
         var sm = $('#shuoming').val();
         var cartNum = $('#cartNum').val();
         var destination = $('#destination').val();
+        var departureTime = $('#datepicker').val();
         var params = {
             'userid':'444',
             pulishID:'',
             brand:brand,
             cartType:cartType,
             cartNum:cartNum,
-            departureTime:'',
+            departureTime:departureTime,
             starting:'',
             destination:destination,
             explain:sm,
@@ -119,7 +188,24 @@
             },
         });
     })
-       
+    $('#datepicker').click(function(){
+        var datepickerOptions = {
+              dateCell:"#datepicker", 
+              format:"YYYY-MM-DD hh:mm:ss", //日期格式
+              minDate:"1900-01-01 00:00:00", //最小日期
+              maxDate:"2099-12-31 23:59:59", //最大日期
+              isinitVal:false, //是否初始化时间
+              isTime:true, //是否开启时间选择
+              isClear:true, //是否显示清空
+              festival:false, //是否显示节日
+              zIndex:999,  //弹出层的层级高度
+              marks:null, //给日期做标注
+              choosefun:function(val) {},  //选中日期后的回调
+              clearfun:function(val) {},   //清除日期后的回调
+              okfun:function(val) {}       //点击确定后的回调
+        };
+        jeDate(datepickerOptions);
+    })
     </script>
 </body>
 
