@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>我的奖品</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+    <script type="text/javascript" src="src/lib/common/common.js"></script>
+    <script type="text/javascript" src="src/lib/common/farming.js"></script>
+    <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
+    <!-- layer -->
+    <script type="text/javascript" src="src/lib/layer/layer.js"></script>
+    <!-- dropload -->
+    <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+    <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
+    <style type="text/css">
+    .none-more-content {
+        color: #868686;
+        font-size: 14px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+    }
+    .award-wrap{
+        width: 92%;
+	    margin: 0.4rem auto;
+	    border-radius: 0.08rem;
+    }
+    .award-item{
+    	float: left;
+		padding: 0.2rem;
+	    width: 96%;
+	    border-radius: 6px;
+	    background: #fe4c58;
+	    margin-bottom: 0.4rem;
+    }
+    .award-item.disabled{
+	    background:#c3c3c3;
+    }
+    .flex{
+    	display: flex;
+    	justify-content: space-between;
+    	align-items: center;
+    }
+    .award-item .award-item-box{
+    	margin-bottom: 0.5rem;
+    }
+    .award-item .award-item-box:last-child{
+    	margin-bottom: 0rem;
+    }
+    .award-item .award-item-box p{
+    	color: #fff;
+    }
+    .award-item .award-item-box .award-name{
+		font-size: 18px;
+    }
+    .award-item .award-item-box .btn-exchange{
+    	color: #fe4c58;
+    	background: #fff;
+    	border-radius: 20px;
+    	padding: 0.2rem 0.3rem;
+    	font-weight: 600;
+    }
+    .award-item.disabled .award-item-box .btn-exchange{
+    	color: #c3c3c3;
+    }
+    .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+
+    .clearfix:after,.clearfix:before{
+    	zoom: 1;
+    }
+    .award-dialog{
+    	position: absolute;
+    	left: 0;
+    	right: 0;
+    	top: 0;
+    	bottom: 0;
+    	z-index: 999;
+    	background: #000;
+    	opacity: 0.4;
+    }
+    .award-dialog .content{
+    	position: relative;
+    }
+    .award-dialog .award-content{
+    	position: absolute;
+	    width: 260px;
+	    height: 320px;
+	    left: 50%;
+	    top: 50%;
+	    margin-left: -130px;
+	    margin-top: 160px;
+	    border: 1px solid #ccc;
+    }
+
+
+    .release-dialog{
+    	position: absolute;
+    	left: 0;
+    	right: 0;
+    	top: 0;
+    	bottom: 0;
+    	z-index: 999;
+    	background: #000;
+    	opacity: 0.4;
+    }
+    .release-dialog .content{
+    	position: relative;
+		margin-top: 170px;
+    }
+    .release-dialog .release-content{
+	    width: 280px;
+	    height: 90px;
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: center;
+	    border: 1px solid #ccc;
+	    border-radius: 6px;
+	    margin: 0 auto;
+	    margin-bottom: 0.5rem;
+		background: #fff;
+    }
+	.release-dialog .release-content .release-img{
+		width: 60px;
+		height: 60px;
+		margin-left: 1rem;
+	    margin-right: 0.5rem;
+	}
+	.release-dialog .release-content .release-img img{
+		width: 100%;
+		height: 100%;
+	}
+	.release-dialog .release-content p{
+		font-size: 13px;
+		color: #000;
+	}
+	.release-dialog .release-content .release-title{
+		font-size: 20px;
+	} 
+	.release-dialog .release-content .release-subTitle{
+		color: #888;
+	}
+    body{
+    	position: relative;
+    }
+    </style>
+    <script>
+    // $(function() {
+    //     $('.visa-in').on("focus", function(e) {
+    //         $(this).prev('aside').children().hide();
+    //         $(this).prev('aside').css('textIndent', '9999px');
+    //         //      $(this).next('.sear-close').show();
+    //     });
+    //     $('.visa-in').on("blur", function(e) {
+    //         var val = $(this).val();
+    //         if (val != '') {
+    //             $(this).prev('aside').children().hide()
+    //             $(this).prev('aside').css('textIndent', '9999px')
+
+    //         } else {
+    //             $(this).prev('aside').children().show()
+    //             $(this).prev('aside').css('textIndent', '0.1333rem')
+    //             //          $(this).next('.sear-close').hide();
+    //         }
+    //     });
+
+    //     //  隐藏
+    //     $('.layer-rele-s').on('touchstart click', function() {
+    //         $('.rele-bj').hide()
+    //         $('.layer-rele-cont').hide()
+    //     })
+    //     //
+    //     $('.layer-map-bj').on('touchstart click', function() {
+    //         $('.layer-map-bj').hide()
+    //         $('.layer-sorting').hide()
+    //         $('.layer-type').hide()
+    //         $('.layer-time1').hide()
+    //     });
+    //     //
+    //     $('.pick-work-ula li').on('touchstart click', function() {
+    //         var index = $(this).index();
+    //         switch (index) {
+    //             case 0:
+    //                 $('.layer-map-bj').show()
+    //                 $('.layer-up-some').hide()
+    //                 $('.layer-time1').show()
+    //                 break;
+    //             case 1:
+    //                 $('.layer-map-bj').show()
+    //                 $('.layer-up-some').hide()
+    //                 $('.layer-sorting').show()
+
+    //                 break;
+    //         }
+    //         $(this).addClass('hover');
+    //         $(this).siblings().removeClass('hover');
+    //     });
+
+    // })
+    </script>
+    <script type="text/javascript">
+    // $(function() {
+    //     //var userid = 1;
+    //     //	var userid = isLogin();//未登录返回0；
+    //     var count = 0;
+    //     var sort = '1';
+    //     var type = '1';
+    //     var keyword = '';
+
+    //     function get_circleList(params) { //获取圈子搜索列表
+    //         var cmd = 'circleSearchList'; //接口命令
+    //         var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+    //         var jsonp = 1;
+    //         /*         var params ={
+    //                         'userid':userid,
+    //                         'type':type,
+    //                         'page':1,
+    //                         'num':10,
+    //                         }; */
+    //         var up = 1; //默认是上拉
+    //         if (params.page == 0) {
+    //             up = 0;
+    //             count = 0;
+    //             params.page = 1;
+    //         }
+    //         params = objKeySort(params); //按照属性名升序排列
+    //         var params_str = objChangeStr(params); //拼接params参数的属性值
+    //         params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+    //         $.ajax({
+    //             url: apiURL, //接口地址
+    //             data: { 'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp },
+    //             dataType: 'jsonp',
+    //             success: function(data) {
+    //                 console.info(data);
+    //                 if (isNull(data['body']['list'])) {
+    //                     var search_html = '';
+    //                     $.each(data['body']['list'], function(i, val) {
+    //                         //var crtime = getLocalTime(val['circlesTime'],1);
+    //                         if (i % 2 == 0) {
+    //                             var circlesTitle_color = "style='color:#16cc9d;'";
+    //                         } else {
+    //                             var circlesTitle_color = "style='color:#b3ca2e;'";
+    //                         } //my-circle.html?circleID='+val['circlesID']+'&circle_title='+val['circlesTitle']+'
+    //                         if (val['circlesTitle'] == "游戏") {
+    //                             search_html += '<a href="javascript:;" class="my-game" circleID="' + val['circlesID'] + '" circle_title="' + val['circlesTitle'] + '"><ul class="cir-work ovw"><li class="cir-work-lia" style="background:url(' + val['circlesIcon'] + ') no-repeat 0.266rem center;background-size: auto 0.5rem;">' +
+    //                                 '<span class="fl" ' + circlesTitle_color + '>' + val['circlesTitle'] + '</span><span class="fr" style="display:none;">话题数：' + val['topics'] + '</span></li>' +
+    //                                 '<li><p class="cir-work-pa ovw"style="padding-bottom:10px;">' + val['content'] + '</p>' +
+    //                                 '<span class="cir-work-time ovw" style="display:none;">创建时间：' + val['circlesTime'] + '</span></li></ul></a>';
+    //                         } else {
+    //                             search_html += '<a href="javascript:;" class="my-circle" circleID="' + val['circlesID'] + '" circle_title="' + val['circlesTitle'] + '"><ul class="cir-work ovw"><li class="cir-work-lia" style="background:url(' + val['circlesIcon'] + ') no-repeat 0.266rem center;background-size: auto 0.5rem;">' +
+    //                                 '<span class="fl" ' + circlesTitle_color + '>' + val['circlesTitle'] + '</span><span class="fr">话题数：' + val['topics'] + '</span></li>' +
+    //                                 '<li><p class="cir-work-pa ovw">' + val['content'] + '</p>' +
+    //                                 '<span class="cir-work-time ovw">创建时间：' + val['circlesTime'] + '</span></li></ul></a>';
+    //                         }
+    //                         count++
+    //                     });
+    //                     // $('.qzlb').append(search_html);
+    //                 } else {
+    //                     /* search_html = '<div class="none-more-content">暂无内容</div>';
+    //                 $('.qzlb').append(search_html); */
+    //                     if ((count != 0)) { //上拉加载无内容锁定无数据
+    //                         dropload.resetload();
+    //                         dropload.lock();
+    //                         dropload.noData();
+    //                         $('.dropload-down').hide();
+    //                     } else {
+    //                         /* search_html = '<div class="none-more-content">暂无内容</div>';
+				// 		$('.qzlb').html(search_html);
+				// 		return false; */
+    //                         html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+    //                         $('.dropload-down').siblings().remove();
+    //                         $('.dropload-down').before(html);
+    //                         dropload.resetload();
+    //                         dropload.lock();
+    //                         dropload.noData();
+    //                         $('.dropload-down').hide();
+    //                         return false;
+    //                     }
+    //                 }
+    //                 // 为了测试，延迟1秒加载
+    //                 setTimeout(function() {
+    //                     $('.none-more-content').remove();
+    //                     if (up == 0) { //下拉加载
+    //                         if (count < ((params.page) * params.num) && count != 0) {
+    //                             search_html += '<div class="dropload-down" style="background:#fff"><div class="dropload-noData">加载完成</div></div>';
+    //                             $('.qzlb').html(search_html);
+    //                         } else {
+    //                             $('.qzlb').html(search_html);
+    //                             dropload_machineList(params);
+    //                         }
+    //                         dropload.resetload();
+    //                         dropload.unlock(); // 解锁loadDownFn里锁定的情况
+    //                         //dropload.noData(false);
+    //                         $('.dropload-down').hide();
+    //                         params.page = 2; // 重置页数，重新获取loadDownFn的数据
+    //                     } else {
+    //                         if (count < ((params.page) * params.num)) {
+    //                             dropload.lock(); // 锁定
+    //                             dropload.noData(); // 无数据
+    //                             $('.dropload-down').hide();
+    //                         }
+    //                         $('.dropload-down').before(search_html);
+    //                         dropload.resetload(); // 每次数据加载完，必须重置
+    //                     }
+    //                 }, 500);
+    //             },
+    //             error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //                 layer.msg('网络请求延迟！');
+    //                 console.info(XMLHttpRequest.status);
+    //                 console.info(XMLHttpRequest.readyState);
+    //                 console.info(textStatus);
+    //             },
+    //         });
+    //     };
+    //     $(document).on('click', '.my-circle', function() {
+    //         var circleID = $(this).attr('circleID');
+    //         var circle_title = $(this).attr('circle_title');
+    //         var detail_url = 'http://' + window.location.host + '/my-circle.html?circle_title=' + circle_title + '&circleID=' + circleID;
+    //         openH5(detail_url);
+    //     })
+    //     //*********************************圈子列表上拉加载*****************
+    //     function dropload_machineList(params) {
+    //         var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+    //         var time = toLocalTime(ts, 6); //下拉时间定义
+    //         dropload = $('.qzlb').dropload({
+    //             scrollArea: window,
+    //             /* domUp : {
+    //                 domClass   : 'dropload-up',
+    //                 domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+    //                 domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+    //                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+    //             },
+    //             domDown : {
+    //                 domClass   : 'dropload-down',
+    //                 domRefresh : '<div class="dropload-refresh"></div>',
+    //                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+    //                 domNoData  : '<div class="dropload-noData">加载完成</div>'
+    //             }, */
+    //             domUp: {
+    //                 domClass: 'dropload-up',
+    //                 domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+    //                 domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+    //                 domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+    //             },
+    //             domDown: {
+    //                 domClass: 'dropload-down',
+    //                 domRefresh: '<div class="dropload-refresh"></div>',
+    //                 domLoad: '<div class="dropload-load"style="background:#fff"><span class="loading"></span>加载中...</div>',
+    //                 domNoData: '<div class="dropload-noData" style="background:#fff">已加载全部数据</div>'
+    //             },
+    //             loadUpFn: function(me) {
+    //                 //下拉刷新
+    //                 params.page = 0;
+    //                 get_circleList(params);
+    //                 params.page = 1;
+    //             },
+    //             loadDownFn: function(me) {
+    //                 //上拉加载
+    //                 get_circleList(params);
+    //                 params.page++;
+    //             },
+    //             threshold: 50
+    //         });
+    //     }
+
+    //     var params = {
+    //         'keyword': keyword,
+    //         //'userid':userid,
+    //         'type': type,
+    //         'sort': sort, //排序类型：1智能排序、2最新发布，3话题从多到少
+    //         'page': PAGE,
+    //         'num': PAGE_NUM,
+    //     };
+    //     //console.info(params);
+    //     dropload_machineList(params);
+
+
+
+    //     /* 	function get_my_circleList(userid,type,page,num){//获取我参与的圈子列表
+    //             var cmd = 'circleList';//接口命令
+    //             var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+    //             var jsonp = 1;
+    //             var params ={
+    //                     'userid':userid,
+    //                     'type':type,
+    //                     'page':1,
+    //                     'num':10,
+    //                     };
+    //             params = objKeySort(params);//按照属性名升序排列
+    //             var params_str = objChangeStr(params);//拼接params参数的属性值
+    //             params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+    //             $.ajax({
+    //             	url : apiURL,//接口地址
+    //                 data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+    //                 dataType : 'jsonp',
+    //                 success: function(data){ 
+    //                     if(isNull(data)){
+    //                         var search_html = '';
+    //                         $.each(data['body']['list'],function(i,val){
+    //                         	var crtime = getLocalTime(val['circlesTime'],1);
+    //                             search_html += '<ul class="cir-work ovw"><li class="cir-work-lia">'+
+    //             	    		'<span class="fl">'+val['circlesTitle']+'</span><span class="fr">话题数：'+val['topics']+'</span></li>'+
+    //             	    		'<li><p class="cir-work-pa ovw">'+val['content']+'</p>'+
+    //             	    		'<span class="cir-work-time ovw">创建时间：'+crtime+'</span></li></ul>';
+    //                        });
+    //                        $('.qzlb').append(search_html);
+    //                     }else{
+    //                     	search_html = '<div class="none-more-content">暂无内容</div>';
+    //                         $('.qzlb').append(search_html);
+    //                     }
+    //                 },
+    //                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //                     layer.msg('网络请求延迟！');
+    //                     console.info(XMLHttpRequest.status);
+    //                     console.info(XMLHttpRequest.readyState);
+    //                     console.info(textStatus);
+    //                 },
+    //             });
+    //         };
+            
+    //     	get_circleList(1,1,1,10); */
+    //     /*********************类型排序*************************/
+    //     $('.mac-list-time-auto li').on('click', function() {
+    //         $('.mac-list-time-auto li').removeClass('hover');
+    //         $(this).addClass('hover');
+    //         var li_name = $(this).text();
+    //         type = $(this).attr('mac-list-auto');
+    //         sort = $('.mac-list-sort-auto .hover').attr('mac-list-auto');
+    //         var params = { //圈子列表接口提供参数
+    //             'keyword': keyword,
+    //             'userid': userid,
+    //             'sort': sort, //排序类型：1智能排序、2最新发布，3话题从多到少；false
+    //             'type': type, //类型：1全部，2我参与的；true
+    //             'page': PAGE,
+    //             'num': PAGE_NUM,
+    //         };
+    //         $('.pick-work-ula').find('.hover').text(li_name);
+    //         $('.mac-list-time-auto').toggle();
+    //         $('.layer-map-bj').toggle();
+    //         //	$('.qzlb').html('');
+    //         count = 0;
+    //         dropload.lock();
+    //         dropload.resetload();
+    //         delete dropload.opts.domUp;
+    //         //	$('.content').html('');
+    //         $('.dropload-down').siblings().remove();
+    //         $('.dropload-down').show();
+    //         dropload_machineList(params);
+    //         $.each($('.dropload-down'), function(i) {
+    //             if (i != 0) $($('.dropload-down')[i]).remove();
+    //         })
+    //     })
+
+    //     /*********************排序类型排序*************************/
+    //     $('.mac-list-sort-auto li').on('click', function() {
+    //         $('.mac-list-sort-auto li').removeClass('hover');
+    //         $(this).addClass('hover');
+    //         var li_name = $(this).text();
+    //         sort = $(this).attr('mac-list-auto');
+    //         type = $('.mac-list-time-auto .hover').attr('mac-list-auto');
+    //         var params = { //圈子列表接口提供参数
+    //             'keyword': keyword,
+    //             'userid': userid,
+    //             'sort': sort, //排序类型：1智能排序、2最新发布，3话题从多到少；false
+    //             'type': type, //类型：1全部，2我参与的；true
+    //             'page': PAGE,
+    //             'num': PAGE_NUM,
+    //         };
+    //         $('.pick-work-ula').find('.hover').text(li_name);
+    //         $('.mac-list-sort-auto').toggle();
+    //         $('.mac-list-time-auto').hide();
+    //         $('.layer-map-bj').toggle();
+    //         //	$('.qzlb').html('');
+    //         count = 0;
+    //         dropload.lock();
+    //         dropload.resetload();
+    //         delete dropload.opts.domUp;
+    //         //	$('.content').html('');
+    //         $('.dropload-down').siblings().remove();
+    //         $('.dropload-down').show();
+    //         dropload_machineList(params);
+    //         $.each($('.dropload-down'), function(i) {
+    //             if (i != 0) $($('.dropload-down')[i]).remove();
+    //         })
+    //     })
+
+    //     /*********************返回路径配置************************/
+    //     $(document).on('touchstart click', '.header-back', function() {
+    //         backtoNative();
+    //     })
+    //     /*********************发表话题************************/
+    //     $('.fbha_a').on('click', function() {
+    //         if (userid == 0) { //未登录状态
+    //             gotoLogin();
+    //         } else { //登录状态
+    //             window.location.href = 'release-2.html?from=myCircle';
+    //         }
+    //     })
+    // });
+
+    // function get_gameURL(params) { //获取首页链接
+    //     var cmd = 'geth5'; //接口命令
+    //     var ts = parseInt(new Date().getTime() / 1000); //当前时间戳
+    //     var jsonp = 1;
+    //     params = objKeySort(params); //按照属性名升序排列
+    //     var params_str = objChangeStr(params); //拼接params参数的属性值
+    //     params.verify = $.md5(cmd + ts + params_str + 'security'); //生成验证码           
+    //     $.ajax({
+    //         url: apiURL, //接口地址
+    //         data: { 'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp },
+    //         dataType: 'jsonp',
+    //         success: function(data) {
+    //             console.info(data);
+    //             $('.game').val(data['body']['game']);
+    //         },
+    //         error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //             layer.msg('网络请求延迟！');
+    //             console.info(XMLHttpRequest.status);
+    //             console.info(XMLHttpRequest.readyState);
+    //             console.info(textStatus);
+    //         },
+    //     });
+    // }
+    // var game_params = {};
+    // get_gameURL(game_params);
+    // //跳转到游戏链接
+    // $(document).on('click', '.my-game', function() {
+    //     window.location.href = $('.game').val();
+    // })
+    </script>
+</head>
+
+<body>
+	<!-- <div class="award-dialog">
+		<div class="content">	
+	    	<div class="award-content">
+	    		<p class="award-con">鸡蛋10个</p>
+	    		<p class="address">领奖地址</p>
+	    	</div>
+		</div>
+    </div> -->
+    <div class="release-dialog">
+		<div class="content">	
+	    	<div class="release-content">
+	    		<div class="release-img">
+	    			<img src="">
+	    		</div>
+	    		<div>
+		    		<p class="release-title">立即发布</p>
+		    		<p class="release-subTitle">我已填写完成，立即发布</p>
+	    		</div>
+	    	</div>
+	    	<div class="release-content">
+		    	<div class="release-img">
+	    			<img src="">
+	    		</div>
+	    		<div>
+		    		<p class="release-title">完善信息</p>
+		    		<p class="release-subTitle">我还有内容需要添加，继续填写</p>
+	    		</div>
+	    	</div>
+		</div>
+    </div>
+    <section class="body-bj ovw ">
+        <section class="header-fixed-cont ovw">
+            <section class="header-fixed ovw">
+                <section class="header ovw posin">我的奖品</section>
+                <ul class="eval-all-ula ms-work-ula pick-work-ula ovw">
+                    <li><a href="javascript:;">类型</a></li>
+                    <li><a href="javascript:;">状态</a></li>
+                </ul>
+            </section>
+        </section>
+        <section class="layer-bj layer-map-bj" style="display: none;"></section>
+        <ul class="layer-sorting layer-up-some ovw mac-list-time-auto layer-time1" style="display: none;">
+            <li class="hover" mac-list-auto="1">土鸡蛋</li>
+            <li class="" mac-list-auto="2">红包</li>
+            <li class="" mac-list-auto="3">雨伞</li>
+        </ul>
+        <ul class="layer-sorting layer-up-some ovw mac-list-sort-auto" style="display: none;">
+            <li class="hover" mac-list-auto="1">立刻兑换</li>
+            <li class="" mac-list-auto="2">已兑换</li>
+            <li class="" mac-list-auto="3">未兑换 </li>
+        </ul>
+        <section class="ms-contents qzlb" style="background: #ececec none repeat scroll 0 0;"></section>
+         <ul class="award-wrap clearfix">
+	    	<li class="award-item">
+	    		<div class="award-item-box flex">
+	    			<p class="fl award-name">土鸡蛋</p>
+		    		<p class="fr btn-exchange">立即兑换</p>
+	    		</div>
+	    		<div class="award-item-box flex">
+		    		<p class="fl">10个</p>
+		    		<p class="fr">2016-08-12</p>
+	    		</div>
+	    	</li>
+	    	<li class="award-item disabled">
+	    		<div class="award-item-box flex">
+	    			<p class="fl award-name">红包</p>
+		    		<p class="fr btn-exchange">立即兑换</p>
+	    		</div>
+	    		<div class="award-item-box flex">
+		    		<p class="fl">10个</p>
+		    		<p class="fr">2016-08-12</p>
+	    		</div>
+	    	</li>
+	    </ul>
+    </section>
+    <input class="game" type="hidden" />
+</body>
+
+</html>
