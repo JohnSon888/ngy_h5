@@ -14,6 +14,7 @@
     <script type="text/javascript" src="js/flexible.js"></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
+    <script type="text/javascript" src="src/lib/jedate/jedate.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
@@ -50,6 +51,39 @@
     bottom: 0;
     z-index: 22;
 }
+.help-center li{
+    overflow: initial;
+}
+#choise {
+    position: relative;
+}
+.pplist{
+    border:1px solid #dcdcdc;
+    display: none;
+    position: absolute;
+    top:1.173rem;
+    left:0;
+    width:100%;
+}
+.ppitem{
+    height:1.173rem;
+    line-height:1.173rem;
+    padding-right:0.84rem;
+    background: #fff;
+    border-bottom:1px solid #fff;
+    background:#dcdcdc;
+    color:#fff;
+}
+.ppitem:last-child{
+    border-bottom: none;
+}
+#datepicker{height:100%;}
+div#jedatebox{
+    top:20%;
+    left:5%;
+    width:90%;
+    font-size: 22px;
+}
     </style>
 </head>
 
@@ -59,7 +93,7 @@
         <section class="add-subs ovw">
             <ul class="help-center personal-ula ovw btzl">
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">首次上牌时间</label><input id="firstTime" placeholder="请输入时间" class="personal-some ovw"></li>
+                    <label class="help-name ovw">首次上牌时间</label><input id="firstTime" placeholder="请输入时间" class="personal-some"></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">行驶(万公里)</label><input id="travel" placeholder="请输入公里数" class="personal-some ovw"></li>
                 <li class="none-right-arrow">
@@ -67,18 +101,20 @@
                     <input id="price" placeholder="请输入价格" class="personal-some ovw">
                 </li>
                 <li>
-                    <label class="help-name ovw">定期4S保养</label><span class="personal-some ovw">请选择</span></li>
+                    <label class="help-name ovw">定期4S保养</label><div id="choise" class="personal-some "><span id="xuanze">请选择</span><div class="pplist">
+                        
+                    </div></div></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">年检到期</label>
-                    <input id="asTime" placeholder="请输入时间" class="personal-some ovw">
+                    <input id="asTime" placeholder="请输入时间" class="personal-some">
                 </li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">交强险到期</label>
-                    <input id="saliTime" placeholder="请输入时间" class="personal-some ovw">
+                    <input id="saliTime" placeholder="请输入时间" class="personal-some">
                 </li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">商业险到期</label>
-                    <input id="comTime" placeholder="请输入时间" class="personal-some ovw">
+                    <input id="comTime" placeholder="请输入时间" class="personal-some">
                 </li>
             </ul>
             <div class="release-intro">
@@ -88,6 +124,45 @@
         </section>
     </section>
     <script type="text/javascript">
+
+    function GetQueryString(name)
+    {
+         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if(r!=null)return  unescape(r[2]); return null;
+    };
+    var userid = GetQueryString(userid)
+    var pulishID = GetQueryString(pulishID)
+
+    var apiURL = 'http://ngy.innke.net/apiv2/index.php'
+     $.ajax({
+            url : apiURL,//接口地址
+        data : {'cmd':'inviteSelectInfo', 'userid':userid,'ts':parseInt(new Date().getTime() / 1000), 'params':{type:5}, 'jsonp':1},
+        dataType : 'jsonp',
+        success: function(data){console.info(data);
+            var data = data.body.list;
+            var str = '';
+            for(var i=0; i<data.length;i++){
+                str+='<div class="ppitem" data-id="'+data[i].infoID+'">'+data[i].infoName+'</div>'
+            }
+            $('.pplist').html(str)
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+            layer.msg('网络请求延迟！');
+            console.info(XMLHttpRequest.status);
+            console.info(XMLHttpRequest.readyState);
+            console.info(textStatus);
+        },
+    });
+     $('#choise').click(function(){
+        $('.pplist').slideToggle();
+     })
+     $('#choise').on('click','.ppitem',function(e){
+         e.stopPropagation();
+         var val = $(this).text();
+         $('#xuanze').text(val)
+        $('.pplist').slideToggle();
+     })
         $('#fabu').click(function(){
             var cmd  = 'usedPublish';
             var ts = parseInt(new Date().getTime() / 1000); 
@@ -97,16 +172,18 @@
             var firstTime = $('#firstTime').val();
             var travel = $('#travel').val();
             var price = $('#price').val();
+            var maintain = $('#xuanze').val();
             var asTime = $('#asTime').val();
             var saliTime = $('#saliTime').val();
             var comTime = $('#comTime').val();
             var explain = $('#explain').val();
             var params = {
-                'userid':'444',
-                pulishID:'',
+                'userid':userid,
+                pulishID:pulishID,
                 firstTime:firstTime,
                 travel:travel,
                 price:price,
+                maintain:maintain,
                 asTime:asTime,
                 saliTime:saliTime,
                 comTime:comTime,
@@ -127,6 +204,36 @@
                     console.info(textStatus);
                 },
             });
+        })
+        function jd(str){
+            var datepickerOptions = {
+                  dateCell:str, 
+                  format:"YYYY-MM-DD", //日期格式
+                  minDate:"1900-01-01", //最小日期
+                  maxDate:"2099-12-31", //最大日期
+                  isinitVal:false, //是否初始化时间
+                  isTime:true, //是否开启时间选择
+                  isClear:true, //是否显示清空
+                  festival:false, //是否显示节日
+                  zIndex:999,  //弹出层的层级高度
+                  marks:null, //给日期做标注
+                  choosefun:function(val) {},  //选中日期后的回调
+                  clearfun:function(val) {},   //清除日期后的回调
+                  okfun:function(val) {}       //点击确定后的回调
+            };
+            jeDate(datepickerOptions);
+        }
+        $('#firstTime').click(function(){
+            jd('#firstTime')
+        })
+        $('#asTime').click(function(){
+            jd('#asTime')
+        })
+        $('#saliTime').click(function(){
+            jd('#saliTime')
+        })
+        $('#comTime').click(function(){
+            jd('#comTime')
         })
     </script>
 </body>
