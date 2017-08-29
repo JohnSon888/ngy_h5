@@ -32,6 +32,31 @@
 display:none}
 .mach-type ul{text-align: center;}
 .mach-type ul li{height: 0.66rem; line-height: 0.66rem; padding: 0.2rem 0;}
+.mask {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 999;
+        background: #000;
+        opacity: 0.4;
+        /*display: none;*/
+    }
+.cer-list-cont{
+	/*display: none;*/
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+
+}
+.cer-list-cont .title{
+	text-align: center;
+	font-size: 16px;
+}
+
 </style>
 <script type="text/javascript">
 requestMylocation();
@@ -415,9 +440,15 @@ goodsTypeList();
 		imageUploaded(imageUrl);   */
 	});
 	
-
+$('.mask').on('click',function(){
+	$(this).hide();
+	$('.cer-list-cont').hide();
+});
 	//点击确定商品农活
 	$('.over-order').on('click touched',function(){
+		// $('.mask').show();
+		// $('.cer-list-cont').show();
+		// return;
 		if(sign==1){
 			var goodsName = $.trim($('.spmc').val());
 			var goodsType =  $('.splx option:selected').attr('goodsType');
@@ -669,6 +700,64 @@ function didUpdateLocation(longitude, latitude){
 		     <input type="hidden" class="lng" value="">
     		 <input type="hidden" class="lat" value="">
 		    <a class="over-order ovw" href="javascript:;">发布</a>
+	    </section>
+	    <div class="mask"></div>
+	    <section class="cer-list-cont ovw">
+	    	<p class="title">认证服务</p>
+		    	<a href="./certification-iphone.html">
+		    		<dl class="cer-dla cer-dla-a ovw">
+		    			<dt>
+		    				<span>手机认证</span>
+		    				<p>商家已完成手机验证</p>
+		    			</dt>
+		    			
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-ld.html">
+		    		<dl class="cer-dla cer-dla-b ovw">
+		    			<dt>
+		    				<span>实名认证</span>
+		    				<p>商家已完成实名认证</p>
+		    			</dt>
+		    			
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-land.html">
+		    		<dl class="cer-dla cer-dla-c ovw">
+		    			<dt>
+		    				<span>土地认证</span>
+		    				<p>商家土地信息已备案，完成土地认证</p>
+		    			</dt>
+		    			
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-merchants-2.html">
+		    		<dl class="cer-dla cer-dla-d ovw">
+		    			<dt>
+		    				<span>大户认证</span>
+		    				<p>商家已完成大户认证</p>
+		    			</dt>
+		    			
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-prensoal-2.html">
+		    		<dl class="cer-dla cer-dla-e ovw">
+		    			<dt>
+		    				<span>农机手认证</span>
+		    				<p>已验证农机手信息，完成农机手认证</p>
+		    			</dt>
+		    			
+		    		</dl>
+		    	</a>
+		    	<a href="./certification-work.html">
+		    		<dl class="cer-dla cer-dlb cer-dla-g ovw">
+		    			<dt>
+		    				<span>技能认证</span>
+		    				<p>技能证明符合要求，完成认证</p>
+		    			</dt>
+		    		</dl>
+		    	</a> 
+		    	<a class="over-order ovw" href="javascript:;">确定</a>
 	    </section>
 
 </body>
