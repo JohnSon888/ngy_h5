@@ -187,6 +187,9 @@ div#jedatebox{
             explain:sm,
             verify:'',
         }
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码 
          $.ajax({
                 url : apiURL,//接口地址
             data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
