@@ -91,36 +91,28 @@ div#jedatebox{
     <section class="body-bj">
         <section class="header ovw posin">二手发布<a href="javascript:;" class="header-back ovw"></a></section>
         <section class="add-subs ovw">
+            <div class="release-intro">
+                <textarea class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
+                <p>
+                    <span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
+                </p>
+            </div>
             <ul class="help-center personal-ula ovw btzl">
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">首次上牌时间</label><input id="firstTime" placeholder="请输入时间" class="personal-some"></li>
+                    <label class="help-name ovw">联系人</label><input class="personal-some ovw" placeholder="请输入联系人姓名"></input></li>
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">行驶(万公里)</label><input id="travel" placeholder="请输入公里数" class="personal-some ovw"></li>
+                    <label class="help-name ovw">电话</label><input class="personal-some ovw" placeholder="请输入电话号码"></input></li>
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">转让价格(万元)</label>
-                    <input id="price" placeholder="请输入价格" class="personal-some ovw">
+                    <label class="help-name ovw">地点</label>
+                    <samp class="personal-some ovw">请选择地点</samp>
                 </li>
                 <li>
-                    <label class="help-name ovw">定期4S保养</label><div id="choise" class="personal-some "><span id="xuanze">请选择</span><div class="pplist">
-                        
-                    </div></div></li>
+                    <label class="help-name ovw">出发时间</label><span class="personal-some ovw">请选择</span></li>
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">年检到期</label>
-                    <input id="asTime" placeholder="请输入时间" class="personal-some">
-                </li>
-                <li class="none-right-arrow">
-                    <label class="help-name ovw">交强险到期</label>
-                    <input id="saliTime" placeholder="请输入时间" class="personal-some">
-                </li>
-                <li class="none-right-arrow">
-                    <label class="help-name ovw">商业险到期</label>
-                    <input id="comTime" placeholder="请输入时间" class="personal-some">
+                    <input class="help-name ovw" placeholder="请选择具体位置"></input>
                 </li>
             </ul>
-            <div class="release-intro">
-                <textarea id="explain" class="merchants-text ovw description" placeholder="补充说明..."></textarea>
-            </div>
-            <a id="fabu"  class="over-order ovw topic_tj" href="javascript:;">发布</a>
+            <a class="over-order ovw topic_tj" id="fabu" href="javascript:;">发布</a>
         </section>
     </section>
     <script type="text/javascript">
@@ -164,6 +156,7 @@ div#jedatebox{
         $('.pplist').slideToggle();
      })
         $('#fabu').click(function(){
+            location.href = "seconds-hand-complete.html";
             var cmd  = 'usedPublish';
             var ts = parseInt(new Date().getTime() / 1000); 
             var jsonp = 1;

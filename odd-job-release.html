@@ -106,6 +106,7 @@ div#jedatebox{
     var pulishID = GetQueryString(pulishID)
     var apiURL = 'http://ngy.innke.net/apiv2/index.php'
         $('#fabu').click(function(){
+            location.href = 'odd-job-complete.html';
             var cmd  = 'publishInfo';
             var ts = parseInt(new Date().getTime() / 1000); 
             var jsonp = 1;

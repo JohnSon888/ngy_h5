@@ -91,73 +91,7 @@
         border-bottom: none;
     }
 
-    .release-dialog {
-        /*display: none;*/
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 280px;
-        height: 90px;
-        z-index: 1000;
-        left: 50%;
-        margin-left: -140px;
-    }
-
-    .release-dialog .content {
-        position: relative;
-        margin-top: 170px;
-    }
-
-    .release-dialog .release-content {
-        width: 280px;
-        height: 90px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        margin: 0 auto;
-        margin-bottom: 0.5rem;
-        background: #fff;
-    }
-
-    .release-dialog .release-content .release-img {
-        width: 68px;
-        height: 55px;
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-    }
-
-    .release-dialog .release-content .release-img img {
-        width: 100%;
-        height: 100%;
-    }
-
-    .release-dialog .release-content p {
-        font-size: 13px;
-        color: #000;
-    }
-
-    .release-dialog .release-content .release-title {
-        font-size: 20px;
-    }
-
-    .release-dialog .release-content .release-subTitle {
-        color: #888;
-    }
-
-    .mask {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 999;
-        background: #000;
-        opacity: 0.4;
-        /*display: none;*/
-    }
+    
     </style>
 </head>
 
@@ -195,29 +129,7 @@
             <a id="fabu" class="over-order topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
-    <div class="mask"></div>
-    <div class="release-dialog">
-        <div class="content">
-            <div class="release-content">
-                <div class="release-img">
-                    <img src="images/img1.png">
-                </div>
-                <div class="release-now">
-                    <p class="release-title">立即发布</p>
-                    <p class="release-subTitle">我已填写完成，立即发布</p>
-                </div>
-            </div>
-            <div class="release-content">
-                <div class="release-img">
-                    <img src="images/img2.png">
-                </div>
-                <div class="complete-info">
-                    <p class="release-title">完善信息</p>
-                    <p class="release-subTitle">我还有内容需要添加，继续填写</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <script type="text/javascript">
     function GetQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -265,68 +177,6 @@
     })
     $('#fabu').click(function() {
 
-        $('.mask').show();
-        $('.release-dialog').show();
-
-        // var cmd  = 'mechanicalPublish';
-        // var ts = parseInt(new Date().getTime() / 1000); 
-        // var jsonp = 1;
-
-        // var price = $('#price').val();
-        // var type = $('#type').text();
-        // var status = $('#status').text();
-        // var way = $('#fangshi').text();
-        // if(price==''){
-        //     layer.msg('请填写价格');
-        //     return;
-        // }
-        // if(type=='请选择'){
-        //     layer.msg('请选择类型');
-        //     return;
-        // }
-        // if(status=='请选择'){
-        //     layer.msg('请选择状态');
-        //     return;
-        // }
-        // if(way=='请选择'){
-        //     layer.msg('请选择方式');
-        //     return;
-        // }
-        // var params = {
-        //     'userid':userid,
-        //     pulishID:pulishID,
-        //     verify:'',
-        //     price:price,
-        //     type:'type',
-        //     status:'status',
-        //     way:'way',
-        // }
-        //  $.ajax({
-        //      url : apiURL,//接口地址
-        //     data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
-        //     dataType : 'jsonp',
-        //     success: function(data){
-        //         if(data.resultCode=='-1'){
-        //             layer.msg(data.resultMessage);
-        //         }else{
-        //             layer.msg('发布成功');
-        //         }
-        //     },
-        //     error: function(XMLHttpRequest, textStatus, errorThrown){
-        //         layer.msg('网络请求延迟！');
-        //         console.info(XMLHttpRequest.status);
-        //         console.info(XMLHttpRequest.readyState);
-        //         console.info(textStatus);
-        //     },
-        // });
-    })
-    $('.mask').click(function() {
-            $(this).hide();
-            $('.release-dialog').hide();
-        });
-    // 立即发布
-    $('.release-now').click(function() {
-        // 调接口
         var cmd  = 'mechanicalPublish';
         var ts = parseInt(new Date().getTime() / 1000); 
         var jsonp = 1;
@@ -360,9 +210,6 @@
             status:'status',
             way:'way',
         }
-        params = objKeySort(params);//按照属性名升序排列
-        var params_str = objChangeStr(params);//拼接params参数的属性值
-        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
          $.ajax({
              url : apiURL,//接口地址
             data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
@@ -381,12 +228,8 @@
                 console.info(textStatus);
             },
         });
-    });
-    // 完善信息
-    $('.complete-info').click(function() {
-        
-        location.href = 'local-invite-release1.html';
-    });
+    })
+    
     </script>
 </body>
 
