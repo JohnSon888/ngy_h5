@@ -27,7 +27,7 @@
     }
 
     .personal-ula .none-right-arrow .personal-some {
-        padding-right: 0.44rem;
+        padding-right: 0.44rem;height:100%;
     }
 
     .help-center {
@@ -88,6 +88,37 @@
         background: #dd1616;
         color: #fff;
     }
+    .help-center li {
+        overflow: initial;
+    }
+
+    .choise {
+        position: relative;
+    }
+
+    .pplist {
+        border: 1px solid #dcdcdc;
+        display: none;
+        position: absolute;
+        top: 1.173rem;
+        left: 0;
+        width: 100%;
+        z-index: 99;
+    }
+
+    .ppitem {
+        height: 1.173rem;
+        line-height: 1.173rem;
+        padding-right: 0.84rem;
+        background: #fff;
+        border-bottom: 1px solid #fff;
+        background: #dcdcdc;
+        color: #fff;
+    }
+
+    .ppitem:last-child {
+        border-bottom: none;
+    }
     </style>
 </head>
 
@@ -97,38 +128,148 @@
         <section class="add-subs ovw">
             <p>福利：</p>
             <ul class="welfare-wrap">
-                <li class="welfare-item active">五险一金</li>
-                <li class="welfare-item ">包住</li>
-                <li class="welfare-item ">包吃</li>
-                <li class="welfare-item ">年底双薪</li>
-                <li class="welfare-item ">包吃</li>
-                <li class="welfare-item ">年底双薪</li>
-                <li class="welfare-item active">包吃住</li>
             </ul>
         </section>
         <section class="add-subs ovw">
             <ul class="help-center personal-ula ovw btzl">
-                <li>
-                    <label class="help-name ovw">薪资</label><span class="personal-some ovw">输入薪资</span></li>
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">学历要求</label><span class="personal-some ovw">请选择</span></li>
-                <li class="none-right-arrow">
+                    <label class="help-name ovw">薪资</label><input id="pay" placeholder="请输入薪资" class="personal-some ovw"></li>
+                <li >
+                    <label class="help-name ovw">学历要求</label>
+                    <div class="personal-some choise"><span id="education">请选择</span>
+                        <div class="pplist">
+                        </div>
+                    </div>
+                 </li>
+                <li class="">
                     <label class="help-name ovw">工作经验</label>
-                    <samp class="personal-some ovw">请选择</samp>
+                    <div class="personal-some choise"><span id="workExperience">请选择</span>
+                        <div class="pplist">
+                        </div>
+                    </div>
                 </li>
-                <li>
-                    <label class="help-name ovw">公司行业</label><span class="personal-some ovw">请输入公司行业</span></li>
-                <li>
+                <li class="none-right-arrow">
+                    <label class="help-name ovw">公司行业</label><input style="height:100%;" id="companyIndustry" placeholder="请输入公司行业" class="personal-some ovw"></li></li>
+                <li class="none-right-arrow">
                     <label class="help-name ovw">公司性质</label>
-                    <samp class="personal-some ovw">请输入公司性质</samp>
+                    <input id="companyNature" style="height:100%;" placeholder="请输入公司性质" class="personal-some ovw"></li>
                 </li>
             </ul>
             <div class="release-intro">
-                <textarea class="merchants-text ovw description" placeholder="请输入职位描述..."></textarea>
+                <textarea id="explain" class="merchants-text ovw description" placeholder="请输入职位描述..."></textarea>
             </div>
-            <a class="over-order ovw topic_tj" href="javascript:;">发布</a>
+            <a id="fabu" class="over-order ovw topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
+
+    <script type="text/javascript">
+        function GetQueryString(name)
+        {
+             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+             var r = window.location.search.substr(1).match(reg);
+             if(r!=null)return  unescape(r[2]); return null;
+        };
+        var userid = GetQueryString(userid)
+        var pulishID = GetQueryString(pulishID)
+        var apiURL = 'http://ngy.innke.net/apiv2/index.php';
+
+        function aj(el, type) {
+            $.ajax({
+                url: apiURL, //接口地址
+                data: { 'cmd': 'inviteSelectInfo', 'userid': userid, 'ts': parseInt(new Date().getTime() / 1000), 'params': { type: type }, 'jsonp': 1 },
+                dataType: 'jsonp',
+                success: function(data) {
+                    console.info(data);
+                    var data = data.body.list;
+                    var str = '';
+                    if(type==1){
+                        for(var i = 0;i < data.length; i++){
+                            str+='<li class="welfare-item" data-id="' + data[i].infoID + '">' + data[i].infoName + '</li>'
+                        }
+                    }else{
+                        for (var i = 0; i < data.length; i++) {
+                            str += '<div class="ppitem" data-id="' + data[i].infoID + '">' + data[i].infoName + '</div>'
+                        }
+                    }
+                    el.html(str)
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    layer.msg('网络请求延迟！');
+                    console.info(XMLHttpRequest.status);
+                    console.info(XMLHttpRequest.readyState);
+                    console.info(textStatus);
+                },
+            });
+        }
+        aj($('.welfare-wrap'), 1)
+        aj($('.pplist').eq(0), 2)
+        aj($('.pplist').eq(1), 3)
+        $('.choise').click(function() {
+            $(this).find('.pplist').slideToggle();
+        })
+        $('.choise').on('click', '.ppitem', function(e) {
+            e.stopPropagation();
+            var val = $(this).text();
+            $(this).parents('.choise').find('span').text(val)
+            $(this).parents('.choise').find('.pplist').slideToggle();
+        })
+        $('.welfare-wrap').on('click','.welfare-item',function(){
+            $(this).toggleClass('active')
+        })
+            $('#fabu').click(function(){
+                var cmd  = 'localHirePublish';
+                var ts = parseInt(new Date().getTime() / 1000); 
+                var jsonp = 1;
+                var welfare = '';
+                $('.welfare-item').each(function(index, el) {
+                    if($(el).hasClass('active')){
+                        welfare+=$(el).text()+',|';
+                    }
+                });
+                 welfare =  welfare.slice(0,welfare.length-2);
+                var pay = $('#pay').val();
+                var education = $('#education').text();
+                var workExperience = $('#workExperience').text();
+                var companyIndustry = $('#companyIndustry').val();
+                var companyNature = $('#companyNature').val();
+                var explain = $('#explain').val();
+                //出发时间接口没有
+                var time = $('#datepicker').val();
+                var params = {
+                    'userid':userid,
+                    pulishID:pulishID,
+                    verify:'',
+                    pay:pay,
+                    education:education,
+                    workExperience:workExperience,
+                    companyIndustry:companyIndustry,
+                    companyNature:companyNature,
+                    explain:explain,
+                    welfare:welfare,
+                }
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
+                 $.ajax({
+                        url : apiURL,//接口地址
+                    data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp,type:'2'},
+                    dataType : 'jsonp',
+                    success: function(data){
+                        if(data.resultCode=='-1'){
+                            layer.msg(data.resultMessage);
+                        }else{
+                            layer.msg('发布成功');
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown){
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            })
+    </script>
 </body>
 
 </html>
