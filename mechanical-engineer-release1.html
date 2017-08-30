@@ -58,7 +58,7 @@
     margin-left: 0;
 }
 .release-dialog {
-        /*display: none;*/
+        display: none;
         position: absolute;
         right: 0;
         top: 0;
@@ -122,7 +122,7 @@
         z-index: 999;
         background: #000;
         opacity: 0.4;
-        /*display: none;*/
+        display: none;
     }
 </style>
 </head>
@@ -146,8 +146,6 @@
                     <label class="help-name ovw">地点</label>
                     <samp class="personal-some ovw">请选择地点</samp>
                 </li>
-                <li>
-                    <label class="help-name ovw">出发时间</label><span class="personal-some ovw">请选择</span></li>
                 <li class="none-right-arrow">
                     <input class="help-name ovw" placeholder="请选择具体位置"></input>
                 </li>
@@ -190,12 +188,12 @@
         });
     // 立即发布
     $('.release-now').click(function() {
-        location.href = 'local-invite-release.html';
+        location.href = 'mechanical-engineer-release.html';
     });
     // 完善信息
     $('.complete-info').click(function() {
         
-        location.href = 'local-invite-release1.html';
+        location.href = 'mechanical-engineer-complete.html';
     });
     </script>
 </body>

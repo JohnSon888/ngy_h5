@@ -7,7 +7,6 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
@@ -15,221 +14,168 @@
     <script type="text/javascript" src="js/flexible.js"></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
+    <script type="text/javascript" src="src/lib/jedate/jedate.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
     .personal-ula li:first-child {
-        line-height: 1.173rem;
-        height: 1.173rem;
+            line-height: 1.173rem;
+    height: 1.173rem;
     }
-
-    .personal-ula .none-right-arrow {
+    .personal-ula .none-right-arrow{
         background: none;
     }
-
     .personal-ula .none-right-arrow .personal-some {
         padding-right: 0.44rem;
-        height: 100%;
-    }
-
-    .help-center {
-        background: #fff;
-        width: 96%;
-        padding-left: 0.37rem;
-    }
-
-    .personal-ula li .help-name {
-        text-indent: 0rem;
-    }
-
-    .release-intro {
-        height: 3.66rem;
-        margin-left: 0.37rem;
-        margin-top: 0.37rem;
-        border-bottom: 1px solid #ececec;
-    }
-
-    .release-intro .merchants-text {
-        display: block;
-        width: 100%;
-        height: 100%;
-        position: relative;
-        left: 0;
-        bottom: 0;
-        z-index: 22;
-    }
-
-    .help-center li {
-        overflow: initial;
-    }
-
-    .choise {
-        position: relative;
-    }
-
-    .pplist {
-        border: 1px solid #dcdcdc;
-        display: none;
-        position: absolute;
-        top: 1.173rem;
-        left: 0;
-        width: 100%;
-        z-index: 99;
-    }
-
-    .ppitem {
-        height: 1.173rem;
-        line-height: 1.173rem;
-        padding-right: 0.84rem;
-        background: #fff;
-        border-bottom: 1px solid #fff;
-        background: #dcdcdc;
-        color: #fff;
-    }
-
-    .ppitem:last-child {
-        border-bottom: none;
-    }
-
-    
-    </style>
+}
+.help-center {
+    background: #fff;
+    width: 96%;
+    padding-left: 0.37rem;
+}
+.personal-ula li .help-name {
+     text-indent: 0rem; 
+}
+.release-intro{
+    height: 6.66rem;
+    margin-left: 0.37rem;
+    margin-top: 0.37rem;
+    border-bottom: 1px solid #ececec;
+}
+.release-intro .merchants-text {
+    display: block;
+    width: 100%;
+    height: 68%;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    z-index: 22;
+}
+.none-right-arrow input{
+    height: 1.173rem;
+}
+.plant-imgb{
+    margin-left: 0;
+}
+#datepicker{height:100%;}
+div#jedatebox{
+    top:20%;
+    left:5%;
+    width:90%;
+    font-size: 22px;
+}
+</style>
 </head>
 
 <body>
     <section class="body-bj">
         <section class="header ovw posin">农机机械发布<a href="javascript:;" class="header-back ovw"></a></section>
-        <section class="add-subs " style="overflow: initial;">
-            <ul class="help-center personal-ula btzl">
+        <section class="add-subs ovw">
+            <div class="release-intro">
+                <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
+                <p>
+                    <span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
+                </p>
+            </div>
+            <ul class="help-center personal-ula ovw btzl">
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">报价</label>
-                    <input id="price" placeholder="请填写价格" class="personal-some ovw">
+                    <label class="help-name ovw">联系人</label><input id="concat" class="personal-some ovw" placeholder="请输入联系人姓名"></input></li>
+                <li class="none-right-arrow">
+                    <label class="help-name ovw">电话</label><input id="phone" class="personal-some ovw" placeholder="请输入电话号码"></input></li>
+                <li class="none-right-arrow">
+                    <label class="help-name ovw">地点</label>
+                    <samp class="personal-some ovw">请选择地点</samp>
                 </li>
                 <li>
-                    <label class="help-name ovw">类型</label>
-                    <div class="personal-some choise"><span id="type">请选择</span>
-                        <div class="pplist">
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <label class="help-name ovw">状态</label>
-                    <div class="personal-some choise"><span id="status">请选择</span>
-                        <div class="pplist">
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <label class="help-name ovw">方式</label>
-                    <div class="personal-some choise"><span id="fangshi">请选择</span>
-                        <div class="pplist">
-                        </div>
-                    </div>
+                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li>
+                <li class="none-right-arrow">
+                    <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
             </ul>
-            <a id="fabu" class="over-order topic_tj" href="javascript:;">发布</a>
+            <a id="fabu" class="over-order ovw topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
-    
     <script type="text/javascript">
-    function GetQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
+    function GetQueryString(name)
+    {
+         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if(r!=null)return  unescape(r[2]); return null;
     };
     var userid = GetQueryString(userid)
     var pulishID = GetQueryString(pulishID)
     var apiURL = 'http://ngy.innke.net/apiv2/index.php'
-
-    function aj(el, type) {
-        $.ajax({
-            url: apiURL, //接口地址
-            data: { 'cmd': 'inviteSelectInfo', 'userid': userid, 'ts': parseInt(new Date().getTime() / 1000), 'params': { type: type }, 'jsonp': 1 },
-            dataType: 'jsonp',
-            success: function(data) {
-                console.info(data);
-                var data = data.body.list;
-                var str = '';
-                for (var i = 0; i < data.length; i++) {
-                    str += '<div class="ppitem" data-id="' + data[i].infoID + '">' + data[i].infoName + '</div>'
-                }
-                el.html(str)
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                layer.msg('网络请求延迟！');
-                console.info(XMLHttpRequest.status);
-                console.info(XMLHttpRequest.readyState);
-                console.info(textStatus);
-            },
-        });
-    }
-    aj($('.pplist').eq(0), 7)
-    aj($('.pplist').eq(1), 8)
-    aj($('.pplist').eq(2), 9)
-    $('.choise').click(function() {
-        $(this).find('.pplist').slideToggle();
-    })
-    $('.choise').on('click', '.ppitem', function(e) {
-        e.stopPropagation();
-        var val = $(this).text();
-        $(this).parents('.choise').find('span').text(val)
-        $(this).parents('.choise').find('.pplist').slideToggle();
-    })
-    $('#fabu').click(function() {
-
-        var cmd  = 'mechanicalPublish';
-        var ts = parseInt(new Date().getTime() / 1000); 
-        var jsonp = 1;
-
-        var price = $('#price').val();
-        var type = $('#type').text();
-        var status = $('#status').text();
-        var way = $('#fangshi').text();
-        if(price==''){
-            layer.msg('请填写价格');
-            return;
-        }
-        if(type=='请选择'){
-            layer.msg('请选择类型');
-            return;
-        }
-        if(status=='请选择'){
-            layer.msg('请选择状态');
-            return;
-        }
-        if(way=='请选择'){
-            layer.msg('请选择方式');
-            return;
-        }
-        var params = {
-            'userid':userid,
-            pulishID:pulishID,
-            verify:'',
-            price:price,
-            type:'type',
-            status:'status',
-            way:'way',
-        }
-         $.ajax({
-             url : apiURL,//接口地址
-            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
-            dataType : 'jsonp',
-            success: function(data){
-                if(data.resultCode=='-1'){
-                    layer.msg(data.resultMessage);
-                }else{
-                    layer.msg('发布成功');
-                }
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown){
-                layer.msg('网络请求延迟！');
-                console.info(XMLHttpRequest.status);
-                console.info(XMLHttpRequest.readyState);
-                console.info(textStatus);
-            },
-        });
-    })
-    
+        $('#fabu').click(function(){
+            location.href="mechanical-engineer-release1.html";
+            var cmd  = 'publishInfo';
+            var ts = parseInt(new Date().getTime() / 1000); 
+            var jsonp = 1;
+            
+            var name = $('#concat').val();
+            var phone = $('#phone').val();
+            var detail = $('#detail').val();
+            var address = $('#address').val();
+            var province = '';
+            var city = '';
+            var area = '';
+            var town = '';
+            var village = '';
+            //出发时间接口没有
+            var time = $('#datepicker').val();
+            var params = {
+                'userid':userid,
+                pulishID:pulishID,
+                verify:'',
+                name:name,
+                phone:phone,
+                province:province,
+                city:city,
+                area:area,
+                town:town,
+                village:village,
+                address:address,
+                detail:detail,
+            }
+            params = objKeySort(params);//按照属性名升序排列
+            var params_str = objChangeStr(params);//拼接params参数的属性值
+            params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
+             $.ajax({
+                    url : apiURL,//接口地址
+                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp,type:'2'},
+                dataType : 'jsonp',
+                success: function(data){
+                    if(data.resultCode=='-1'){
+                        layer.msg(data.resultMessage);
+                    }else{
+                        layer.msg('发布成功');
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    layer.msg('网络请求延迟！');
+                    console.info(XMLHttpRequest.status);
+                    console.info(XMLHttpRequest.readyState);
+                    console.info(textStatus);
+                },
+            });
+        })
+        $('#datepicker').click(function(){
+            var datepickerOptions = {
+                  dateCell:"#datepicker", 
+                  format:"YYYY-MM-DD hh:mm:ss", //日期格式
+                  minDate:"1900-01-01 00:00:00", //最小日期
+                  maxDate:"2099-12-31 23:59:59", //最大日期
+                  isinitVal:false, //是否初始化时间
+                  isTime:true, //是否开启时间选择
+                  isClear:true, //是否显示清空
+                  festival:false, //是否显示节日
+                  zIndex:999,  //弹出层的层级高度
+                  marks:null, //给日期做标注
+                  choosefun:function(val) {},  //选中日期后的回调
+                  clearfun:function(val) {},   //清除日期后的回调
+                  okfun:function(val) {}       //点击确定后的回调
+            };
+            jeDate(datepickerOptions);
+        })
     </script>
 </body>
 
