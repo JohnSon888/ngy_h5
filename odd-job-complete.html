@@ -223,10 +223,10 @@
                 var welfare = '';
                 $('.welfare-item').each(function(index, el) {
                     if($(el).hasClass('active')){
-                        welfare+=$(el).text()+',|';
+                        welfare+=$(el).text()+'|';
                     }
                 });
-                 welfare =  welfare.slice(0,welfare.length-2);
+                 welfare =  welfare.slice(0,welfare.length-1);
                 var pay = $('#pay').val();
                 var education = $('#education').text();
                 var workExperience = $('#workExperience').text();

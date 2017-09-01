@@ -149,7 +149,37 @@
         width: 88%;
     }
 
+    .eval-all-ula li.choise  {
+        overflow: initial;
+    }
 
+    .choise {
+        position: relative;overflow: initial;
+    }
+
+    .pplist {
+        border: 1px solid #dcdcdc;
+        display: none;
+        position: absolute;
+        top: 0.973rem;
+        left: 0;
+        width: 100%;
+        z-index: 99;
+    }
+
+    .ppitem {
+        height: 1.173rem;
+        line-height: 1.173rem;
+        padding-right: 0.84rem;
+        background: #fff;
+        border-bottom: 1px solid #fff;
+        background: #dcdcdc;
+        color: #fff;
+    }
+
+    .ppitem:last-child {
+        border-bottom: none;
+    }
 
 
     body {
@@ -183,13 +213,20 @@
             </ul>
         </div>
     </div>
-    <section class="body-bj ovw ">
-        <section class="header-fixed-cont ovw">
-            <section class="header-fixed ovw">
+    <section class="body-bj  ">
+        <section class="header-fixed-cont ">
+            <section class="header-fixed ">
                 <section class="header ovw posin">我的奖品</section>
-                <ul class="eval-all-ula ms-work-ula pick-work-ula ovw">
-                    <li><a href="javascript:;">类型</a></li>
-                    <li><a href="javascript:;">状态</a></li>
+                <ul class="eval-all-ula ms-work-ula pick-work-ula">
+                    <li class="choise"><span id="education">类型</span>
+                        <div class="pplist">
+                        </div></li>
+                    <li class="choise"><span id="education">状态</span>
+                        <div class="pplist">
+                        <div class="ppitem" data-type="0">所有</div>
+                        <div class="ppitem" data-type="1">已兑换</div>
+                        <div class="ppitem" data-type="2">未兑换</div>
+                        </div></li>
                 </ul>
             </section>
         </section>
@@ -228,6 +265,98 @@
             </li>
         </ul>
     </section>
+    <script type="text/javascript">
+        /*function GetQueryString(name)
+        {
+             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+             var r = window.location.search.substr(1).match(reg);
+             if(r!=null)return  unescape(r[2]); return null;
+        };
+        var userid = GetQueryString('userid')
+        var pulishID = GetQueryString('pulishID')*/
+       var userid = 1;
+        var apiURL = 'http://ngy.innke.net/apiv2/index.php';
+        var id = '0';
+        var status = '0';
+        var page = '1';
+        $.ajax({
+            url: apiURL, //接口地址
+            data: { 'cmd': 'prizeTypeList', 'userid': userid, 'ts': parseInt(new Date().getTime() / 1000), 'params': {}, 'jsonp': 1 },
+            dataType: 'jsonp',
+            success: function(data) {
+                console.info(data);
+                var data = data.body.list;
+                var str = '';
+                for (var i = 0; i < data.length; i++) {
+                    str += '<div class="ppitem" data-id="' + data[i].ID + '">' + data[i].name + '</div>'
+                }
+                $('.pplist').eq(0).html(str)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+        $('.choise').click(function() {
+            $(this).find('.pplist').slideToggle();
+        })
+        $('.choise').on('click', '.ppitem', function(e) {
+            e.stopPropagation();
+            var val = $(this).text();
+            $(this).parents('.choise').find('span').text(val)
+            $(this).parents('.choise').find('.pplist').slideToggle();
+            var type  =$(this).attr('ID')
+            if(type){
+                id  = ID;
+            }else {
+                status = $(this).attr('data-type')
+            }
+            renderList(id,status,page)
+        })
+        function renderList(ids,statuss,pages){
+            var params = {
+                ID:ids,
+                status:statuss,
+                page:pages,
+                num:10,
+            }
+            params = objKeySort(params);//按照属性名升序排列
+            var params_str = objChangeStr(params);//拼接params参数的属性值
+            params.verify = $.md5('myPrizeList'+ parseInt(new Date().getTime() / 1000)+params_str+'security');//生成验证码
+          $.ajax({
+              url: apiURL, //接口地址
+              data: { 'cmd': 'myPrizeList', 'userid': userid, 'ts': parseInt(new Date().getTime() / 1000), 'params': params, 'jsonp': 1 },
+              dataType: 'jsonp',
+              success: function(data) {
+                  console.info(data);
+                  var data = data.body.list;
+                  var str = '';
+                  for (var i = 0; i < data.length; i++) {
+                      str += '<li class="award-item">'
+                            +   '<div class="award-item-box flex">'
+                            +       '<p class="fl award-name">土鸡蛋</p>'
+                            +       '<p class="fr btn-exchange">立即兑换</p>'
+                            +    '</div>'
+                            +    '<div class="award-item-box flex">'
+                            +        '<p class="fl">10个</p>'
+                            +        '<p class="fr">2016-08-12</p>'
+                            +    '</div>'
+                            +'</li>'
+                  }
+                  $('.award-wrap').html(str)
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                  layer.msg('网络请求延迟！');
+                  console.info(XMLHttpRequest.status);
+                  console.info(XMLHttpRequest.readyState);
+                  console.info(textStatus);
+              },
+          });
+        }
+        renderList('0','0','1')
+    </script>
 </body>
 
 </html>
