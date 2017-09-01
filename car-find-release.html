@@ -187,14 +187,34 @@ div#jedatebox{
         </div>
     </div>
     <script type="text/javascript">
-    // function GetQueryString(name)
-    // {
-    //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-    //      var r = window.location.search.substr(1).match(reg);
-    //      if(r!=null)return  unescape(r[2]); return null;
-    // };
-    // var userid = GetQueryString(userid)
-    // var pulishID = GetQueryString(pulishID)
+        $(document).on('click','.old_pic',function(){
+            var pic_index = $(this);
+            var num = $('.pic').length;
+            var pic_num_left = 4-num;
+            if($(this).siblings('.old-pic-add').length>0){
+                    layer.open({
+                        content: '您确定要删除图片吗？'
+                        ,btn: ['是', '否']
+                        ,yes: function(index){
+                            layer.close(index);
+                            pic_index.remove();
+                            if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                                $('.old-pic-add').before('<span class="fl plant-imgb ovw pic old_pic"><img src="'+$('.old-pic-add img').attr('src')+'"></span>');
+                                $('.old-pic-add img').attr('src','images/plant_2.png')
+                            }
+                            // else{
+                            //  uploadImage(pic_num_left);
+                            // }
+                        }
+                    });
+                }else{
+                    if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                        layer.msg('最多添加4张图片');
+                    }else{
+                        uploadImage(pic_num_left);
+                    }
+                }
+        });
     // userid = 1;
     get_userInfo(userid);
     //获得用户信息
@@ -310,7 +330,7 @@ div#jedatebox{
                     }else{
                         if (opt=='go') {
                             setTimeout(function(){
-                                location.href = 'mechanical-engineer-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
+                                location.href = 'car-find-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
                             },500);     
                         }else{
                             backtoPrev(1);
