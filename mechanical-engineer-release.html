@@ -199,6 +199,9 @@ div#jedatebox{
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
+        if (!userid) {
+            layer.msg('请重新登录！');return
+        }
         var cmd = 'userInfo';//接口命令
         var ts = parseInt(new Date().getTime()/1000);//当前时间戳
         var jsonp = 1;
@@ -308,6 +311,7 @@ div#jedatebox{
                     if(data.resultCode=='-1'){
                         layer.msg(data.resultMessage);
                     }else{
+                        layer.msg('发布成功');
                         if (opt=='go') {
                             setTimeout(function(){
                                 location.href = 'mechanical-engineer-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
@@ -316,7 +320,6 @@ div#jedatebox{
                             backtoPrev(1);
                         }
                         
-                        layer.msg('发布成功');
                     }
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
