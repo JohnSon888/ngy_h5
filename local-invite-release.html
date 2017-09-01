@@ -199,7 +199,7 @@ div#jedatebox{
     // };
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-   var userid = 1;
+   // var userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
@@ -268,7 +268,7 @@ div#jedatebox{
             // var time = $('#datepicker').val();
             var params = {
                 userid:userid,
-                type:1,
+                type:2,
                 detail:detail,
                 verify:'',
                 images:images,
@@ -299,8 +299,8 @@ div#jedatebox{
                                 location.href = 'local-invite-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
                             },500);     
                         }else{
-                            backtoPrev(1);
                             layer.msg('发布成功');
+                            backtoNative();
                             $('.mask').hide();
                             $('.release-dialog').hide();
                         }

@@ -10,11 +10,13 @@
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <script type="text/javascript" src="js/flexible.js" ></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
-    <script type="text/javascript" src="src/lib/jedate/jedate.js"></script>
+    <script type="text/javascript" src="src/lib/common/farming.js"></script>
+    <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
@@ -64,12 +66,78 @@ div#jedatebox{
     width:90%;
     font-size: 22px;
 }
+.release-dialog {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 280px;
+        height: 90px;
+        z-index: 1000;
+        left: 50%;
+        margin-left: -140px;
+    }
+
+    .release-dialog .content {
+        position: relative;
+        margin-top: 170px;
+    }
+
+    .release-dialog .release-content {
+        width: 280px;
+        height: 90px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin: 0 auto;
+        margin-bottom: 0.5rem;
+        background: #fff;
+    }
+
+    .release-dialog .release-content .release-img {
+        width: 68px;
+        height: 55px;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .release-dialog .release-content .release-img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .release-dialog .release-content p {
+        font-size: 13px;
+        color: #000;
+    }
+
+    .release-dialog .release-content .release-title {
+        font-size: 20px;
+    }
+
+    .release-dialog .release-content .release-subTitle {
+        color: #888;
+    }
+.mask {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 999;
+        background: #000;
+        opacity: 0.4;
+        display: none;
+    }
 </style>
 </head>
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">零工灵活发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">零工零活发布<a href="javascript:;" class="header-back ovw"></a></section>
         <section class="add-subs ovw">
             <div class="release-intro">
                 <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
@@ -86,8 +154,8 @@ div#jedatebox{
                     <label class="help-name ovw">地点</label>
                     <samp class="personal-some ovw">请选择地点</samp>
                 </li>
-                <li>
-                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li>
+                <!-- <li>
+                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
                 <li class="none-right-arrow">
                     <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
@@ -95,37 +163,129 @@ div#jedatebox{
             <a id="fabu" class="over-order ovw topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
+    <div class="mask"></div>
+    <div class="release-dialog">
+        <div class="content">
+            <div class="release-content">
+                <div class="release-img">
+                    <img src="images/img1.png">
+                </div>
+                <div class="release-now">
+                    <p class="release-title">立即发布</p>
+                    <p class="release-subTitle">我已填写完成，立即发布</p>
+                </div>
+            </div>
+            <div class="release-content">
+                <div class="release-img">
+                    <img src="images/img2.png">
+                </div>
+                <div class="complete-info">
+                    <p class="release-title">完善信息</p>
+                    <p class="release-subTitle">我还有内容需要添加，继续填写</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript">
-    function GetQueryString(name)
-    {
-         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-         var r = window.location.search.substr(1).match(reg);
-         if(r!=null)return  unescape(r[2]); return null;
-    };
-    var userid = GetQueryString(userid)
-    var pulishID = GetQueryString(pulishID)
+    // function GetQueryString(name)
+    // {
+    //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    //      var r = window.location.search.substr(1).match(reg);
+    //      if(r!=null)return  unescape(r[2]); return null;
+    // };
+    // var userid = GetQueryString(userid)
+    // var pulishID = GetQueryString(pulishID)
+    // userid = 1;
+    get_userInfo(userid);
+    //获得用户信息
+    function get_userInfo(userid){
+        var cmd = 'userInfo';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+                'userid' : userid,
+                };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : 'http://ngy.innke.net/api/index.php',//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+               $('#concat').val(data.body.truename);
+               $('#phone').val(data.body.phone);
+               console.log(data);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
     var apiURL = 'http://ngy.innke.net/apiv2/index.php'
         $('#fabu').click(function(){
-            location.href = 'odd-job-complete.html';
+            //弹框选择
+            $('.mask').show();
+            $('.release-dialog').show();
+        })
+        // $('#datepicker').click(function(){
+        //     var datepickerOptions = {
+        //           dateCell:"#datepicker", 
+        //           format:"YYYY-MM-DD hh:mm:ss", //日期格式
+        //           minDate:"1900-01-01 00:00:00", //最小日期
+        //           maxDate:"2099-12-31 23:59:59", //最大日期
+        //           isinitVal:false, //是否初始化时间
+        //           isTime:true, //是否开启时间选择
+        //           isClear:true, //是否显示清空
+        //           festival:false, //是否显示节日
+        //           zIndex:999,  //弹出层的层级高度
+        //           marks:null, //给日期做标注
+        //           choosefun:function(val) {},  //选中日期后的回调
+        //           clearfun:function(val) {},   //清除日期后的回调
+        //           okfun:function(val) {}       //点击确定后的回调
+        //     };
+        //     jeDate(datepickerOptions);
+        // })
+        $('.mask').click(function() {
+            $(this).hide();
+            $('.release-dialog').hide();
+        });
+        // 立即发布
+        $('.release-now').click(function() {
+            mech_publishInfo('back');
+        });
+        // 完善信息
+        $('.complete-info').click(function() {
+            mech_publishInfo('go');            
+        });
+
+        function mech_publishInfo(opt){
             var cmd  = 'publishInfo';
             var ts = parseInt(new Date().getTime() / 1000); 
             var jsonp = 1;
             
             var name = $('#concat').val();
             var phone = $('#phone').val();
-            var detail = $('#detail').val();
-            var address = $('#address').val();
-            var province = '';
-            var city = '';
-            var area = '';
-            var town = '';
-            var village = '';
+            var detail = $('#detail').val()||'测试';
+            var address = $('#address').val()||'测试地址';
+            var province = '1';
+            var city = '1';
+            var area = '1';
+            var town = '1';
+            var village = '1';
+            var images = '1'
+
             //出发时间接口没有
-            var time = $('#datepicker').val();
+            // var time = $('#datepicker').val();
             var params = {
-                'userid':userid,
-                pulishID:pulishID,
+                userid:userid,
+                type:1,
+                detail:detail,
                 verify:'',
+                images:images,
                 name:name,
                 phone:phone,
                 province:province,
@@ -134,19 +294,28 @@ div#jedatebox{
                 town:town,
                 village:village,
                 address:address,
-                detail:detail,
             }
             params = objKeySort(params);//按照属性名升序排列
             var params_str = objChangeStr(params);//拼接params参数的属性值
             params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
+            console.log(params);
              $.ajax({
                     url : apiURL,//接口地址
-                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp,type:'2'},
+                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp,type:'3'},
                 dataType : 'jsonp',
                 success: function(data){
+                    console.log(data);
                     if(data.resultCode=='-1'){
                         layer.msg(data.resultMessage);
                     }else{
+                        if (opt=='go') {
+                            setTimeout(function(){
+                                location.href = 'odd-job-release.html.html?userid='+userid+'&pulishID='+data.body.publishID;
+                            },500);     
+                        }else{
+                            backtoPrev(1);
+                        }
+                        
                         layer.msg('发布成功');
                     }
                 },
@@ -157,25 +326,7 @@ div#jedatebox{
                     console.info(textStatus);
                 },
             });
-        })
-        $('#datepicker').click(function(){
-            var datepickerOptions = {
-                  dateCell:"#datepicker", 
-                  format:"YYYY-MM-DD hh:mm:ss", //日期格式
-                  minDate:"1900-01-01 00:00:00", //最小日期
-                  maxDate:"2099-12-31 23:59:59", //最大日期
-                  isinitVal:false, //是否初始化时间
-                  isTime:true, //是否开启时间选择
-                  isClear:true, //是否显示清空
-                  festival:false, //是否显示节日
-                  zIndex:999,  //弹出层的层级高度
-                  marks:null, //给日期做标注
-                  choosefun:function(val) {},  //选中日期后的回调
-                  clearfun:function(val) {},   //清除日期后的回调
-                  okfun:function(val) {}       //点击确定后的回调
-            };
-            jeDate(datepickerOptions);
-        })
+        }
     </script>
 </body>
 
