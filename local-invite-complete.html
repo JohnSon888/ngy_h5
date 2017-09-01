@@ -259,6 +259,7 @@
                             layer.msg(data.resultMessage);
                         }else{
                             layer.msg('发布成功');
+                            backtoNative();
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown){

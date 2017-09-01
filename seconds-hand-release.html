@@ -188,7 +188,7 @@
     // };
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-   var userid = 1;
+   // var userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
@@ -288,8 +288,8 @@
                                 location.href = 'seconds-hand-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
                             },500);     
                         }else{
-                            backtoPrev(1);
                             layer.msg('发布成功');
+                            backtoNative();
                             $('.mask').hide();
                             $('.release-dialog').hide();
                         }

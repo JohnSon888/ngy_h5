@@ -198,8 +198,12 @@ div#jedatebox{
                 data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
                 dataType : 'jsonp',
                 success: function(data){
-                    layer.msg('发布成功');
-                    console.info(data);
+                    if(data.resultCode=='-1'){
+                        layer.msg(data.resultMessage);
+                    }else{
+                        layer.msg('发布成功');
+                        backtoNative();
+                    }
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
                     layer.msg('网络请求延迟！');
