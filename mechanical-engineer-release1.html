@@ -7,14 +7,16 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <script type="text/javascript" src="js/flexible.js" ></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
+    <script type="text/javascript" src="src/lib/common/farming.js"></script>
+    <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
@@ -23,10 +25,10 @@
     height: 1.173rem;
     }
     .personal-ula .none-right-arrow{
-    	background: none;
+        background: none;
     }
     .personal-ula .none-right-arrow .personal-some {
-	    padding-right: 0.44rem;
+        padding-right: 0.44rem;
 }
 .help-center {
     background: #fff;
@@ -56,6 +58,13 @@
 }
 .plant-imgb{
     margin-left: 0;
+}
+#datepicker{height:100%;}
+div#jedatebox{
+    top:20%;
+    left:5%;
+    width:90%;
+    font-size: 22px;
 }
 .release-dialog {
         display: none;
@@ -112,8 +121,7 @@
     .release-dialog .release-content .release-subTitle {
         color: #888;
     }
-
-    .mask {
+.mask {
         position: absolute;
         left: 0;
         right: 0;
@@ -132,25 +140,27 @@
         <section class="header ovw posin">农机机械发布<a href="javascript:;" class="header-back ovw"></a></section>
         <section class="add-subs ovw">
             <div class="release-intro">
-            	<textarea class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
+                <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
                 <p>
                     <span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
                 </p>
             </div>
             <ul class="help-center personal-ula ovw btzl">
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">联系人</label><input class="personal-some ovw" placeholder="请输入联系人姓名"></input></li>
+                    <label class="help-name ovw">联系人</label><input id="concat" class="personal-some ovw" placeholder="请输入联系人姓名"></input></li>
                 <li class="none-right-arrow">
-                    <label class="help-name ovw">电话</label><input class="personal-some ovw" placeholder="请输入电话号码"></input></li>
+                    <label class="help-name ovw">电话</label><input id="phone" class="personal-some ovw" placeholder="请输入电话号码"></input></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">地点</label>
                     <samp class="personal-some ovw">请选择地点</samp>
                 </li>
+                <!-- <li>
+                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
                 <li class="none-right-arrow">
-                    <input class="help-name ovw" placeholder="请选择具体位置"></input>
+                    <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
             </ul>
-            <a class="over-order ovw topic_tj" href="javascript:;">发布</a>
+            <a id="fabu" class="over-order ovw topic_tj" href="javascript:;">发布</a>
         </section>
     </section>
     <div class="mask"></div>
@@ -177,24 +187,146 @@
         </div>
     </div>
     <script type="text/javascript">
-        $('.over-order').click(function() {
-
+    // function GetQueryString(name)
+    // {
+    //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    //      var r = window.location.search.substr(1).match(reg);
+    //      if(r!=null)return  unescape(r[2]); return null;
+    // };
+    // var userid = GetQueryString(userid)
+    // var pulishID = GetQueryString(pulishID)
+    // userid = 1;
+    get_userInfo(userid);
+    //获得用户信息
+    function get_userInfo(userid){
+        var cmd = 'userInfo';//接口命令
+        var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+        var jsonp = 1;
+        var params = {
+                'userid' : userid,
+                };
+        params = objKeySort(params);//按照属性名升序排列
+        var params_str = objChangeStr(params);//拼接params参数的属性值
+        params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码           
+        $.ajax({
+            url : 'http://ngy.innke.net/api/index.php',//接口地址
+            data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+            dataType : 'jsonp',
+            success: function(data){
+               $('#concat').val(data.body.truename);
+               $('#phone').val(data.body.phone);
+               console.log(data);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                layer.msg('网络请求延迟！');
+                console.info(XMLHttpRequest.status);
+                console.info(XMLHttpRequest.readyState);
+                console.info(textStatus);
+            },
+        });
+    }
+    var apiURL = 'http://ngy.innke.net/apiv2/index.php'
+        $('#fabu').click(function(){
+            //弹框选择
             $('.mask').show();
             $('.release-dialog').show();
-        });
+        })
+        // $('#datepicker').click(function(){
+        //     var datepickerOptions = {
+        //           dateCell:"#datepicker", 
+        //           format:"YYYY-MM-DD hh:mm:ss", //日期格式
+        //           minDate:"1900-01-01 00:00:00", //最小日期
+        //           maxDate:"2099-12-31 23:59:59", //最大日期
+        //           isinitVal:false, //是否初始化时间
+        //           isTime:true, //是否开启时间选择
+        //           isClear:true, //是否显示清空
+        //           festival:false, //是否显示节日
+        //           zIndex:999,  //弹出层的层级高度
+        //           marks:null, //给日期做标注
+        //           choosefun:function(val) {},  //选中日期后的回调
+        //           clearfun:function(val) {},   //清除日期后的回调
+        //           okfun:function(val) {}       //点击确定后的回调
+        //     };
+        //     jeDate(datepickerOptions);
+        // })
         $('.mask').click(function() {
             $(this).hide();
             $('.release-dialog').hide();
         });
         // 立即发布
         $('.release-now').click(function() {
-            location.href = 'mechanical-engineer-release.html';
+            mech_publishInfo('back');
         });
         // 完善信息
         $('.complete-info').click(function() {
-            
-            location.href = 'mechanical-engineer-complete.html';
+            mech_publishInfo('go');            
         });
+
+        function mech_publishInfo(opt){
+            var cmd  = 'publishInfo';
+            var ts = parseInt(new Date().getTime() / 1000); 
+            var jsonp = 1;
+            
+            var name = $('#concat').val();
+            var phone = $('#phone').val();
+            var detail = $('#detail').val()||'测试';
+            var address = $('#address').val()||'测试地址';
+            var province = '1';
+            var city = '1';
+            var area = '1';
+            var town = '1';
+            var village = '1';
+            var images = '1'
+
+            //出发时间接口没有
+            // var time = $('#datepicker').val();
+            var params = {
+                userid:userid,
+                type:1,
+                detail:detail,
+                verify:'',
+                images:images,
+                name:name,
+                phone:phone,
+                province:province,
+                city:city,
+                area:area,
+                town:town,
+                village:village,
+                address:address,
+            }
+            params = objKeySort(params);//按照属性名升序排列
+            var params_str = objChangeStr(params);//拼接params参数的属性值
+            params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
+            console.log(params);
+             $.ajax({
+                    url : apiURL,//接口地址
+                data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp,type:'1'},
+                dataType : 'jsonp',
+                success: function(data){
+                    console.log(data);
+                    if(data.resultCode=='-1'){
+                        layer.msg(data.resultMessage);
+                    }else{
+                        if (opt=='go') {
+                            setTimeout(function(){
+                                location.href = 'mechanical-engineer-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
+                            },500);     
+                        }else{
+                            backtoPrev(1);
+                        }
+                        
+                        layer.msg('发布成功');
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    layer.msg('网络请求延迟！');
+                    console.info(XMLHttpRequest.status);
+                    console.info(XMLHttpRequest.readyState);
+                    console.info(textStatus);
+                },
+            });
+        }
     </script>
 </body>
 
