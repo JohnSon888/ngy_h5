@@ -169,8 +169,8 @@
              var r = window.location.search.substr(1).match(reg);
              if(r!=null)return  unescape(r[2]); return null;
         };
-        var userid = GetQueryString(userid)
-        var pulishID = GetQueryString(pulishID)
+        var userid = GetQueryString('userid')
+        var pulishID = GetQueryString('pulishID')
         var apiURL = 'http://ngy.innke.net/apiv2/index.php';
 
         function aj(el, type) {
