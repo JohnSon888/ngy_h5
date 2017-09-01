@@ -11,8 +11,8 @@
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <script type="text/javascript" src="js/flexible.js" ></script>
     <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
     <script type="text/javascript" src="src/lib/common/common.js"></script>
     <script type="text/javascript" src="src/lib/common/farming.js"></script>
@@ -59,6 +59,13 @@
 }
 .plant-imgb{
     margin-left: 0;
+}
+#datepicker{height:100%;}
+div#jedatebox{
+    top:20%;
+    left:5%;
+    width:90%;
+    font-size: 22px;
 }
 .release-dialog {
         display: none;
@@ -115,8 +122,7 @@
     .release-dialog .release-content .release-subTitle {
         color: #888;
     }
-
-    .mask {
+.mask {
         position: absolute;
         left: 0;
         right: 0;
@@ -132,10 +138,10 @@
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">二手发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">零工零活发布<a href="javascript:;" class="header-back ovw"></a></section>
         <section class="add-subs ovw">
             <div class="release-intro">
-                <textarea class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
+                <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
                 <p>
                     <span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
                 </p>
@@ -149,6 +155,8 @@
                     <label class="help-name ovw">地点</label>
                     <samp class="personal-some ovw">请选择地点</samp>
                 </li>
+                <!-- <li>
+                    <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
                 <li class="none-right-arrow">
                     <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
@@ -180,7 +188,7 @@
         </div>
     </div>
     <script type="text/javascript">
-     // function GetQueryString(name)
+    // function GetQueryString(name)
     // {
     //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
     //      var r = window.location.search.substr(1).match(reg);
@@ -188,10 +196,13 @@
     // };
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-   // var userid = 1; 
+    // userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
+        if (!userid) {
+            layer.msg('请重新登录！');return
+        }
         var cmd = 'userInfo';//接口命令
         var ts = parseInt(new Date().getTime()/1000);//当前时间戳
         var jsonp = 1;
@@ -218,18 +229,35 @@
             },
         });
     }
-
     var apiURL = 'http://ngy.innke.net/apiv2/index.php'
         $('#fabu').click(function(){
+            //弹框选择
             $('.mask').show();
             $('.release-dialog').show();
         })
-
-         $('.mask').click(function() {
+        // $('#datepicker').click(function(){
+        //     var datepickerOptions = {
+        //           dateCell:"#datepicker", 
+        //           format:"YYYY-MM-DD hh:mm:ss", //日期格式
+        //           minDate:"1900-01-01 00:00:00", //最小日期
+        //           maxDate:"2099-12-31 23:59:59", //最大日期
+        //           isinitVal:false, //是否初始化时间
+        //           isTime:true, //是否开启时间选择
+        //           isClear:true, //是否显示清空
+        //           festival:false, //是否显示节日
+        //           zIndex:999,  //弹出层的层级高度
+        //           marks:null, //给日期做标注
+        //           choosefun:function(val) {},  //选中日期后的回调
+        //           clearfun:function(val) {},   //清除日期后的回调
+        //           okfun:function(val) {}       //点击确定后的回调
+        //     };
+        //     jeDate(datepickerOptions);
+        // })
+        $('.mask').click(function() {
             $(this).hide();
             $('.release-dialog').hide();
         });
-    // 立即发布
+        // 立即发布
         $('.release-now').click(function() {
             mech_publishInfo('back');
         });
@@ -237,7 +265,8 @@
         $('.complete-info').click(function() {
             mech_publishInfo('go');            
         });
-    function mech_publishInfo(opt){
+
+        function mech_publishInfo(opt){
             var cmd  = 'publishInfo';
             var ts = parseInt(new Date().getTime() / 1000); 
             var jsonp = 1;
@@ -257,7 +286,7 @@
             // var time = $('#datepicker').val();
             var params = {
                 userid:userid,
-                type:4,
+                type:1,
                 detail:detail,
                 verify:'',
                 images:images,
@@ -288,12 +317,10 @@
                                 location.href = 'seconds-hand-complete.html?userid='+userid+'&pulishID='+data.body.publishID;
                             },500);     
                         }else{
-                            layer.msg('发布成功');
-                            backtoNative();
-                            $('.mask').hide();
-                            $('.release-dialog').hide();
+                            backtoPrev(1);
                         }
                         
+                        layer.msg('发布成功');
                     }
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){

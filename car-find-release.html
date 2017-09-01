@@ -7,6 +7,7 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
@@ -137,7 +138,7 @@ div#jedatebox{
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">车找人发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">零工零活发布<a href="javascript:;" class="header-back ovw"></a></section>
         <section class="add-subs ovw">
             <div class="release-intro">
                 <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
@@ -187,58 +188,21 @@ div#jedatebox{
         </div>
     </div>
     <script type="text/javascript">
-       /* $(document).on('click','.old_pic',function(){
-            var pic_index = $(this);
-            var num = $('.pic').length;
-            var pic_num_left = 4-num;
-            if($(this).siblings('.old-pic-add').length>0){
-                layer.open({
-                    content: '您确定要删除图片吗？'
-                    ,btn: ['是', '否']
-                    ,yes: function(index){
-                        layer.close(index);
-                        pic_index.remove();
-                        if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
-                            $('.old-pic-add').before('<span class="fl plant-imgb ovw pic old_pic"><img src="'+$('.old-pic-add img').attr('src')+'"></span>');
-                            $('.old-pic-add img').attr('src','images/plant_2.png')
-                        }
-                        // else{
-                        //  uploadImage(pic_num_left);
-                        // }
-                    }
-                });
-            }else{
-                if(num==3&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
-                    layer.msg('最多添加4张图片');
-                }else{
-                    uploadImage(pic_num_left);
-                }
-            }
-            var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png';
-            imageUploaded(imageUrl); 
-    });
-    function imageUploaded(imageUrl){
-            imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
-            var img_html = '';
-            for(i=0;i<imageUrl_arr.length;i++){
-                // $('.old_pic').remove();
-                img_html += '<span class="fl plant-imgb old_pic pic ovw"><img src="'+imageUrl_arr[i]+'"/></span>';
-            }
-            if($('.pic').length==3){
-                $('.old-pic-add img').attr('src',imageUrl_arr[0]);
-                    // $('.pic').addClass('picture');
-            }else{
-                $('.old-pic-add').before(img_html);
-            }
-        }
-        //图片预览
-        $('.pic').click(function(){
-            imagePreview(idImages, 0);
-        });*/
+    // function GetQueryString(name)
+    // {
+    //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    //      var r = window.location.search.substr(1).match(reg);
+    //      if(r!=null)return  unescape(r[2]); return null;
+    // };
+    // var userid = GetQueryString(userid)
+    // var pulishID = GetQueryString(pulishID)
     // userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
+        if (!userid) {
+            layer.msg('请重新登录！');return
+        }
         var cmd = 'userInfo';//接口命令
         var ts = parseInt(new Date().getTime()/1000);//当前时间戳
         var jsonp = 1;
@@ -271,6 +235,24 @@ div#jedatebox{
             $('.mask').show();
             $('.release-dialog').show();
         })
+        // $('#datepicker').click(function(){
+        //     var datepickerOptions = {
+        //           dateCell:"#datepicker", 
+        //           format:"YYYY-MM-DD hh:mm:ss", //日期格式
+        //           minDate:"1900-01-01 00:00:00", //最小日期
+        //           maxDate:"2099-12-31 23:59:59", //最大日期
+        //           isinitVal:false, //是否初始化时间
+        //           isTime:true, //是否开启时间选择
+        //           isClear:true, //是否显示清空
+        //           festival:false, //是否显示节日
+        //           zIndex:999,  //弹出层的层级高度
+        //           marks:null, //给日期做标注
+        //           choosefun:function(val) {},  //选中日期后的回调
+        //           clearfun:function(val) {},   //清除日期后的回调
+        //           okfun:function(val) {}       //点击确定后的回调
+        //     };
+        //     jeDate(datepickerOptions);
+        // })
         $('.mask').click(function() {
             $(this).hide();
             $('.release-dialog').hide();
@@ -298,19 +280,8 @@ div#jedatebox{
             var area = '1';
             var town = '1';
             var village = '1';
-            var images = '';
-            $.each($('.pic'),function(i){
-                images+= $($('.pic img')[i]).attr('src')+'|'
-            })
-            if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
-                images+=$('.old-pic-add img').attr('src')+'|';
-            }
-             images =  images.slice(0,images.length-1);
-             if(images.length==0){
-                layer.msg('请上传商品图片');
-                return false;
-            } 
-            console.log(images)
+            var images = '1'
+
             //出发时间接口没有
             // var time = $('#datepicker').val();
             var params = {

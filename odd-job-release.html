@@ -7,6 +7,7 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title></title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/demo.css">
@@ -199,6 +200,9 @@ div#jedatebox{
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
+        if (!userid) {
+            layer.msg('请重新登录！');return
+        }
         var cmd = 'userInfo';//接口命令
         var ts = parseInt(new Date().getTime()/1000);//当前时间戳
         var jsonp = 1;

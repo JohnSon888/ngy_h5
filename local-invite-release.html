@@ -203,6 +203,9 @@ div#jedatebox{
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
+        if (!userid) {
+            layer.msg('请重新登录！');return
+        }
         var cmd = 'userInfo';//接口命令
         var ts = parseInt(new Date().getTime()/1000);//当前时间戳
         var jsonp = 1;
