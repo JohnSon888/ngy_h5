@@ -68,7 +68,7 @@
   <body>
   <section class="header ovw posin">选择地址<a href="javascript:;" class="header-back ovw" style="height: 0.82rem;"><img src="images/back.png" /></a></section>
   </section>
-        <section class="header ovw clearfix"><input type="text" id="select-addr" placeholder="请输入地址"><span class="address-sure">确定</span></section>
+        <!-- <section class="header ovw clearfix"><input type="text" id="select-addr" placeholder="请输入地址"><span class="address-sure">确定</span></section> -->
    <div id="container" tabindex="0"></div>
    <div class ='panel'>
    </div>
@@ -96,7 +96,7 @@
             geocoder.getAddress(e.lnglat,function(status,result){
               console.log(result)
               if(status=='complete'){
-                var addr = result.regeocode.addressComponent.street + result.regeocode.addressComponent.streetNumber;
+                var addr = result.regeocode.formattedAddress;
 
                  location.href = 'seconds-hand-release.html?lat='+e.lnglat.lat+'&lng='+e.lnglat.lng+'&addr='+addr;
                  localStorage.setItem('currentAddr',addr);
@@ -123,7 +123,7 @@
               if(status=='complete'&&result.geocodes.length){
                 marker.setPosition(result.geocodes[0].location);
                 map.setCenter(marker.getPosition())
-                var addr = result.geocodes[0].addressComponent.street + result.geocodes[0].addressComponent.streetNumber;
+                var addr = result.geocodes[0].formattedAddress;
                 location.href = 'seconds-hand-release.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+addr;
                    localStorage.setItem('currentAddr',addr);
               }else{
