@@ -266,12 +266,7 @@ div#jedatebox{
             success: function(data){
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
-               // 详细地址
-               if (addr) {
-                $('#address').val(localStorage.getItem('currentAddr'));
-               } 
-                $('.address-value').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
-               console.log(data);
+               
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 layer.msg('网络请求延迟！');
@@ -594,7 +589,7 @@ div#jedatebox{
             });
             // 跳转地图
             $('.select-address').click(function() {
-                var address = $('.address-value').text();
+                var address = $('#address').val();
                 $('.map-full').fadeIn();
     
                 AMap.plugin('AMap.Geocoder',function(){
@@ -612,7 +607,6 @@ div#jedatebox{
                           console.log(result)
                           if(status=='complete'){
                             var addr = result.regeocode.formattedAddress;
-                             localStorage.setItem('currentAddr',addr);
                              $('#address').val(addr);
                              $('.map-full').fadeOut();
                           }else{
