@@ -138,7 +138,7 @@ div#jedatebox{
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">零工零活发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">车找人发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a></section>
         <section class="add-subs ovw">
             <div class="release-intro">
                 <textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
@@ -580,6 +580,9 @@ div#jedatebox{
                 $('.old-pic-add').before(img_html);
             }
         }
+        $('.header-back').on('click', function () {
+                backtoNative();
+            })
     </script>
 </body>
 

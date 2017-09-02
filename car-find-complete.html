@@ -90,7 +90,7 @@ div#jedatebox{
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">车找人<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">车找人<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a></section>
         <section class="add-subs ovw">
             <ul class="help-center personal-ula ovw btzl">
                 <li>
@@ -226,6 +226,9 @@ div#jedatebox{
               okfun:function(val) {}       //点击确定后的回调
         };
         jeDate(datepickerOptions);
+    })
+    $('.header-back').on('click', function () {
+        history.go(-1)
     })
     </script>
 </body>
