@@ -1,59 +1,705 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta content="yes" name="apple-mobile-web-app-capable">
-<meta content="black" name="apple-mobile-web-app-status-bar-style">
-<meta content="telephone=no" name="format-detection">
-<meta content="email=no" name="format-detection">
-<title>我的发布</title>
-<link rel="stylesheet" href="css/main.css" />
-<link rel="stylesheet" href="css/demo.css">
-<script type="text/javascript" src="js/jquery.min.js" ></script>
-<script type="text/javascript" src="js/flexible.js" ></script>
-<script type="text/javascript" src="src/lib/common/common.js"></script>
-<script type="text/javascript" src="src/lib/common/farming.js"></script>
-<script type="text/javascript" src="src/lib/common/public.js"></script>
-<script type="text/javascript" src="src/lib/public/public.js"></script>
-<style type="text/css">
-.add-subs-ula a{
-display:block;
-width:100%;
-}
-</style>
-<script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <!-- 保证地图的清晰显示和最佳性能，请通过viewport设置页面显示比例为1，并禁止用户缩放页面 -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>我的发布-农机</title>
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+    <script type="text/javascript" src="src/lib/common/common.js?v=2"></script>
+    <script type="text/javascript" src="src/lib/common/farming.js"></script>
+    <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
+    <!-- layer -->
+    <script type="text/javascript" src="src/lib/layer/layer.js"></script>
 
-$(function(){
-	/**********************验证是否登录*******************************/
-	 userid = isLogin();
+    <!-- dropload -->
+    <link rel="stylesheet" href="src/lib/zepto/dropload.css">
+    <script type="text/javascript" src="src/lib/zepto/dropload.min.js"></script>
 
-	if(userid==0){//未登录状态
-		gotoLogin();
-		//alert(1);
-	}
-	
-	$('.header-back').on('click',function(){//返回原生页面
-		backtoNative();	
-	})
-});
-</script>
+    <style type="text/css">
+        .none-more-content {
+            color: #868686;
+            font-size: 14px;
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+        }
+
+        .lx_dva {
+            background: #ffffff none repeat scroll 0 0;
+            width: 100%;
+            z-index: 5;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+        .lx_dva p {
+            width: 100%;
+            float: left;
+            color: #333;
+        }
+
+        .mr-look-art {
+            padding-bottom: 0.41rem;
+            padding-top: 0.35rem;
+        }
+
+        .mr-look-tx img {
+            border-radius: 0;
+        }
+
+        .look-ywc {
+            color: #6ec895;
+        }
+
+        .look-ygb {
+            color: #666;
+        }
+
+        .posin p font {
+            width: 55px;
+            display: block;
+            float: left;
+        }
+
+        .list-filter-menu, .list-bototm-menu {
+            display: flex;
+            margin-top: 1.2rem;
+            background: #fff;
+            font-size: 1.2em;
+            background: #fff;
+        }
+
+        .list-bototm-menu {
+            margin: 0;
+            border-top: 1px solid #eaecee;
+
+        }
+
+        .ms-contents {
+            background-color: transparent;
+        }
+
+        
+
+
+    </style>
+    <script>
+
+        $(function () {
+            $('.visa-in').on("focus", function (e) {
+                $(this).prev('aside').children().hide();
+                $(this).prev('aside').css('textIndent', '9999px');
+//      $(this).next('.sear-close').show();
+            });
+            $('.visa-in').on("blur", function (e) {
+                var val = $(this).val();
+                if (val != '') {
+                    $(this).prev('aside').children().hide()
+                    $(this).prev('aside').css('textIndent', '9999px')
+
+                } else {
+                    $(this).prev('aside').children().show()
+                    $(this).prev('aside').css('textIndent', '0.1333rem')
+//          $(this).next('.sear-close').hide();
+                }
+            });
+
+//  隐藏
+            $('.layer-rele-s').on('click', function () {
+                $('.rele-bj').hide()
+                $('.layer-rele-cont').hide()
+            })
+            //
+            $('.layer-map-bj').on('click', function () {
+                $('.layer-map-bj').hide()
+                $('.layer-sorting').hide()
+                $('.layer-type').hide()
+                $('.layer-time1').hide()
+            });
+            //
+            $('.pick-work-ula li').on('touchend', function () {
+                var index = $(this).index();
+                switch (index) {
+                    case 1:
+                        $('.layer-map-bj').show()
+                        $('.layer-up-some').hide()
+                        $('.layer-time1').show()
+                        $('.layer-type1').hide()
+
+                        break;
+                    case 0:
+                        $('.layer-map-bj').show()
+                        $('.layer-up-some').hide()
+                        $('.layer-sorting').show()
+                        $('.layer-time1').hide()
+                        $('.layer-type1').hide()
+                        break;
+
+                }
+                $(this).addClass('hover');
+                $(this).siblings().removeClass('hover');
+            });
+
+        })
+
+    </script>
+    <script>
+        $(function () {
+            $('.topic-lid').on('touchend', function () {
+                if ($(this).hasClass('topic-lie')) {
+                    $(this).removeClass('topic-lie')
+                } else {
+                    $(this).addClass('topic-lie')
+                }
+            })
+        })
+    </script>
+    <script type="text/javascript">
+        /**********************quan xian********************************/
+
+        var type = 0;
+        var sort = 1;
+        var param = {
+            'userid': userid,
+            'time': sort,
+            'type': type,
+             'page': PAGE,
+            'num': PAGE_NUM,
+        };
+
+
+
+        $(function () {
+            //	 userid = 83;
+
+
+            //*******************发布认证********************
+            /*     $('.header-rele').on('click',function(){
+             if(userid==0){
+             gotoLogin();
+             }else{
+             var qxrz = $(this).attr('qxrz');
+             if(qxrz==1){
+             window.location.href = 'release.html?from=h5';
+             }else{
+             $('.certification').toggle();
+             $('.layer-rele-cont').toggle();
+             }
+             }
+             }); */
+            $('.certification').on('click', function (e) {
+                $('.certification').toggle();
+                $('.layer-rele-cont').toggle();
+            })
+
+            var count = 0;
+
+
+            function get_myMachine(params) {//获取我的农机
+                var cmd = 'myPublishInfoList';//接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                /*         var params = {
+                 'sort':sort,
+                 'machineType' : machineType,
+                 'page':1,
+                 'num':10,
+                 }; */
+                var up = 1;//默认是上拉
+                if (  params.page == 0) {
+                    up = 0;
+                    count = 0;
+                    params.page = 1;
+                }
+                console.log(params);
+                 params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码
+                $.ajax({
+                    url: apiURL,//接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        console.info(data);
+                        if (isNull(data['body']['list'])) {
+                            var search_html = '';
+                            var orderStatus = '';
+                            var css_type = '';
+                            var allArea = '';
+                            $.each(data['body']['list'], function (i, val) {        //<a href="work-details.html?machineID='+val['machineID']+'&from=h5">
+
+                                //                                search_html += '<article class="ms-works-art mr-look-art posin ovw" machineID='+val['machineID']+'><a href="javascript:;" class="mac-detail" machineID="'+val['machineID']+'">'+
+                                //                                    '<figure class="mr-look-tx ovw"><span style="height: 1.33rem;overflow: hidden;  display: block;border-radius: 100%;"><img src="'+val['poster']+'"/></span><figcaption style="line-height: 0.5333rem;height: 0.5333rem;">'+val['publisherName']+'</figcaption></figure>'+
+                                //                                    '<p><font>发布时间:</font>'+val['timeline']+'</p>'+
+                                //                                    '<p><font>农机类型:</font>'+val['machineType']+'</p>'+
+                                //                                    //	'<p><font>说明:</font>'+val['farmInfro']+'</p>'+
+                                //                                    '<p><font>作业范围:</font>'+allArea+'</p>'+
+                                //                                    '<p><font>农机地点:</font>'+val['farmAddress']+'</p></a><span class="mr-look-state mr-look-sa '+css_type+' ovw">'+orderStatus+'</span></article>';
+
+
+                                var imgHtml = "";
+
+                                var imgString = val['images'];
+                                if (imgString != undefined && imgString != "" && imgString != null) {
+
+                                    var imgs = imgString.split("|");
+                                    if (imgs[0] != undefined) {
+                                        imgHtml += '<img   src="' + imgs[0] + '">';
+                                    } else {
+                                        imgHtml += '<img   style="visibility: hidden">';
+                                    }
+                                    if (imgs[1] != undefined) {
+                                        imgHtml += '<img    src="' + imgs[1] + '">';
+                                    } else {
+                                        imgHtml += '<img   style="visibility: hidden">';
+                                    }
+                                    if (imgs[2] != undefined) {
+                                        imgHtml += '<img   src="' + imgs[2] + '">';
+                                    } else {
+                                        imgHtml += '<img   style="visibility: hidden">';
+                                    }
+
+                                    if (imgs.length > 3) {
+                                        imgHtml = '<span >' + imgs.length + '张</span>' + imgHtml;
+                                    }
+                                    imgHtml = '<div class="list-img-cont">' + imgHtml + '</div>';
+                                }
+
+
+                                search_html += '<div data-type="'+val['type']+'" data-id="'+val['ID']+'"  class="my-list-item"><div style="padding: 1em 1em 0"><p  class="list-title"><span class="inline-stroke-span">' + val['typeStr'] + '</span> ' + val['detail'] + '</p><span class="list-collapse">全文</span>' + imgHtml + '<div style="color: #999999;line-height: 3;font-size: 1.2em"><div style="float: left;">' + val['phone'] + "  " + val['name'] + '</div><div style="text-align: right">' + val['time'] + '</div></div><div></div></div><div class="list-bototm-menu" ><div  class="list-refresj" ><img src="images/hr_refresh_icon.png" ><span>刷新</span></div><div  class="list-edit"  ><img src="images/hr_edit_icon.png" ><span>编辑</span></div><div class="list-del" ><img src="images/hr_delete_icon.png" ><span>删除</span></div><div class="list-share "><img src="images/hr_share_icon.png" ><span>分享</span></div></div></div>';
+                                count++;
+                            });
+                            //$('.njlb').append(search_html);
+                        } else {/*
+                         search_html = '<div class="none-more-content">暂无内容</div>';
+                         $('.njlb').append(search_html); */
+
+                            if ((count != 0)) {//上拉加载无内容锁定无数据
+                                dropload.resetload();
+//                                d
+                                dropload.lock();
+                                dropload.noData(false);
+                                $('.dropload-down').hide();
+                            } else {
+                                /* 	            		search_html = '<div class="none-more-content">暂无内容</div>';
+                                 $('.njlb').html(search_html);
+                                 return false; */
+                                html = '<div class="none-more-content" style="background:#fff">暂无内容</div>';
+                                $('.dropload-down').siblings().remove();
+                                $('.dropload-down').before(html);
+                                dropload.resetload();
+                                dropload.lock();
+                                dropload.noData(false);
+                                $('.dropload-down').hide();
+                                return false;
+                            }
+                        }
+                        // 为了测试，延迟1秒加载
+                        setTimeout(function () {
+                            $('.none-more-content').remove();
+                            console.log(up);
+                            if (up == 0) {//下拉加载
+                                console.log("下拉")
+                                if (count < ((params.page) * params.num) && count != 0) {
+                                    search_html += '<div class="dropload-down"><div class="dropload-noData">加载完成</div></div>';
+                                    $('.njlb').html(search_html);
+                                } else {
+                                    $('.njlb').html(search_html);
+                                    dropload_machineList(params);
+                                }
+                                 dropload.resetload();
+//                                dropload.unlock();// 解锁loadDownFn里锁定的情况
+//                                  $('.dropload-down').hide();
+                                param.page = 2;// 重置页数，重新获取loadDownFn的数据
+                            } else {
+                                console.log("上拉加载")
+                                if (count < ((params.page) * params.num)) {
+                                    dropload.lock("down");// 锁定
+                                    dropload.noData();
+//                                    $('.dropload-down').hide();
+                                }
+                                $('.dropload-down').before(search_html);
+                                dropload.resetload();// 每次数据加载完，必须重置
+                            }
+
+
+                             bindEvent();
+                            dropload.resetload();
+
+                        }, 500);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+
+            }
+
+            function bindEvent(){
+                $(".list-title").each(function(k,v){
+                    var lineheight = parseInt($(v).css('line-height'));
+                    $(v).css("-webkit-line-clamp","9");
+                    if($(v).height()>(lineheight*4)-5){
+                        $(v).css("-webkit-line-clamp","3");
+                        $(v).siblings(".list-collapse").show();
+                    }else{
+                        $(v).siblings(".list-collapse").hide();
+                    }
+                })
+
+
+                $(".list-img-cont img").off('click').on('click',function(e){
+                    var index;
+                var t = $(e.target);
+                var imgs = [];
+                t.parent().find('img').each(function(k,v){
+                    var src = $(v).attr('src')
+                    if( src != null && src != undefined && src != ""){
+                        imgs.push(src);
+                        if(t.closest(v).length >0){
+                            index = k;
+                        }
+                    }
+                })
+
+                imagePreview(imgs.join(","),index);
+            })
+                $('.list-title').off('click').on('click',  function () {
+                    var item = $(this).parents('.my-list-item').first();
+                    var id = item.attr('data-id');
+                    var type = item.attr('data-type');
+                    var detail_url = window.location.href.substr(0,window.location.href.lastIndexOf('/')) + '/my-publish-info-detail.html?type='+type+'&publishID='+id;
+                    openH5(detail_url);
+                })
+
+
+                $('.list-edit').off('click').on('click',  function () {
+                    var item = $(this).parents('.my-list-item').first();
+                    var id = item.attr('data-id');
+                    var type = item.attr('data-type');
+                    var detail_url = window.location.href.substr(0,window.location.href.lastIndexOf('/'))+ '/my-publish-info-detail.html?type='+type+'&publishID='+id;
+                    openH5(detail_url);
+                })
+
+
+                $('.list-share').off('click').on('click',  function () {
+                    var item = $(this).parents('.my-list-item').first();
+                    var img = ""
+                    var id = item.attr('data-id');
+                    var type = item.attr('data-type');
+                    var detail_url = window.location.href.substr(0,window.location.href.lastIndexOf('/')) + '/publish-info-details.html?type='+type+'&publishID='+id;
+                    var title = item.find(".list-title").text();
+                    share(img,title,title,detail_url)
+                })
+
+
+
+                $('.list-del').off('click').on('click',  function () {
+                    var item = $(this).parents('.my-list-item').first();
+                     var id = item.attr('data-id');
+                    var type = item.attr('data-type');
+                    var params = {
+                        'userid': userid,
+                        'type' : type,
+                        'ID' : id,
+                    }
+
+                    layer.confirm('您确定删除该信息？', {
+                        btn: ['是','否'] //按钮
+                    }, function(){
+
+                        cancelPublish(params);
+
+
+                    }, function(){
+                        //否
+                    });
+
+                })
+
+                $( '.list-refresh').off('click').on('click', function () {
+                    var item = $(this).parents('.my-list-item').first();
+                    var img = ""
+                    var id = item.attr('data-id');
+                    var type = item.attr('data-type');
+                     share(img,title,title,detail_url)
+                })
+
+
+
+            }
+
+            /***********************删除发布信息***************************************/
+            function cancelPublish(params){
+                var cmd = 'cancelPublish';//接口命令
+                var ts = parseInt(new Date().getTime()/1000);//当前时间戳
+                var jsonp = 1;
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd+ts+params_str+'security');//生成验证码
+                $.ajax({
+                    url : apiURL,//接口地址
+                    data : {'cmd':cmd, 'ts':ts, 'params':params, 'jsonp':jsonp},
+                    dataType : 'jsonp',
+                    success: function(data){
+                        if(data['resultCode']==1){
+                            layer.msg('删除成功');
+                            setTimeout(function(){
+                                param.page = 0;
+                                dropload.lock();
+                                dropload.resetload();
+                                delete dropload.opts.domUp;
+                                //	$('.njlb').html('');
+                                $('.dropload-down').siblings().remove();
+                                $('.dropload-down').show();
+                                $('.my-topic-cont').remove();
+                                dropload_machineList(param);
+                            },1000);
+                        }else{
+                            layer.msg(data['resultMessage']);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown){
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+
+
+            //*********************************我的农机列表上拉加载*****************
+            function dropload_machineList(params) {
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var time = toLocalTime(ts, 6);//下拉时间定义
+                dropload = $('.njlb').dropload({
+                    scrollArea: window,
+
+                    domUp: {
+                        domClass: 'dropload-up',
+                        domRefresh: '<div class="dropload-refresh"><p style="height:20px;">↓下拉刷新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domUpdate: '<div class="dropload-update"><p style="height:20px;">↑释放更新</p><p style="color:#666">上次更新:' + time + '</p></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>刷新中...</div>'
+                    },
+                    domDown: {
+                        domClass: 'dropload-down',
+                        domRefresh: '<div class="dropload-refresh"></div>',
+                        domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+                        domNoData: '<div class="dropload-noData">已加载全部数据</div>'
+                    },
+                    loadUpFn: function (me) {
+                        //下拉刷新
+                           params.page = 0;
+                        get_myMachine(param);
+                        params.page = 1;
+                    },
+                    loadDownFn: function (me) {
+                        //上拉加载
+                        get_myMachine(params);
+                        params.page++;
+                    },
+                    threshold: 50
+                });
+             }
+
+            /**************ios匹配，延时获取userid*******************/
+            setTimeout(function () {
+                  dropload_machineList(param);//获取我的农机
+            }, 100);
+
+
+            /* 	$('.two-ula>li').click(function(){
+             if($(this).find('.lx_dva').css('display')=='none'){
+             $(this).find('.lx_dva').show();
+             $(this).siblings().find('.lx_dva').hide();
+             }else{
+             $(this).find('.lx_dva').hide();
+             }
+             });
+             $('.njlb').click(function(){
+             $('.lx_dva').hide();
+             }); */
+
+
+            /*********************时间排序*************************/
+            $('.mac-list-time-auto li').on('click', function () {
+                $('.mac-list-time-auto li').removeClass('hover');
+                $(this).addClass('hover');
+                var li_name = $(this).text();
+                sort = $(this).attr('mac-list-auto');
+                type = $('.mac-list-sort-auto .hover').attr('typeid') ? $('.mac-list-sort-auto .hover').attr('typeid') : '';
+                status = $('.mac-list-type-auto .hover').attr('mac-list-auto') ? $('.mac-list-type-auto .hover').attr('mac-list-auto') : '';
+
+                param.time = sort;
+                param.page = PAGE;
+                $('.pick-work-ula').find('.hover').text(li_name);
+                $('.mac-list-time-auto').toggle();
+                $('.layer-map-bj').toggle();
+                //$('.njlb').html('');
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                //	$('.njlb').html('');
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                $('.my-topic-cont').remove();
+                dropload_machineList(param);
+                //get_myToppicList(params);
+                //console.info(params);
+                $.each($('.dropload-down'), function (i) {
+                    if (i != 0) $($('.dropload-down')[i]).remove();
+                })
+            })
+
+            /*********************类型排序*************************/
+            $(document).on('touchend', '.mac-list-sort-auto li', function (e) {
+                //$('.mac-list-sort-auto li').on('click',function(){
+                $('.mac-list-sort-auto li').removeClass('hover');
+                $(this).addClass('hover');
+                var li_name = $(this).text();
+                $('.mac-list-sort-auto_nav a').text(li_name);
+                sort = $('.mac-list-time-auto .hover').attr('mac-list-auto') ? $('.mac-list-time-auto .hover').attr('mac-list-auto') : '';
+                type = $(this).attr('typeid');
+                status = $('.mac-list-type-auto .hover').attr('mac-list-auto') ? $('.mac-list-type-auto .hover').attr('mac-list-auto') : '';
+
+                param.type = type;
+                param.page = PAGE;
+                $('.pick-work-ula').find('.hover').text(li_name);
+                $('.mac-list-sort-auto').toggle();
+                $('.layer-map-bj').toggle();
+                //$('.njlb').html('');
+                count = 0;
+                dropload.lock();
+                dropload.resetload();
+                delete dropload.opts.domUp;
+                //	$('.njlb').html('');
+                $('.dropload-down').siblings().remove();
+                $('.dropload-down').show();
+                $('.my-topic-cont').remove();
+                dropload_machineList(param);
+                //get_myToppicList(params);
+                 $.each($('.dropload-down'), function (i) {
+                    if (i != 0) $($('.dropload-down')[i]).remove();
+                })
+                e.preventDefault();
+            });
+
+
+            //  userid = 35;
+            /*     $(document).on('click','.header-reg',function(){
+             if(userid==0){
+             gotoLogin();
+             }else{
+             window.location.href = 'release.html?from=h5';
+             }
+             }) */
+
+        });
+
+        function test() {
+            //	userid = 35;
+//	if(userid==0){
+//	gotoLogin();
+//	}else{
+//	var yz_params = {
+//	'userid':userid,
+//	'type':1,//二手
+//	}
+            if (typeof type == 'undefined') {
+                type = 1;
+            }
+            switch (parseInt(type)) {
+                //1：农机机械  2：零工零活 3：本地招聘 4：二手车 5：车找人
+                case 1:
+                    //农机机械
+                    window.location.href = "mechanical-engineer-release1.html";
+                    break;
+                case 2:
+                    //零工零活
+                    window.location.href = "odd-job-release.html";
+                    break;
+                case 3:
+                    //本地招聘
+                    window.location.href = "local-invite-release.html";
+                    break;
+                case 4:
+                    //二手车
+                    window.location.href = "seconds-hand-release1.html";
+                    break;
+                default:
+                    //车找人
+                    window.location.href = "car-find-release1.html";
+                    break;
+            }
+            //console.info(yz_params);
+//	getReleaseAuth(yz_params);
+//	}
+        }
+    </script>
 </head>
 <body>
-	    <section class="body-bj">
-	    	<section class="header ovw posin">我的发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png"/></a></section>
-		    <section class="add-subs ovw">
-		    	<ul class="add-subs-ula ovw">
-                            <li><a href="my-vehicle.html">预约车<img src="images/my-car_03.png"/></a></li>
-		    		<li><a href="my-work-3.html">找农机<img src="images/subs-1.jpg"/></a></li>
-		    		<li><a href="my-work.html">接农活<img src="images/subs-2.jpg"/></a></li>
-                                <li><a href="my-work-2.html">招零工<img src="images/subs-6.png"/></a></li>
-		    		<li><a href="my-work-6.html">打零活<img src="images/subs-3.jpg"/></a></li>
-		    		<li><a href="my-work-4.html">商品<img src="images/subs-4.jpg"/></a></li>
-		    		<li><a href="my-work-5.html">二手<img src="images/subs-7.png"/></a></li>
-                                <li><a href="my-topic.html?from=h5">圈子<img src="images/subs-5.jpg"/></a></li>
-		    	</ul>
-		    	
-		    </section>
-	    </section>
+<section class="body-bj ">
+    <section class="header-fixed-cont ovw">
+        <section class="header-fixed ovw">
+            <div class="header ovw posin">我的发布<a href="my-release.html" class="header-back ovw"><img
+                    src="images/back.png"/></a>
+                <div onclick="showRelease()" class="header-reg header-rele">发布</div>
+            </div>
+            <ul class="eval-all-ula two-ula ovw pick-work-ula">
+                <li><a href="javascript:;">类型</a></li>
+                <li><a href="javascript:;">时间</a></li>
+            </ul>
+        </section>
+    </section>
+
+    <section class="layer-bj rele-bj certification" style="display: none;z-index: 900;"></section>
+    <section class="layer-rele-cont ovw" style="display: none;z-index:900">
+        <img src="images/cer_8.jpg" class="layer-icon-a"/>
+        <p class="layer-rele-p ovw">是否立即认证个人信息</p>
+        <p class="layer-rele-c ovw">只能认证<font class="ReleaseAuth"></font>才能发布需求/商铺</p>
+        <a href="certification-list.html?from=app" class="layer-rele-a ovw">立即认证</a>
+        <span class="layer-rele-s ovw">跳过此步骤</span>
+    </section>
+
+    <section class="layer-bj layer-map-bj" style="display: none;"></section>
+    <ul class="layer-sorting layer-up-some ovw mac-list-sort-auto" style="display: none;">
+        <li typeID='0'>全部</li>
+        <li typeID='1'>农机机械</li>
+        <li typeID='2'>零工零活</li>
+        <li typeID='3'>本地招聘</li>
+        <li typeID='4'>二手车</li>
+        <li typeID='5'>车找人</li>
+        <li typeID='6'>资讯</li>
+        <li typeID='7'>包打听</li>
+        <li typeID='8'>顺道拼车</li>
+
+    </ul>
+    <ul class="layer-sorting layer-up-some ovw mac-list-time-auto layer-time1" style="display: none;">
+        <li class="" mac-list-auto="1">时间倒序</li>
+        <li class="" mac-list-auto="2">时间正序</li>
+    </ul>
+
+
+    <section class="ms-contents  njlb"  style="background-color: transparent">
+
+
+    </section>
+</section>
 </body>
 </html>

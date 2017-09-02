@@ -383,17 +383,23 @@ div#jedatebox{
 
         // 地址选择
         $('.address-value').click(function() {
-            $('.layer-area').toggle();
-            if ($('.layer-area').css('display') == 'block') {
-                $('.layer-map-bj').show();
-            } else {
-                $('.layer-map-bj').hide();
-            }
-            // 计算地址弹框的高度
-            var height = $('body').height() - $('.layer-up-some').height();
-            $('.layer-up-some').css('top',height);
-            getArea(0,1,1);
+            // $('.layer-area').toggle();
+            // if ($('.layer-area').css('display') == 'block') {
+            //     $('.layer-map-bj').show();
+            // } else {
+            //     $('.layer-map-bj').hide();
+            // }
+            // // 计算地址弹框的高度
+            // var height = $('body').height() - $('.layer-up-some').height();
+            // $('.layer-up-some').css('top',height);
+            // getArea(0,1,1);
+            getAddress();
         });
+        function _getAddr($cid,$str){
+            addrDic.village = $cid;
+            $('#address').val($str);
+            $('.address-value').text($str);
+        }
         $('.layer-map-bj').click(function() {
             $(this).hide();
             $('.layer-area').hide();
