@@ -259,7 +259,7 @@
                             layer.msg(data.resultMessage);
                         }else{
                             layer.msg('发布成功');
-                            backtoNative();
+                            location.href = 'my-release.html';
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown){
