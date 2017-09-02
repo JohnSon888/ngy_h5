@@ -227,7 +227,7 @@ div#jedatebox{
     addrDic.lng = lng;
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-    userid = 1;
+    // userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
@@ -573,7 +573,7 @@ div#jedatebox{
             // 跳转地图
             $('.select-address').click(function() {
                 var currentAddr = $('#address').val();
-                location.href = 'map-address-select.html';
+                location.href = 'map-address-select.html?urlStr=seconds-hand-release';
                 localStorage.setItem('currentAddr',currentAddr);
             })
             //点击上传图片
