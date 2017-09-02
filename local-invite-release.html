@@ -44,9 +44,9 @@
      text-indent: 0rem; 
 }
 .release-intro{
-    height: 6.66rem;
     margin-left: 0.37rem;
     margin-top: 0.37rem;
+    padding-bottom: 0.2rem;
     border-bottom: 1px solid #ececec;
 }
 .release-intro .merchants-text {
@@ -70,6 +70,16 @@ div#jedatebox{
     left:5%;
     width:90%;
     font-size: 22px;
+}
+.clearfix:after,.clearfix:before{
+    content:'';
+    height: 0;
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.clearfix{
+    zoom: 1;
 }
 .release-dialog {
         display: none;
@@ -147,7 +157,7 @@ div#jedatebox{
         <section class="add-subs ovw">
             <div class="release-intro">
             	<textarea id="detail" class="merchants-text ovw description" placeholder="请输入发布内容..."></textarea>
-                <p>
+                <p class="clearfix">
                     <span class="fl plant-imgb ovw old_pic old-pic-add"><img src="images/plant_2.png"></span>
                 </p>
             </div>
