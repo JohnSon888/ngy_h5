@@ -20,6 +20,8 @@
     <script type="text/javascript" src="src/lib/public/public.js"></script>
     <!-- layer -->
     <script type="text/javascript" src="src/lib/layer/layer.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9"></script>
+     <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
     <style type="text/css">
     .personal-ula li:first-child {
             line-height: 1.173rem;
@@ -144,10 +146,22 @@ div#jedatebox{
         opacity: 0.4;
         display: none;
     }
+    .map-full{
+        display: none;
+        height: 100%;
+    }
+    #container{
+        height: 100%;
+    }
 </style>
 </head>
 
 <body>
+    <div class="map-full">
+        <section class="header ovw posin">选择地址<a href="javascript:;" class="header-back ovw" style="height: 0.82rem;"><img src="images/back.png" /></a></section>
+       <div id="container" tabindex="0"></div>
+    </div>
+    
     <section class="body-bj">
         <section class="header ovw posin">二手车发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a></section>
         <section class="add-subs ovw">
@@ -228,7 +242,7 @@ div#jedatebox{
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
     // userid = 1;
-       get_userInfo(userid); 
+    get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
         if (!userid) {
@@ -570,11 +584,49 @@ div#jedatebox{
                 $('.layer-area').hide();
 
             })
+            var map = new AMap.Map('container',{
+                resizeEnable: true,
+                zoom: 18,
+            });
             // 跳转地图
             $('.select-address').click(function() {
-                var currentAddr = $('#address').val();
-                location.href = 'map-address-select.html?urlStr=seconds-hand-release';
-                localStorage.setItem('currentAddr',currentAddr);
+                var address = $('.address-value').text();
+                $('.map-full').show();
+    
+                AMap.plugin('AMap.Geocoder',function(){
+                    var geocoder = new AMap.Geocoder({
+                    });
+                    
+                    var marker = new AMap.Marker({
+                        map:map,
+                        bubble:true
+                    })
+                    map.on('click',function(e){
+                      console.log(e)
+                        marker.setPosition(e.lnglat);
+                        geocoder.getAddress(e.lnglat,function(status,result){
+                          console.log(result)
+                          if(status=='complete'){
+                            var addr = result.regeocode.formattedAddress;
+                             localStorage.setItem('currentAddr',addr);
+                             $('#address').val(addr);
+                             $('.map-full').hide();
+                          }else{
+                            layer.msg('无法获取地址');
+                          }
+                        })
+                    })
+                    geocoder.getLocation(address,function(status,result){
+                        if(status=='complete'&&result.geocodes.length){
+                          marker.setPosition(result.geocodes[0].location);
+                          map.setCenter(marker.getPosition())
+                        }else{
+                          layer.msg('无法获取地址');
+                        }
+                      })
+                   
+
+                });
             })
             //点击上传图片
         $(document).on('click','.old_pic',function(){
