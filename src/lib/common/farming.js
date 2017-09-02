@@ -300,6 +300,26 @@ function getPhoneModel(callback){
 		sendData2Objc(data, callback);
 	}
 }
+//拨打电话
+function phoneCall(phone){
 
+    if (JsInteraction) {
+         JsInteraction.phoneCall(phone);
+    }else {
+        var data = {'cmd':'phoneCall'};
+        sendData2Objc(data, null);
+    }
+}
+
+//弹出发布
+function showRelease(){
+
+    if (JsInteraction) {
+        JsInteraction.showRelease();
+    }else {
+        var data = {'cmd':'showRelease'};
+        sendData2Objc(data, null);
+    }
+}
 
 

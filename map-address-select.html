@@ -92,6 +92,7 @@
                  // location.href = url+'.html?lat='+e.lnglat.lat+'&lng='+e.lnglat.lng+'&addr='+addr;
                  localStorage.setItem('currentltg',{'lat':e.lnglat.lat,'lng':e.lnglat.lng});
                  localStorage.setItem('currentAddr',addr);
+                 localStorage.setItem('sign',1);
                  history.go(-1);
               }else{
               	layer.msg('无法获取地址');
@@ -121,6 +122,7 @@
                 // location.href = url+'.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+addr;
                 
                   // localStorage.setItem('currentltg',{'lat':result.geocodes[0].location.lat,'lng':result.geocodes[0].location.lng});
+                  localStorage.setItem('sign',1);
                   localStorage.setItem('currentAddr',addr);
                   history.go(-1);
 

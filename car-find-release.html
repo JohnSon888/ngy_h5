@@ -240,7 +240,7 @@ div#jedatebox{
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
     // userid = 1;
-    get_userInfo(userid);
+       get_userInfo(userid); 
     //获得用户信息
     function get_userInfo(userid){
         if (!userid) {
@@ -406,12 +406,12 @@ div#jedatebox{
             getAddress();
         });
         //当前地址
-        getCurrentLocationInfo(function(addr){
-            var addr = eval(addr);
-            addrDic.village = addr.town.areaID;
-            $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
-            $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
-        })
+            getCurrentLocationInfo(function(addr){
+                var addr = eval(addr);
+                addrDic.village = addr.town.areaID;
+                $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+                $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+            })
         // var addr = getCurrentLocationInfo();
         // addrDic.village = addr.town.areaID;
         // $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
