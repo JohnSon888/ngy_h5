@@ -400,11 +400,11 @@ div#jedatebox{
             $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
         })
         function _getAddr($cid,$str){
-            $('#address').val('');
+            // $('#address').val('');
             $('.address-value').text('');
-            addrDic.village = 0;
-            addrDic.village = $cid;
-            $('#address').val($str);
+            addrDic.town = 0;
+            addrDic.town = $cid;
+            // $('#address').val($str);
             $('.address-value').text($str);
         }
         $('.layer-map-bj').click(function() {
