@@ -1902,7 +1902,6 @@
 	background: url(../images/lr.png) no-repeat right 0.4rem center;
 	background-size: auto 0.35rem;
 }
-
 [data-dpr="2"] .help-center li{font-size: 28px;}
 [data-dpr="3"] .help-center li{font-size: 42px;}
 
@@ -2363,6 +2362,11 @@
 	line-height: 1.173rem;
 	height: 1.173rem;
 }
+.personal-ula li.address-arrow{
+    line-height: 0.8rem;
+    padding: 0.2rem 0;
+    height: auto;
+} 
 .personal-ula li .help-name{text-indent: 0.4rem;}
 .personal-tx{
 	display: block;
@@ -2381,6 +2385,12 @@
     padding-right: 0.84rem;
     text-align: right;
     width: 48%;
+}
+.address-label{
+    width: 20%;
+}
+.address-value{
+    width: 73%;
 }
 .personal-ula li samp{color: #999;}
 

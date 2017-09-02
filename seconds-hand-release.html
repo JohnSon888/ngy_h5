@@ -151,9 +151,9 @@ div#jedatebox{
                     <label class="help-name ovw">联系人</label><input id="concat" class="personal-some ovw" placeholder="请输入联系人姓名"></input></li>
                 <li class="none-right-arrow">
                     <label class="help-name ovw">电话</label><input id="phone" class="personal-some ovw" placeholder="请输入电话号码"></input></li>
-                <li class="none-right-arrow">
-                    <label class="help-name ovw">地点</label>
-                    <samp class="personal-some ovw">请选择地点</samp>
+                <li class="none-right-arrow address-arrow">
+                    <label class="help-name ovw address-label">地点</label>
+                    <samp class="personal-some ovw address-value">请选择地点</samp>
                 </li>
                 <!-- <li>
                     <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
@@ -187,6 +187,18 @@ div#jedatebox{
             </div>
         </div>
     </div>
+    <!-- 地址选择框 -->
+    <section class="layer-bj layer-map-bj"></section>
+    <div class="layer-area layer-up-some ovw" style="display:none;height:172px;bottom:0rem;z-index: 888;">
+            <ul class="mac-all-country" style="width:92%;margin:10px auto;line-height:39px;">
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="sf"><option areaID="-1">省份</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;"><select style="width:100%;z-index:100;" class="cs"><option areaID="0">城市</option></select></li>
+                <li style="width:31%;height:39px;float:left;border: 1px solid #ddd;"><select style="width:100%;z-index:100;" class="qx"><option areaID="0">区县</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-right:2.3%;margin-top:8px;"><select style="width:100%;z-index:100;" class="xz"><option areaID="0">乡镇</option></select></li>
+                <li style="width:48%;height:39px;float:left;border: 1px solid #ddd;margin-top:8px;"><select style="width:100%;z-index:100;" class="cz"><option areaID="0">村</option></select></li>
+                <li style="width:100%;height:36px;float:left;margin-top:25px;line-height:36px;background:#dd1616;font-size:14px;color:white;border-radius:3px;text-align:center;" class="area-sure">确定</li>
+            </ul>
+        </div>
     <script type="text/javascript">
     // function GetQueryString(name)
     // {
@@ -196,7 +208,7 @@ div#jedatebox{
     // };
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-    // userid = 1;
+    userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
@@ -219,6 +231,8 @@ div#jedatebox{
             success: function(data){
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
+
+               $('.personal-some').text(data.body.location.area.areaName+data.body.location.city.areaName+data.body.location.province.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
                console.log(data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -265,7 +279,7 @@ div#jedatebox{
         $('.complete-info').click(function() {
             mech_publishInfo('go');            
         });
-
+        var addrDic = {};
         function mech_publishInfo(opt){
             var cmd  = 'publishInfo';
             var ts = parseInt(new Date().getTime() / 1000); 
@@ -273,13 +287,13 @@ div#jedatebox{
             
             var name = $('#concat').val();
             var phone = $('#phone').val();
-            var detail = $('#detail').val()||'测试';
-            var address = $('#address').val()||'测试地址';
-            var province = '1';
-            var city = '1';
-            var area = '1';
-            var town = '1';
-            var village = '1';
+            var detail = $('#detail').val();
+            var address = $('#address').val();
+            var province = addrDic.province;
+            var city = addrDic.city;
+            var area = addrDic.area;
+            var town = addrDic.town;
+            var village = addrDic.village;
             var images = '1'
 
             //出发时间接口没有
@@ -331,6 +345,182 @@ div#jedatebox{
                 },
             });
         }
+
+        // 地址选择
+        $('.address-value').click(function() {
+            $('.layer-area').toggle();
+            if ($('.layer-area').css('display') == 'block') {
+                $('.layer-map-bj').show();
+            } else {
+                $('.layer-map-bj').hide();
+            }
+            // 计算地址弹框的高度
+            var height = $('body').height() - $('.layer-up-some').height();
+            $('.layer-up-some').css('top',height);
+            getArea(0,1,1);
+        });
+        $('.layer-map-bj').click(function() {
+            $(this).hide();
+            $('.layer-area').hide();
+        })
+        /****************************获取地区信息接口********************
+             **type:1.省份；2.城市，3.区县；4.乡镇
+             */
+            function getArea(areaID, type, when) {
+                var cmd = 'getArea';//农机投诉接口命令
+                var ts = parseInt(new Date().getTime() / 1000);//当前时间戳
+                var jsonp = 1;
+                var params = {
+                    'areaID': areaID,
+                };
+                params = objKeySort(params);//按照属性名升序排列
+                var params_str = objChangeStr(params);//拼接params参数的属性值
+                params.verify = $.md5(cmd + ts + params_str + 'security');//生成验证码           
+                $.ajax({
+                    url: apiURL, //接口地址
+                    data: {'cmd': cmd, 'ts': ts, 'params': params, 'jsonp': jsonp},
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        if (isNull(data['body']['list'])) {
+                            var areaHtml = '';
+                            $.each(data['body']['list'], function (i, val) {
+                                areaHtml += '<option areaID="' + val['areaID'] + '" value="' + val['areaID'] + '">' + val['areaName'] + '</option>';
+                            });
+                            switch (parseInt(type)) {
+                                case 1:
+                                    $('.sf').append(areaHtml);
+                                    break;
+                                case 2:
+                                    $('.cs').append(areaHtml);
+                                    break;
+                                case 3:
+                                    $('.qx').append(areaHtml);
+                                    break;
+                                case 4:
+                                    $('.xz').append(areaHtml);
+                                    break;
+                                case 5:
+                                    $('.cz').append(areaHtml);
+                                    break;
+                            }
+                            if (when == 0) {        //0  当前位置
+                                if (current_location_address != '') {   //获取到当前位置
+                                    var arr_areaID = current_location_areaIDs.split(",");
+                                    var arr_areaNames = current_location_areaNames.split(",");
+                                } else {                      //没获取到当前位置使用用户设置的位置
+                                    var arr_areaID = location_areaIDs.split(",");
+                                    var arr_areaNames = location_areaNames.split(",");
+                                }
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            } else if (when == 1) {  //  首页设置位置
+                                var arr_areaID = location_areaIDs.split(",");
+                                var arr_areaNames = location_areaNames.split(",");
+                                $('.sf').val(arr_areaID[0]);
+                                $('.cs').val(arr_areaID[1]);
+                                $('.qx').val(arr_areaID[2]);
+                                $('.xz').val(arr_areaID[3]);
+                                $('.cz').val(arr_areaID[4]);
+                            }
+                        } else {
+                            // layer.msg('暂无区域内容');
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.msg('网络请求延迟！');
+                        console.info(XMLHttpRequest.status);
+                        console.info(XMLHttpRequest.readyState);
+                        console.info(textStatus);
+                    },
+                });
+            }
+            $('.sf').on('change', function () {
+                if ($('.sf option:selected').attr('areaID') != -1) {
+                    $('.cs').html('');
+                    $('.cs').append('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    if ($('.sf option:selected').attr('areaID') != 0) {
+                        getArea($('.sf option:selected').attr('areaID'), 2);
+                    }
+                } else {
+                    $('.cs').html('<option areaID="0">请选择城市</option>');
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.cs').on('change', function () {
+                if ($('.cs option:selected').attr('areaID') != 0) {
+                    $('.qx').html('');
+                    $('.qx').append('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.cs option:selected').attr('areaID'), 3);
+                } else {
+                    $('.qx').html('<option areaID="0">请选择区县</option>');
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.qx').on('change', function () {
+                if ($('.qx option:selected').attr('areaID') != 0) {
+                    $('.xz').html('');
+                    $('.xz').append('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.qx option:selected').attr('areaID'), 4);
+                } else {
+                    $('.xz').html('<option areaID="0">请选择乡镇</option>');
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $('.xz').on('change', function () {
+                if ($('.xz option:selected').attr('areaID') != 0) {
+                    $('.cz').html('');
+                    $('.cz').append('<option areaID="0">请选择村庄</option>');
+                    getArea($('.xz option:selected').attr('areaID'), 5);
+                } else {
+                    $('.cz').html('<option areaID="0">请选择村庄</option>');
+                }
+            })
+            $(document).on('touchend', '.area-sure', function () {
+                // 获取省市区地址和value
+                var sfText = $('.sf option:selected').text();
+                var sfValue = $('.sf option:selected').val();
+                var csText = $('.cs option:selected').text();
+                var csValue = $('.cs option:selected').val();
+                var qxText = $('.qx option:selected').text();
+                var qxValue = $('.qx option:selected').val();
+                var xzText = $('.xz option:selected').text();
+                var xzValue = $('.xz option:selected').val();
+                var czText = $('.cz option:selected').text();
+                var czValue = $('.cz option:selected').val();
+
+                var addr = sfText+csText+qxText+xzText+czText;
+                $('.address-value').text(addr);
+                addrDic.province = sfValue;
+                addrDic.city = csValue;
+                addrDic.area = qxValue;
+                addrDic.town = xzValue;
+                addrDic.village = czValue;
+                addrDic.addr = addr;
+                $('.layer-map-bj').hide();
+                $('.layer-area').hide();
+
+                console.log(addrDic);
+                
+                
+            })
     </script>
 </body>
 
