@@ -80,7 +80,7 @@
 	var address = localStorage.getItem('currentAddr');
     var map = new AMap.Map('container',{
             resizeEnable: true,
-            zoom: 13,
+            zoom: 18,
     });
     AMap.plugin('AMap.Geocoder',function(){
         var geocoder = new AMap.Geocoder({
@@ -96,8 +96,10 @@
             geocoder.getAddress(e.lnglat,function(status,result){
               console.log(result)
               if(status=='complete'){
-                 location.href = 'seconds-hand-release.html?lat='+e.lnglat.lat+'&lng='+e.lnglat.lng+'&addr='+result.regeocode.formattedAddress;
-                 localStorage.setItem('currentAddr',result.regeocode.formattedAddress);
+                var addr = result.regeocode.addressComponent.street + result.regeocode.addressComponent.streetNumber;
+
+                 location.href = 'seconds-hand-release.html?lat='+e.lnglat.lat+'&lng='+e.lnglat.lng+'&addr='+addr;
+                 localStorage.setItem('currentAddr',addr);
               }else{
               	layer.msg('无法获取地址');
               }
@@ -121,8 +123,9 @@
               if(status=='complete'&&result.geocodes.length){
                 marker.setPosition(result.geocodes[0].location);
                 map.setCenter(marker.getPosition())
-                location.href = 'seconds-hand-release.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+result.geocodes[0].formattedAddress;
-                   localStorage.setItem('currentAddr',result.geocodes[0].formattedAddress);
+                var addr = result.geocodes[0].addressComponent.street + result.geocodes[0].addressComponent.streetNumber;
+                location.href = 'seconds-hand-release.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+addr;
+                   localStorage.setItem('currentAddr',addr);
               }else{
                 layer.msg('无法获取地址');
               }

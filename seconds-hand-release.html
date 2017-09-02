@@ -251,11 +251,11 @@ div#jedatebox{
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
 
+               // 详细地址
                if (addr) {
-                $('.personal-some').text(localStorage.getItem('currentAddr'));
-               } else {
+                $('#address').val(localStorage.getItem('currentAddr'));
+               } 
                 $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
-               }
                
                console.log(data);
             },
