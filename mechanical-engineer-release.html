@@ -331,6 +331,55 @@ div#jedatebox{
                 },
             });
         }
+        //点击上传图片
+        $(document).on('click','.old_pic',function(){
+            var pic_index = $(this);
+            var num = $('.pic').length;
+            var pic_num_left = 9-num;
+            if($(this).siblings('.old-pic-add').length>0){
+                    layer.open({
+                        content: '您确定要删除图片吗？'
+                        ,btn: ['是', '否']
+                        ,yes: function(index){
+                            layer.close(index);
+                            pic_index.remove();
+                            if(num==8&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                                $('.old-pic-add').before('<span class="fl plant-imgb ovw pic old_pic"><img src="'+$('.old-pic-add img').attr('src')+'"></span>');
+                                $('.old-pic-add img').attr('src','images/plant_2.png')
+                            }
+                            // else{
+                            //  uploadImage(pic_num_left);
+                            // }
+                        }
+                    });
+                }else{
+                    if(num==8&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                        layer.msg('最多添加9张图片');
+                    }else{
+                        uploadImage(pic_num_left);
+                    }
+                }
+    /*          var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+            imageUploaded(imageUrl);   */
+        });
+        /**
+        *   图片上传成功回调
+        *   imageUrl         图片url地址
+        **/
+        function imageUploaded(imageUrl){
+            imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+            var img_html = '';
+            for(i=0;i<imageUrl_arr.length;i++){
+                // $('.old_pic').remove();
+                img_html += '<span class="fl plant-imgb old_pic pic ovw"><img src="'+imageUrl_arr[i]+'"/></span>';
+            }
+            if($('.pic').length==8){
+                $('.old-pic-add img').attr('src',imageUrl_arr[0]);
+                    // $('.pic').addClass('picture');
+            }else{
+                $('.old-pic-add').before(img_html);
+            }
+        }
     </script>
 </body>
 
