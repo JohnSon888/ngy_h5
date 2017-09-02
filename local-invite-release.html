@@ -570,7 +570,7 @@ div#jedatebox{
             // 跳转地图
             $('.select-address').click(function() {
                 var address = $('.address-value').text();
-                $('.map-full').show();
+                $('.map-full').fadeIn();
     
                 AMap.plugin('AMap.Geocoder',function(){
                     var geocoder = new AMap.Geocoder({
@@ -589,7 +589,7 @@ div#jedatebox{
                             var addr = result.regeocode.formattedAddress;
                              localStorage.setItem('currentAddr',addr);
                              $('#address').val(addr);
-                             $('.map-full').hide();
+                             $('.map-full').fadeOut();
                           }else{
                             layer.msg('无法获取地址');
                           }
@@ -606,6 +606,9 @@ div#jedatebox{
                    
 
                 });
+            })
+            $('.header-back').on('click', function () {
+                $('.map-full').fadeOut();
             })
             //点击上传图片
         $(document).on('click','.old_pic',function(){
