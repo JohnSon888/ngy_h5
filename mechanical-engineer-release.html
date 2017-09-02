@@ -318,10 +318,11 @@ div#jedatebox{
             if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
                 images.push($('.old-pic-add img').attr('src'));
             }
+            var imgs = '';
             if (images.length > 0) {
-                images.join('|');
+                imgs = images.join('|');
             }
-            alert(images);
+            alert(imgs);
             //出发时间接口没有
             // var time = $('#datepicker').val();
             var params = {
@@ -329,7 +330,7 @@ div#jedatebox{
                 type:1,
                 detail:detail,
                 verify:'',
-                images:images,
+                images:imgs,
                 name:name,
                 phone:phone,
                 province:province,
