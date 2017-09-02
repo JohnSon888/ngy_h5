@@ -2367,17 +2367,14 @@
     padding: 0.2rem 0;
     height: auto;
 } 
-.personal-ula li.select-address{
-    background: url(../images/address.png) no-repeat left center;
-    background-size: 0.6rem 0.6rem;
-    line-height: 1.173rem;
-    height: 1.173rem;
-} 
-.personal-ula li.select-address span {
-    height: 1rem;
+
+.personal-ula li.select-address img {
+    height: 0.7rem;
     width: 0.7rem;
     display: inline-block;
     float: left;
+    line-height: 0.7rem;
+    margin-top: 0.2rem;
 }
 .personal-ula li .help-name{text-indent: 0.4rem;}
 

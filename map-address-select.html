@@ -1,9 +1,25 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title></title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="src/lib/jquery/jquery.md5.js"></script>
+    <script type="text/javascript" src="src/lib/common/common.js"></script>
+    <script type="text/javascript" src="src/lib/jedate/jedate.js"></script>
+    <script type="text/javascript" src="src/lib/common/farming.js"></script>
+    <script type="text/javascript" src="src/lib/common/public.js"></script>
+    <script type="text/javascript" src="src/lib/public/public.js"></script>
+    <!-- layer -->
+    <script type="text/javascript" src="src/lib/layer/layer.js"></script>
     <style type="text/css">
       body,html,#container{
         height: 100%;
@@ -31,6 +47,7 @@
     
   </head>
   <body>
+  <section class="header ovw posin">选择地址<a href="javascript:;" class="header-back ovw" style="height: 0.82rem;"><img src="images/back.png" /></a></section>
    <div id="container" tabindex="0"></div>
    <div class ='panel'>
    </div>
@@ -73,6 +90,9 @@
         })
 
     });
+    $('.header-back').on('click', function () {
+        history.go(-1);
+    })
    </script>
    <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
     

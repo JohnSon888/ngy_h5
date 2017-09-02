@@ -168,7 +168,7 @@ div#jedatebox{
                 <!-- <li>
                     <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
                 <li class="none-right-arrow select-address clearfix">
-                    <span></span>
+                    <img src="images/address.png">
                     <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
             </ul>
@@ -310,7 +310,17 @@ div#jedatebox{
             var area = addrDic.area;
             var town = addrDic.town;
             var village = addrDic.village;
-            var images = '1'
+            var images = [];
+            $.each($('.pic'),function(i){
+                images.push($($('.pic img')[i]).attr('src'));
+            })
+            if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                images.push($('.old-pic-add img').attr('src'));
+            }
+            var imgs = '';
+            if (images.length > 0) {
+                imgs = images.join('|');
+            }
 
             //出发时间接口没有
             // var time = $('#datepicker').val();
@@ -319,7 +329,7 @@ div#jedatebox{
                 type:1,
                 detail:detail,
                 verify:'',
-                images:images,
+                images:imgs,
                 name:name,
                 phone:phone,
                 province:province,
@@ -381,6 +391,7 @@ div#jedatebox{
             $(this).hide();
             $('.layer-area').hide();
         })
+        getArea(0,1,1);
         /****************************获取地区信息接口********************
              **type:1.省份；2.城市，3.区县；4.乡镇
              */
@@ -537,7 +548,7 @@ div#jedatebox{
 
             })
             // 跳转地图
-            $('.select-address span').click(function() {
+            $('.select-address img').click(function() {
                 var currentAddr = $('.address-value').text();
                 location.href = 'map-address-select.html';
                 localStorage.setItem('currentAddr',currentAddr);
