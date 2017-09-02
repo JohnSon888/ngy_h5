@@ -406,12 +406,12 @@ div#jedatebox{
             getAddress();
         });
         //当前地址
-            var addr = '';
-            getCurrentLocationInfo(function(addr){
-                addr = eval(addr);
-                addrDic.village = addr.town.areaID;
-                $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
-                $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+            var addr1 = '';
+            getCurrentLocationInfo(function(addr1){
+                addr1 = eval(addr1);
+                addrDic.village = addr1.town.areaID;
+                $('#address').val(addr1.province.areaName+addr1.city.areaName+addr1.area.areaName+addr1.town.areaName);
+                $('.address-value').text(addr1.province.areaName+addr1.city.areaName+addr1.area.areaName+addr1.town.areaName);
             })
         function _getAddr($cid,$str){
             // $('#address').val('');
