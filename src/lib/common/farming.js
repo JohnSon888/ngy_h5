@@ -184,6 +184,16 @@ function uploadImage(imageCount)
 		sendData2Objc(data, null);
 	}
 }
+//获得地址
+function getAddress()
+{
+    if (JsInteraction) {
+        JsInteraction.getAddress();
+    }else {
+        var data = {'cmd':'getAddress'};
+        sendData2Objc(data, null);
+    }
+}
 
 //获取一次当前经纬度
 function requestMylocation()
