@@ -157,7 +157,8 @@ div#jedatebox{
                 </li>
                 <!-- <li>
                     <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
-                <li class="none-right-arrow">
+                <li class="none-right-arrow select-address clearfix">
+                    <span></span>
                     <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
                 </li>
             </ul>
@@ -200,12 +201,18 @@ div#jedatebox{
             </ul>
         </div>
     <script type="text/javascript">
-    // function GetQueryString(name)
-    // {
-    //      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-    //      var r = window.location.search.substr(1).match(reg);
-    //      if(r!=null)return  unescape(r[2]); return null;
-    // };
+    function GetQueryString(name)
+    {
+         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if(r!=null)return  unescape(r[2]); return null;
+    };
+    var addrDic = {};
+    // 经度和纬度
+    var lat = GetQueryString('lat');
+    var lng = GetQueryString('lng');
+    addrDic.lat = lat;
+    addrDic.lng = lng;
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
     userid = 1;
@@ -232,7 +239,7 @@ div#jedatebox{
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
 
-               $('.personal-some').text(data.body.location.area.areaName+data.body.location.city.areaName+data.body.location.province.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
+               $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
                console.log(data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -279,7 +286,6 @@ div#jedatebox{
         $('.complete-info').click(function() {
             mech_publishInfo('go');            
         });
-        var addrDic = {};
         function mech_publishInfo(opt){
             var cmd  = 'publishInfo';
             var ts = parseInt(new Date().getTime() / 1000); 
@@ -312,6 +318,8 @@ div#jedatebox{
                 town:town,
                 village:village,
                 address:address,
+                latitude:addrDic.lat,
+                longitude:addrDic.lng
             }
             params = objKeySort(params);//按照属性名升序排列
             var params_str = objChangeStr(params);//拼接params参数的属性值
@@ -517,10 +525,62 @@ div#jedatebox{
                 $('.layer-map-bj').hide();
                 $('.layer-area').hide();
 
-                console.log(addrDic);
-                
-                
             })
+            // 跳转地图
+            $('.select-address span').click(function() {
+                var currentAddr = $('.address-value').text();
+                location.href = 'map-address-select.html';
+                localStorage.setItem('currentAddr',currentAddr);
+            })
+            //点击上传图片
+        $(document).on('click','.old_pic',function(){
+            var pic_index = $(this);
+            var num = $('.pic').length;
+            var pic_num_left = 9-num;
+            if($(this).siblings('.old-pic-add').length>0){
+                    layer.open({
+                        content: '您确定要删除图片吗？'
+                        ,btn: ['是', '否']
+                        ,yes: function(index){
+                            layer.close(index);
+                            pic_index.remove();
+                            if(num==8&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                                $('.old-pic-add').before('<span class="fl plant-imgb ovw pic old_pic"><img src="'+$('.old-pic-add img').attr('src')+'"></span>');
+                                $('.old-pic-add img').attr('src','images/plant_2.png')
+                            }
+                            // else{
+                            //  uploadImage(pic_num_left);
+                            // }
+                        }
+                    });
+                }else{
+                    if(num==8&&$('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                        layer.msg('最多添加9张图片');
+                    }else{
+                        uploadImage(pic_num_left);
+                    }
+                }
+    /*          var imageUrl = 'http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,http://ngy.innke.net/Uploads/file/2017-03-06/58bcfcc943acd.png,';
+            imageUploaded(imageUrl);   */
+        });
+        /**
+        *   图片上传成功回调
+        *   imageUrl         图片url地址
+        **/
+        function imageUploaded(imageUrl){
+            imageUrl_arr = handleAppValue(imageUrl);//获取图片地址数组
+            var img_html = '';
+            for(i=0;i<imageUrl_arr.length;i++){
+                // $('.old_pic').remove();
+                img_html += '<span class="fl plant-imgb old_pic pic ovw"><img src="'+imageUrl_arr[i]+'"/></span>';
+            }
+            if($('.pic').length==8){
+                $('.old-pic-add img').attr('src',imageUrl_arr[0]);
+                    // $('.pic').addClass('picture');
+            }else{
+                $('.old-pic-add').before(img_html);
+            }
+        }
     </script>
 </body>
 
