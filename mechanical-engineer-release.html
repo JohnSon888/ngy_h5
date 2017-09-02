@@ -397,8 +397,10 @@ div#jedatebox{
             $(this).hide();
             $('.layer-area').hide();
         })
-        function _getAddr($json){
-            alert($json);
+        function _getAddr($cid,$str){
+            addrDic.village = $cid;
+            $('#address').val($str);
+            $('.address-value').text($str);
         }
         /****************************获取地区信息接口********************
              **type:1.省份；2.城市，3.区县；4.乡镇
