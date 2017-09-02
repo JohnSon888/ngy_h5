@@ -2377,7 +2377,9 @@
     margin-top: 0.2rem;
 }
 .personal-ula li .help-name{text-indent: 0.4rem;}
-
+.personal-ula li.select-address input {
+    width: 90%;
+}
 .personal-tx{
 	display: block;
 	float: right;

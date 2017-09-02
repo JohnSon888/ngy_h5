@@ -252,8 +252,11 @@ div#jedatebox{
             success: function(data){
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
-               $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
-               console.log(data);
+               // 详细地址
+               if (addr) {
+                $('#address').val(localStorage.getItem('currentAddr'));
+               } 
+                $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 layer.msg('网络请求延迟！');
