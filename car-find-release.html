@@ -406,8 +406,9 @@ div#jedatebox{
             getAddress();
         });
         //当前地址
+            var addr = '';
             getCurrentLocationInfo(function(addr){
-                var addr = eval(addr);
+                addr = eval(addr);
                 addrDic.village = addr.town.areaID;
                 $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
                 $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
