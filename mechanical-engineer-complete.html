@@ -97,7 +97,7 @@
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">农机机械发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">农机机械发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a></section>
         <section class="add-subs " style="overflow: initial;">
             <ul class="help-center personal-ula btzl">
                 <li class="none-right-arrow">
@@ -230,7 +230,9 @@
             },
         });
     })
-    
+    $('.header-back').on('click', function () {
+        history.go(-1)
+    })
     </script>
 </body>
 

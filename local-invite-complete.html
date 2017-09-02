@@ -124,7 +124,7 @@
 
 <body>
     <section class="body-bj">
-        <section class="header ovw posin">本地招聘发布<a href="javascript:;" class="header-back ovw"></a></section>
+        <section class="header ovw posin">本地招聘发布<a href="javascript:;" class="header-back ovw"><img src="images/back.png" /></a></section>
         <section class="add-subs ovw">
             <p>福利：</p>
             <ul class="welfare-wrap">
@@ -270,6 +270,9 @@
                     },
                 });
             })
+            $('.header-back').on('click', function () {
+        history.go(-1)
+    })
     </script>
 </body>
 
