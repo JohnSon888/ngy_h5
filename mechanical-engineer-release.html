@@ -300,7 +300,13 @@ div#jedatebox{
             var area = addrDic.area;
             var town = addrDic.town;
             var village = addrDic.village;
-            var images = '1'
+            var images = [];
+            $.each($('.pic'),function(i){
+                images.push($($('.pic img')[i]).attr('src'));
+            })
+            if($('.old-pic-add img').attr('src')!='images/plant_2.png'){
+                images.push($('.old-pic-add img').attr('src'));
+            }
 
             //出发时间接口没有
             // var time = $('#datepicker').val();
@@ -583,6 +589,8 @@ div#jedatebox{
         $('.header-back').on('click', function () {
                 backtoNative();
             })
+
+        
     </script>
 </body>
 
