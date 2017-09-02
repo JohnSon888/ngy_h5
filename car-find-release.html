@@ -170,7 +170,7 @@ div#jedatebox{
                     <label class="help-name ovw">出发时间</label><input id="datepicker" class="personal-some" placeholder="请选择"></li> -->
                 <li class="none-right-arrow select-address clearfix">
                     <img src="images/address.png">
-                    <input id="address" class="help-name ovw" placeholder="请输入具体位置"></input>
+                    <input id="address" class="help-name ovw" placeholder="请输入具体位置" disabled></input>
                 </li>
             </ul>
             <a id="fabu" class="over-order ovw topic_tj" href="javascript:;">发布</a>
@@ -551,8 +551,8 @@ div#jedatebox{
 
             })
             // 跳转地图
-            $('.select-address img').click(function() {
-                var currentAddr = $('.address-value').text();
+            $('.select-address').click(function() {
+                var currentAddr = $('#address').val();
                 location.href = 'map-address-select.html';
                 localStorage.setItem('currentAddr',currentAddr);
             })
