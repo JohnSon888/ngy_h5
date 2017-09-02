@@ -379,21 +379,27 @@ div#jedatebox{
         }
         // 地址选择
         $('.address-value').click(function() {
-            $('.layer-area').toggle();
-            if ($('.layer-area').css('display') == 'block') {
-                $('.layer-map-bj').show();
-            } else {
-                $('.layer-map-bj').hide();
-            }
-            // 计算地址弹框的高度
-            var height = $('body').height() - $('.layer-up-some').height();
-            $('.layer-up-some').css('top',height);
-            getArea(0,1,1);
+            // $('.layer-area').toggle();
+            // if ($('.layer-area').css('display') == 'block') {
+            //     $('.layer-map-bj').show();
+            // } else {
+            //     $('.layer-map-bj').hide();
+            // }
+            // // 计算地址弹框的高度
+            // var height = $('body').height() - $('.layer-up-some').height();
+            // $('.layer-up-some').css('top',height);
+            // getArea(0,1,1);
+            getAddress();
+
+
         });
         $('.layer-map-bj').click(function() {
             $(this).hide();
             $('.layer-area').hide();
         })
+        function _getAddr($json){
+            alert($json);
+        }
         /****************************获取地区信息接口********************
              **type:1.省份；2.城市，3.区县；4.乡镇
              */
