@@ -53,6 +53,7 @@
     left: 0;
     bottom: 0;
     z-index: 22;
+    height: 4.66rem;
 }
 .none-right-arrow input{
     height: 1.173rem;
@@ -217,6 +218,7 @@ div#jedatebox{
          var r = window.location.search.substr(1).match(reg);
          if(r!=null)return  unescape(r[2]); return null;
     };
+    var addr = GetQueryString('addr');
     var addrDic = {};
     // 经度和纬度
     var lat = GetQueryString('lat');
@@ -225,7 +227,7 @@ div#jedatebox{
     addrDic.lng = lng;
     // var userid = GetQueryString(userid)
     // var pulishID = GetQueryString(pulishID)
-    // userid = 1;
+    userid = 1;
     get_userInfo(userid);
     //获得用户信息
     function get_userInfo(userid){
@@ -249,7 +251,12 @@ div#jedatebox{
                $('#concat').val(data.body.truename);
                $('#phone').val(data.body.phone);
 
-               $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
+               if (addr) {
+                $('.personal-some').text(localStorage.getItem('currentAddr'));
+               } else {
+                $('.personal-some').text(data.body.location.province.areaName+data.body.location.city.areaName+data.body.location.area.areaName+data.body.location.town.areaName+data.body.location.village.areaName);
+               }
+               
                console.log(data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
