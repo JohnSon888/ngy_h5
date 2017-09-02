@@ -392,6 +392,18 @@ div#jedatebox{
             // getArea(0,1,1);
             getAddress();
         });
+        //当前地址
+        getCurrentLocationInfo(function(addr){
+            var addr = eval(addr);
+            addrDic.village = addr.town.areaID;
+            $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+            $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+        })
+        // var addr = getCurrentLocationInfo();
+        // addrDic.village = addr.town.areaID;
+        // $('#address').val(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+        // $('.address-value').text(addr.province.areaName+addr.city.areaName+addr.area.areaName+addr.town.areaName);
+
         function _getAddr($cid,$str){
             $('#address').val('');
             $('.address-value').text('');
