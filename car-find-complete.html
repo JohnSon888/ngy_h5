@@ -199,6 +199,7 @@ div#jedatebox{
                     layer.msg(data.resultMessage);
                 }else{
                     layer.msg('发布成功');
+                    location.href = 'my-release.html';
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
