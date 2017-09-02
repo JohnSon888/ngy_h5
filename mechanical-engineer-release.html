@@ -398,6 +398,9 @@ div#jedatebox{
             $('.layer-area').hide();
         })
         function _getAddr($cid,$str){
+            $('#address').val('');
+            $('.address-value').text('');
+            addrDic.village = 0;
             addrDic.village = $cid;
             $('#address').val($str);
             $('.address-value').text($str);

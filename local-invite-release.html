@@ -376,9 +376,13 @@ div#jedatebox{
             // var height = $('body').height() - $('.layer-up-some').height();
             // $('.layer-up-some').css('top',height);
             // getArea(0,1,1);
+            
             getAddress();
         });
         function _getAddr($cid,$str){
+            $('#address').val('');
+            $('.address-value').text('');
+            addrDic.village = 0;
             addrDic.village = $cid;
             $('#address').val($str);
             $('.address-value').text($str);
