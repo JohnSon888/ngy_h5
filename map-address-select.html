@@ -76,7 +76,12 @@
    <script type="text/javascript" src="src/lib/layer/layer.js" ></script>
    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=e70d8d1aaa418b8bb2fe504405d220f9"></script>
    <script type="text/javascript">
-	
+	function GetQueryString(name)
+    {
+         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if(r!=null)return  unescape(r[2]); return null;
+    };
 	var address = localStorage.getItem('currentAddr');
     var map = new AMap.Map('container',{
             resizeEnable: true,
@@ -124,7 +129,8 @@
                 marker.setPosition(result.geocodes[0].location);
                 map.setCenter(marker.getPosition())
                 var addr = result.geocodes[0].formattedAddress;
-                location.href = 'seconds-hand-release.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+addr;
+                var url = GetQueryString('urlStr');
+                location.href = url+'.html?lat='+result.geocodes[0].location.lat+'&lng='+result.geocodes[0].location.lat+'&addr='+addr;
                    localStorage.setItem('currentAddr',addr);
               }else{
                 layer.msg('无法获取地址');
